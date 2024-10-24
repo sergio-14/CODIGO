@@ -1,0 +1,23 @@
+{% extends "dashboard.html" %}
+{% load bootstrap_filters %}
+{% load static %}
+{% block title %}Actualizar Grupo{% endblock %}
+{% block content %}
+<head>
+    <link type='text/css' href= "{% static 'css\style_grupo.css' %}" rel='stylesheet'/>
+</head>
+<div class="container no-gutters fontI p-lg-5 p-2">
+    <div class="no-gutte container-fluid p-lg-4 p-0">
+    <h2>Actualizar</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre del Grupo</label>
+            {{ form.name|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'listar_grupos' %}" class="btn btn-danger">Cancelar</a>
+    </form>
+</div>
+</div><br>
+{% endblock %}

@@ -1,0 +1,108 @@
+<!doctype html>
+{% load static %}
+{% load bootstrap_filters %}
+<html lang="en">
+    <head>
+        <title>login</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <!-- Bootstrap CSS v5.2.1 -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+        />
+        <link type='text/css' href="{% static 'css/login.css' %}" rel='stylesheet'/>
+        <script src="https://unpkg.com/scrollreveal"></script>
+        
+    </head>
+
+    <body>
+        <section class="vh-100 position-relative fontf">
+            <div class="container-fluid h-custom pt-lg-5 pt-0 px-3">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-md-1 col-lg-6 col-xl-5">
+                        <img src="{% static 'img/logint.JPG' %}" class="imgnone img-fluid logojovens" alt="Sample image">
+                    </div>
+                    <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 fon-stilo p-5 logologin "><br>
+                        <div class=" text-center">
+                            {% comment %} <img src="{% static 'img/titulados.gif' %}" class="imgr" alt="Sin foto"> {% endcomment %}
+                            <h3 class="subtitulo">Inicio de Sesión</h3>
+                        </div><br><br><br>
+                        <form method="post" class="formulario__login">
+                            {% csrf_token %}
+                            {% if not form.first_attempt %}
+                            <div class="error">
+                                {{ form.non_field_errors }}
+                            </div>
+                            {% endif %}
+                            <!-- Email input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3">Ingrese Correo</label>
+                                {{ form.email|add_class:"form-control" }}
+                                {% if not form.first_attempt %}
+                                    {% for error in form.email.errors %}
+                                        <div class="error">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+        
+                            <!-- Password input -->
+                            <div data-mdb-input-init class="form-outline mb-3">
+                                <label class="form-label" for="form3Example4">Ingrese Contraseña</label>
+                                {{ form.password|add_class:"form-control" }}
+                               
+                            </div>
+                            {% if not form.first_attempt %}
+                                {% for error in form.password.errors %}
+                                    <div class="error">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="text-center text-lg-start mt-4 pt-2 me-5 d-flex justify-content-between align-items-center">
+                                <button type="submit" class="btn ms-4 btn-outline-primary active me-4" style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                                    Ingresar
+                                </button>
+                                <a href="{% url 'home' %}" class="btn btn-outline-danger me-4" style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                                    Volver
+                                </a>
+                            </div><br><br><br>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <img src="{% static 'img/logoeva.jpg' %}" class="imgnone img-bottom-left " alt="Sin foto">
+        </section>        
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"
+        ></script>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"
+        ></script>
+        <script>
+            window.sr = ScrollReveal();
+            sr.reveal(".logojovens ", {
+              duration: 3000,
+              origin: "right",
+              distance: "-100px",
+            });
+            window.sr = ScrollReveal();
+            sr.reveal(".logologin", {
+              duration: 2000,
+              origin: "top",
+              distance: "-100px",
+            });
+        </script>
+    </body>
+</html>
+

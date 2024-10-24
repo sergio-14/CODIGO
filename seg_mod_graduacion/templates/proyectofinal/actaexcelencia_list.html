@@ -1,0 +1,219 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block content %}
+<div class="container no-gutters px-lg-5 px-1">
+    <h1 class="titlesuperior colortext py-4">Reporte Defensa Excelencia Academia
+        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
+            <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z"/>
+            <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z"/>
+        </svg>
+    </h1>
+    
+    <!-- Formulario de búsqueda -->
+    <form method="GET" action="">
+        <div class="row">
+            <div class="col-lg-10 col-8 form-group">
+                <input type="text" name="q" class="form-control" placeholder="Buscar por nombre del estudiante">
+            </div>
+            <div class="col-lg-1 col-3 mt-1">
+                <button type="submit" class="btn btn-primary px-lg-3">Buscar</button>
+            </div>
+        </div>
+    </form>
+   
+    <hr>
+    
+    <!-- Mostrar todas las actividades científicas relacionadas -->
+    {% for acta in actas %}
+    <div class="no-guttee mb-5 fontI">
+        <div class="row py-5">
+            <div class="col-md-9 px-lg-5 px-4 text-wrap">
+                <!-- Your existing content for displaying actas -->
+                <div class="row">
+                    <div class="col-lg-4 col-12 text-lg-start text-center">
+                        <p class="fecha colortext ">Fecha: <span class="colorestados">{{ acta.fechadefensa|date:"d/m/Y" }} - {{ acta.lugar }}</span></p>
+                    </div>
+                    <div class="col-lg-4 col-12 text-lg-start text-center">
+                        <p class="fecha colortext ">Hora de: <span class="colorestados"> {{ acta.horainicio }}</span> a: <span class="colorestados"> {{ acta.horafin }}</span></p>
+                    </div>
+                    <div class="col-lg-4 col-12 text-lg-start text-center">
+                        <p class="fecha colortext ">Periodo y Gestión: <span class="colorestados"> {{ acta.perperiodo }}</span></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-12 text-lg-start text-center">
+                        <p class="fecha colortext ">N° Acta: <span class="colorestados">{{ acta.acta }}</span></p>
+                    </div >
+                    <div class="col-lg-4 col-12 text-center">
+                        <p class="fecha colortext ">Facultad: {{ acta.carrera.facultad.nombre }}</p>
+                    </div>
+                    <div class="col-lg-4 col-12 text-center">
+                        <p class="fecha colortext ">Carreta: {{ acta.carrera }}</p>
+                    </div>
+                </div>
+                <p class="title colortext text-lg-start text-center">Título: {{ acta.titulo }}</p>
+                <div class="row">
+                    <div class="col-lg-4 col-12 text-lg-start text-center">
+                        <p class="fecha colortext ">Tutur:<br> {{ acta.tutor.nombre }} {{ acta.tutor.apellido }} {{ acta.tutor.apellidoM }}</p>
+                    </div >
+                    <div class="col-lg-4 col-6 text-lg-start text-center">
+                        <p class="fecha colortext ">Modalidad:<br> {{ acta.modalidad }}</p>
+                    </div>
+                    <div class="col-lg-4 col-6 text-lg-start text-center">
+                        <p class="fecha colortext ">Calificación:<br> <span class="colorestados">{{ acta.get_resultado_display }}</span> <span class="colorestados">con la Nota de {{ acta.notatotal }} pts.</span></p>
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-6 text-lg-start text-center">
+                        <p class="fecha colortext ">1er. Tribunal:<br> {{ acta.jurado_1.nombre }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }}</p>
+                    </div >
+                    <div class="col-lg-4 col-6 text-lg-start text-center">
+                        <p class="fecha colortext ">2do. Tribunal:<br> {{ acta.jurado_2.nombre }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }}</p>
+                    </div>
+                    <div class="col-lg-4 col-6 text-lg-start text-center">
+                        <p class="fecha colortext ">3er. Tribunal:<br> {{ acta.jurado_3.nombre }} {{ acta.jurado_3.apellido }} {{ acta.jurado_3.apellidoM }}</p>
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-12 ">
+                        <p class="fecha colortext ">Nota Total Literal: <br> <span class="colorestados fechas">{{ acta.get_notatotal_literal }}</span></p>
+                    </div >
+                    <div class="col-lg-4 col-12 ">
+                        <p class="fecha colortext ">Observación: <br> <span class="colorestados fechas">{{ acta.get_observacion }}</span></p>
+                    </div>
+                    <div class="col-lg-4 col-12 ">
+                        <p class="fecha colortext ">Valorización: <br> <span class="colorestados fechas">{{ acta.get_valorizacion }}</span></p>
+                        
+                    </div>
+                    
+                </div>
+                
+            </div>
+            <div class="col-md-3 pt-4 d-flex flex-column align-items-center">
+                <div class="image-container">
+                    {% if acta.estudiante.imagen %}
+                    <!-- Imágenes (se ocultan inicialmente) -->
+                    <img id="imagen1" src="{{ acta.estudiante_dos.imagen.url }}" class="imgrepo" alt="Imagen 1" style="display: none;">
+                    <img id="imagen2" src="{{ acta.estudiante_uno.imagen.url }}" class="imgrepo" alt="Imagen 2" style="display: none;">
+                    <img id="imagen3" src="{{ acta.estudiante.imagen.url }}" class="imgrepo" alt="Imagen 3" style="display: block;"> <!-- Se muestra por defecto -->
+                    {% else %}
+                    <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
+                    {% endif %}
+                </div>
+                <h5 class="text colortext text-center">
+                    <p class="text colorestados">Nombre Egresado:</p>
+                    <p id="nombre1" class="title colortext" style="display: none;">{{ acta.estudiante_dos }}</p>
+                    <p id="nombre2" class="title colortext" style="display: none;">{{ acta.estudiante_uno }}</p>
+                    <p id="nombre3" class="title colortext" style="display: block;">{{ acta.estudiante }}</p>
+                </h5>
+                <div class="btn-group ">
+                    
+                    <button id="btnAnterior" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                      </svg></button>
+                    <button id="btnSiguiente" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+                      </svg></button>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Array de imágenes y nombres
+                        const imagenes = [];
+                        const nombres = [];
+                        
+                        const imagen1 = document.getElementById('imagen1');
+                        const imagen2 = document.getElementById('imagen2');
+                        const imagen3 = document.getElementById('imagen3');
+                        
+                        const nombre1 = document.getElementById('nombre1');
+                        const nombre2 = document.getElementById('nombre2');
+                        const nombre3 = document.getElementById('nombre3');
+                        
+                        // Solo agregar las imágenes y nombres que existen al array
+                        if (imagen1 && nombre1) {
+                            imagenes.push(imagen1);
+                            nombres.push(nombre1);
+                        }
+                        if (imagen2 && nombre2) {
+                            imagenes.push(imagen2);
+                            nombres.push(nombre2);
+                        }
+                        if (imagen3 && nombre3) {
+                            imagenes.push(imagen3);
+                            nombres.push(nombre3);
+                        }
+                    
+                        let indiceActual = imagenes.length - 1; // Mostrar la última imagen (estudiante) al inicio
+                    
+                        // Función para mostrar la imagen y el nombre actuales
+                        function mostrarActual() {
+                            imagenes.forEach(function(imagen, index) {
+                                imagen.style.display = index === indiceActual ? 'block' : 'none';
+                            });
+                            
+                            nombres.forEach(function(nombre, index) {
+                                nombre.style.display = index === indiceActual ? 'block' : 'none';
+                            });
+                        }
+                    
+                        // Botones
+                        const btnAnterior = document.getElementById('btnAnterior');
+                        const btnSiguiente = document.getElementById('btnSiguiente');
+                        
+                        // Evento botón "Siguiente"
+                        btnSiguiente.addEventListener('click', function() {
+                            if (indiceActual < imagenes.length - 1) {
+                                indiceActual++;
+                            } else {
+                                indiceActual = 0; // Volver al inicio si llegamos al final
+                            }
+                            mostrarActual();
+                        });
+                    
+                        // Evento botón "Anterior"
+                        btnAnterior.addEventListener('click', function() {
+                            if (indiceActual > 0) {
+                                indiceActual--;
+                            } else {
+                                indiceActual = imagenes.length - 1; // Volver al final si estamos al principio
+                            }
+                            mostrarActual();
+                        });
+                    
+                        // Mostrar la imagen y nombre iniciales
+                        mostrarActual();
+                    });
+                    
+                </script>
+                {% if acta.pk %}
+                <a class="btn btn-sm btn-primary fontII" href="{% url 'Pdf_ReporteActaExcelencia' pk=acta.pk %}"target="_blank">General Reporte Acta</a>
+                {% else %}
+                <span>No Acta available</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Paginación -->
+    <nav>
+        <ul class="pagination">
+            {% if actas.has_previous %}
+                
+                <li class="page-item"><a class="btn btn-sm btn-dark" href="?page={{ actas.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a></li>
+            {% endif %}
+
+            <li class="page-item active"><a class="btn btn-sm btn-light">{{ actas.number }}</a></li>
+
+            {% if actas.has_next %}
+                <li class="page-item"><a class="btn btn-sm btn-dark me-1" href="?page={{ actas.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Siguiente</a></li>
+               
+            {% endif %}
+        </ul>
+    </nav><br>
+</div><br>
+{% endblock %}
+
+

@@ -1,0 +1,96 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% load static %}
+<div class="container p-lg-5 no-gutters p-0">
+    <div class=" fontII">
+        <article class="p-lg-5 no-gutte px-3">
+            <h1 id=" letr" class="text-center colortitle pb-2 titlesuperior">Formulario de Investigación Extension e Interacción Social</h1>
+            <p class="colortext fontI text-end p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+                    <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+                    <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 0 1 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 0 0 0-2 1 1 0 1 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 1 0 0 2"/>
+                </svg> 
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">
+                    <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                    <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/>
+                </svg> Tiene {{ tiempo_restante }} Restantes para Implementar su Proyecto. 
+            </p>
+            <form id="proyectoForm" method="post" enctype="multipart/form-data" onsubmit="showConfirmationModal(event)">
+                {% csrf_token %}
+                <div class="row fontI colortext">
+                  {{ form.S_Titulo|as_crispy_field }}
+                  <div class="col-md-6">
+                    {{ form.Fecha_Inicio|as_crispy_field }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.Fecha_Finalizacion|as_crispy_field }}
+                  </div>
+                  {{ form.S_Descripcion|as_crispy_field }}
+                  
+                 
+                  <div class="col-md-6">
+                    {{ form.S_Documentacion|as_crispy_field }}
+                    {{ form.T_Fase_proyecto|as_crispy_field }}
+                    {{ form.T_Tipo_Proyecto|as_crispy_field }}
+                  </div>
+                  <div class="col-md-6"> 
+                    {{ form.S_Imagen|as_crispy_field }}
+                    <p>Periodo y Gestión</p>
+                    <select name="T_Gestion" class="form-control" required>
+                        <option value="" selected="">---------</option>
+                        {% for periodo in ultimos_periodos %}
+                            <option value="{{ periodo.id }}">{{ periodo }}</option>
+                        {% endfor %}
+                    </select><br>
+                    {% comment %} {{ form.T_Gestion|as_crispy_field }} {% endcomment %}
+                    {{ form.T_Materia|as_crispy_field }}
+                  </div>
+                </div>
+                {% if habilitado %}
+                <br>
+                <input name="" id="" class="btn btn-primary" type="submit" value="Enviar Información"> 
+                <a href="{% url 'dashboard' %}" class="btn btn-danger">Cancelar</a><br>
+                {% else %}
+                <p>El sistema está deshabilitado para agregar proyectos en este momento.</p>
+                {% endif %}
+            </form><br>
+           
+        </article>
+    </div>
+</div><br>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-mdal">
+            <div class="modal-header">
+                <h5 class="modal-title font" id="confirmationModalLabel">Confirmación de Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center font">
+                <img src="{% static 'img/siguiente.png' %}" class="img-close" alt="" /><br>
+                ¡Formulario Enviado con Éxito!
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showConfirmationModal(event) {
+        event.preventDefault(); 
+        $('#confirmationModal').modal('show');
+     
+        setTimeout(function() {
+            $('#confirmationModal').modal('hide');
+        
+            document.getElementById('proyectoForm').submit();
+        }, 2000);
+    }
+</script>
+{% endblock %}

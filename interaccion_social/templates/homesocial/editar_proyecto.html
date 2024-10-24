@@ -1,0 +1,84 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% load static %}
+<div class="container p-lg-5 no-gutters p-0">
+    <div class=" fontII">
+        <article class="p-lg-5 no-gutte px-3">
+            <h3 id=" letr" class="text-center colortitle pb-2 fontI "> Editar Formulario de Investigación Extension e Interacción Social</h3>
+            <form id="proyectoForm" method="post" enctype="multipart/form-data" onsubmit="showConfirmationModal(event)">
+                {% csrf_token %}
+                <div class="row fontI colortext">
+                  {{ form.S_Titulo|as_crispy_field }}
+                  <div class="col-md-6">
+                    {{ form.Fecha_Inicio|as_crispy_field }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.Fecha_Finalizacion|as_crispy_field }}
+                  </div>
+                  {{ form.S_Descripcion|as_crispy_field }}
+                  
+                 
+                  <div class="col-md-6">
+                    {{ form.S_Documentacion|as_crispy_field }}
+                    {{ form.T_Fase_proyecto|as_crispy_field }}
+                    {{ form.T_Tipo_Proyecto|as_crispy_field }}
+                  </div>
+                  <div class="col-md-6"> 
+                    {{ form.S_Imagen|as_crispy_field }}
+                    <p>Periodo y Gestión</p>
+                    <select name="T_Gestion" class="form-control" required>
+                        <option value="" selected="">---------</option>
+                        {% for periodo in ultimos_periodos %}
+                            <option value="{{ periodo.id }}" {% if proyecto.T_Gestion_id == periodo.id %}selected{% endif %}>{{ periodo }}</option>
+                        {% endfor %}
+                    </select><br>
+                    {% comment %} {{ form.T_Gestion|as_crispy_field }} {% endcomment %}
+                    {{ form.T_Materia|as_crispy_field }}
+                  </div>
+                </div>
+                {% if habilitado %}
+                <br>
+                <input name="" id="" class="btn btn-primary" type="submit" value="Enviar Información"> 
+                <a href="{% url 'proyectosin_so' %}" class="btn btn-danger">Cancelar</a><br>
+                {% else %}
+                <p>El sistema está deshabilitado para agregar proyectos en este momento.</p>
+                {% endif %}
+            </form><br>
+           
+        </article>
+    </div>
+</div><br>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-mdal">
+            <div class="modal-header">
+                <h5 class="modal-title font" id="confirmationModalLabel">Confirmación de Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center font">
+                <img src="{% static 'img/siguiente.png' %}" class="img-close" alt="" /><br>
+                ¡Formulario Enviado con Éxito!
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showConfirmationModal(event) {
+        event.preventDefault(); 
+        $('#confirmationModal').modal('show'); 
+        setTimeout(function() {
+            $('#confirmationModal').modal('hide');
+            document.getElementById('proyectoForm').submit();
+        }, 2000);
+    }
+</script>
+{% endblock %}

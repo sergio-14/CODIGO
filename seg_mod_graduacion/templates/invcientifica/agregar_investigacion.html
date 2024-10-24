@@ -1,0 +1,94 @@
+{% extends 'dashboard.html' %}
+
+{% load crispy_forms_tags %}
+{% block title %}Crear Form{% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="container p-lg-5 p-3 fontI no-gutters">
+  <div class="no-gutte container p-lg-4 p-0 pb-2">
+    <h1 class="text-center colortext py-2 titlesuperior">AGREGAR NUEVO FORMULARIO DE INVESTIGACIÓN CIENTÍFICA</h1>
+    
+    {% if form_disabled %}
+      <p class="text-end text colorestados">El formulario de investigación está deshabilitado para el Usuario.</p>
+    {% endif %}
+
+    <article class="pb-3 colortext">
+      <form id="pot" method="post" enctype="multipart/form-data" onsubmit="showConfirmationModal(event)">
+        {% csrf_token %}
+        <div id="extra-users" style="display: block {% if form.habilitar_users.value %}block{% else %}none{% endif %};">
+          <div class="row">
+            <div class="col-md-12 col-11">
+              {{ form.user_uno|as_crispy_field }}
+            </div>
+          </div>
+        </div>
+        <!-- Render the rest of the form excluding user_uno and user_dos -->
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          {% if field.name != 'user_uno' and field.name != 'user_dos' %}
+            {{ field|as_crispy_field }}
+          {% endif %}
+        {% endfor %}
+        <br>
+        <!-- Submit and cancel buttons -->
+        <input name="" id="" class="btn btn-primary me-2 fontII" type="submit" value="Enviar Información" {% if form_disabled %}disabled{% endif %}>
+        <a class="btn btn-danger fontII" href="{% url 'dashboard' %}">Cancelar</a>
+      </form>
+      {% block scripts %}
+      <script>
+        $("#id_user_uno").select2();
+        $("#id_user_dos").select2();
+
+        const checkbox = document.getElementById('{{ form.habilitar_users.id_for_label }}');
+        const extraUsersDiv = document.getElementById('extra-users');
+
+        checkbox.addEventListener('change', function() {
+          if (this.checked) {
+            extraUsersDiv.style.display = 'block'; // Show the extra user fields
+          } else {
+            extraUsersDiv.style.display = 'none'; // Hide the extra user fields
+          }
+        });
+
+        // Initialize visibility of extra user fields
+        if (!checkbox.checked) {
+          extraUsersDiv.style.display = 'none';
+        }
+      </script>
+            
+      {% endblock %}
+
+    </article>
+  </div>
+</div><br>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-mdal">
+      <div class="modal-header">
+        <h5 class="modal-title font" id="confirmationModalLabel"> Confirmación de Formulario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> <!-- Updated for Bootstrap 5 -->
+      </div>
+      <div class="modal-body text-center font">
+        <img src="{% static 'img/confi.png' %}" class="img-close" alt="" /><br>
+        ¡Formulario Enviado con Éxito!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script to handle form submission and modal display -->
+<script>
+  function showConfirmationModal(event) {
+    event.preventDefault(); 
+    $('#confirmationModal').modal('show'); 
+    
+    setTimeout(function() {
+      $('#confirmationModal').modal('hide'); 
+      document.getElementById("pot").submit(); 
+    }, 2000);  // Close the modal after 2 seconds and submit the form
+  }
+</script>
+{% endblock %}

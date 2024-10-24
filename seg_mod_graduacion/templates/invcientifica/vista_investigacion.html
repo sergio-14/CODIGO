@@ -1,0 +1,137 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block content %}
+<h1 class="text-center colortitle py-2 titlesuperior">VISTA Y ESTADO DEL FORMULARIO INVESTIGACIÓN CIENTÍFICA</h1>
+{% if proyectos %}
+<div class="container mt-lg-2 mt-5">
+  {% for proyecto in proyectos %}
+  <div class="card narrow-card">
+    <div class="row no-gutters">
+      <!-- Foto en un lado -->
+      <div class="col-md-3 col-lg-3 centered-img">
+        <img id="profileImage" 
+             src="{% if proyecto.user.imagen %}{{ proyecto.user.imagen.url }}{% else %}{% static 'img/SINFOTO.webp' %}{% endif %}" 
+             class="card-img imgperfil p-2" 
+             alt="Imagen de perfil" />
+      </div>
+    
+      <script>
+        // Crear una lista solo con los datos que existen
+        const images = [];
+    
+        // Agregar solo las imágenes y nombres que existen
+        if ("{{ proyecto.user.imagen|default_if_none:'' }}" && "{{ proyecto.user.nombre }}") {
+            images.push({ src: "{{ proyecto.user.imagen.url }}", name: "{{ proyecto.user.apellido }} {{ proyecto.user.apellidoM }} {{ proyecto.user.nombre }}" });
+        }
+        if ("{{ proyecto.user_uno.imagen|default_if_none:'' }}" && "{{ proyecto.user_uno.nombre }}") {
+            images.push({ src: "{{ proyecto.user_uno.imagen.url }}", name: "{{ proyecto.user_uno.apellido }} {{ proyecto.user_uno.apellidoM }} {{ proyecto.user_uno.nombre }} " });
+        }
+        let currentIndex = 0;
+    
+        function rotateProfile() {
+            const profileImage = document.getElementById('profileImage');
+            const profileName = document.getElementById('profileName');
+    
+            // Cambiar imagen y nombre solo si hay imágenes
+            if (images.length > 0) {
+                profileImage.src = images[currentIndex].src;
+                profileName.textContent = images[currentIndex].name;
+    
+                // Actualizar el índice
+                currentIndex = (currentIndex + 1) % images.length;
+            }
+        }
+    
+        // Ejecutar rotación cada 3 segundos solo si hay imágenes
+        if (images.length > 0) {
+            setInterval(rotateProfile, 3000);
+            rotateProfile(); // Llamar una vez al inicio para mostrar el primer perfil
+        }
+      </script>
+    
+  
+      <!-- Contenido en el otro lado -->
+      <div class="col-md-7 col-lg-8 pb-5">
+        <div class="card-body">
+          <!-- Texto con formato pre -->
+          <pre class="fecha fontI colorestados">Estudiante: <span id="profileName" class="estado colortext">{{ proyecto.user.nombre }} {{ proyecto.user.apellido }} {{ proyecto.user.apellidoM }}</span>     Enviado el : {{ proyecto.invfecha_creacion|date:"d/m/Y H:i:s" }}</pre>
+          <!-- Título -->
+          <h5 class="title pb-1 text-center fontI colortitle ">{{ proyecto.invtitulo }}</h5>
+          <!-- Descripción -->
+          <p class="fontI colortext">Descripción:<br>{{ proyecto.invdescripcion }}</p>
+          <div class="container text-center">
+            <div class="row">
+              <div class="col-lg-5 col-7 no-guttee py-2">
+                <div class="d-flex align-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-earmark-richtext-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M7 6.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m-.861 1.542 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V9.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V9s1.54-1.274 1.639-1.208M5 11h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1"/>
+                  </svg>
+                  <a href="{{ proyecto.invdocumentacion.url }}" class="list-group-item list-group-item-action">Documento a Evaluar</a>
+                </div>
+              </div>
+              <div class="col-lg-7 col-5">
+                <h5 class="estado fontI colorestados text-end">Estado Revisión: {{proyecto.investado}}</h5>
+              </div>
+            </div> 
+          </div>
+          <br>
+          <!-- Espacio de comentarios -->
+          <br />
+          <!-- Botón para ver documento -->
+          <h5 class="text fontI colortitle text-center">Comentarios</h5>
+          {% for invcomentario in proyecto.comentarioinvcientifica_set.all %}
+          <h6 class="text-end fontI  colorestados fechas ">
+            {{ invcomentario.invfecha_post|date:"d/m/Y H:i:s" }} Revisado por el Docente:  <span class="colortext fontI fecha">{{ invcomentario.user.docente.titulo }} {{ invcomentario.user.apellido }} {{ invcomentario.user.apellidoM }} {{ invcomentario.user.nombre }}</span>
+          </h6>
+          <p class="comentario fontI colortext">Comentario:<br>{{ invcomentario.invcomentario }}</p>
+          {% if invcomentario.invdocorregido %}
+          <a href="{{ invcomentario.invdocorregido.url }}" target="_blank" class="text-decoration-none text-end fontI align-items-end colortext fechas contdoc p-2 ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-check" viewBox="0 0 16 16">
+              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z"/>
+              <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/>
+            </svg> Documento Corregido 
+          </a>
+          {% else %}
+          <p class="fontI  colortext fechas">Documento Adecuado <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+            <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+          </svg></p>
+          {% endif %}
+          {% empty %}
+          <p class="comentario fontI colortext">No hay comentarios para este proyecto.</p>
+          {% endfor %}
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+  <br>
+  {% endfor %}
+</div>
+
+{% if proyectos.has_other_pages %}
+<div class="pagination-container">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      {% if proyectos.has_previous %}
+      <li class="page-item">
+        <a class="page-link dark-link" href="?page={{ proyectos.previous_page_number }}">Anterior</a>
+      </li>
+      {% endif %}
+  
+      <li class="page-item disabled">
+        <a class="page-link dark-link">Página {{ proyectos.number }} de {{ proyectos.paginator.num_pages }}</a>
+      </li>
+  
+      {% if proyectos.has_next %}
+      <li class="page-item">
+        <a class="page-link dark-link" href="?page={{ proyectos.next_page_number }}">Siguiente</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endif %}
+{% else %}
+<p class="fecha fontI colorfechas pt-3">No hay proyectos asociados a este usuario. Consulta en la administración.</p>
+{% endif %}
+{% endblock %}

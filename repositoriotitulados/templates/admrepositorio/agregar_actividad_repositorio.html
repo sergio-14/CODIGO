@@ -1,0 +1,196 @@
+{% extends 'dashboard.html'%} {% load static %} {% load crispy_forms_tags %}{% block content %}
+<div class="container p-lg-5 p-3 no-gutters fontI colortext ">
+    <div class="p-lg-2 p-0 no-gutte">
+      <div class="">
+        <h1 class=" px-lg-3 titlesuperior px-0 colortext py-2 fontI">Habilitación de Repositorio Para Egresados  <svg xmlns="http://www.w3.org/2000/svg" width="76" height="76" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+          <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+          <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+        </svg></h1>
+        <div class="card-body px-lg-3 px-0">
+          <form method="post" id="approvalForm" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Mostrar errores generales del formulario -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <div class="fechas">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form.estudiante.label_tag }} <br>{{ form.estudiante }}
+                        {% if form.estudiante.errors %}
+                            <div class="text-danger fontII">
+                                {{ form.estudiante.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.tutor.label_tag }} <br>{{ form.tutor }}
+                        {% if form.tutor.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.tutor.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.periodo.label_tag }}<br>
+                        <select name="periodo" class="form-control">
+                            {% for periodo in ultimos_periodos %}
+                                <option value="{{ periodo.id }}">{{ periodo }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        {% if form.periodo.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.periodo.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+              
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form.jurado_1.label_tag }}<br> {{ form.jurado_1 }}
+                        {% if form.jurado_1.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.jurado_1.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.jurado_2.label_tag }}<br> {{ form.jurado_2 }}
+                        {% if form.jurado_2.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.jurado_2.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.jurado_3.label_tag }}<br> {{ form.jurado_3 }}
+                        {% if form.jurado_3.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.jurado_3.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+              
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        {{ form.titulo.label_tag }}<br> {{ form.titulo }}
+                        {% if form.titulo.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.titulo.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        {{ form.resumen.label_tag }}<br> {{ form.resumen }}
+                        {% if form.resumen.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.resumen.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form.modalidad.label_tag }} <br>{{ form.modalidad }}
+                        {% if form.modalidad.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.modalidad.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-8">
+                        {{ form.documentacion.label_tag }}<br> {{ form.documentacion }}
+                        {% if form.documentacion.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.documentacion.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 pb-lg-0 pb-2">
+                        {{ form.fecha.label_tag }}<br> {{ form.fecha }}
+                        {% if form.fecha.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.fecha.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.guia_externo.label_tag }}<br> {{ form.guia_externo }}
+                        {% if form.guia_externo.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.guia_externo.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3 col-5">
+                        {{ form.numero_acta.label_tag }} <br>{{ form.numero_acta }}
+                        {% if form.numero_acta.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.numero_acta.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2 col-4">
+                        {{ form.nota_aprobacion.label_tag }}<br> {{ form.nota_aprobacion }}
+                        {% if form.nota_aprobacion.errors %}
+                            <div class="text-danger  fontII">
+                                {{ form.nota_aprobacion.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div><br>
+                <button type="button" name="aprobar" class="btn btn-primary fontII" data-bs-toggle="modal" data-bs-target="#approveModal">Confirmar Repositorio</button>
+                <a class="btn btn-danger fontII" href="{% url 'listarepositorios' %}">Cancelar</a>
+            </div>
+        </form>
+        </div>
+        <br />
+      </div>
+    </div>
+</div><br>
+
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-mdal">
+      <div class="modal-header">
+        <h5 class="modal-title font" id="approveModalLabel">Confirmar Habilitación de Repositorio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center font">
+          <img src="{% static 'img/siguiente.png' %}" class="img-close" alt="" /><br>
+          ¿Estás seguro que quiere habilitar repositorio para este usuario?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark fontII" onclick="submitForm('aprobar')">Sí, habilitar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function submitForm(action) {
+    const form = document.getElementById('approvalForm');
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = action;
+    form.appendChild(hiddenInput);
+    form.submit();
+  }
+</script>
+{% endblock %}

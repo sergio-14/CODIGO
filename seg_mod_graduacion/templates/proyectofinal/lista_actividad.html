@@ -1,0 +1,209 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+{% load static %}
+<div class="container">
+  <h1 class="text-center titlesuperior colortitle py-5 py-lg-2 fontI">VISTA Y ESTADO  DEL PROYECTO FINAL</h1>
+  {% if actividades %}
+    {% for actividad in actividades %}
+    <div class="card narrow-card no-gutters">
+      <div class="row  ">
+        <div class="col-md-3 col-lg-3 centered-img">
+          <img id="profileImage" src="" alt="Imagen de perfil" class="card-img imgperfil p-2">
+        </div>
+      
+        <script>
+          // Crear una lista solo con los datos que existen
+          const images = [];
+      
+          // Agregar solo las imágenes y nombres que existen
+          if ("{{ actividad.estudiante.imagen|default_if_none:'' }}" && "{{ actividad.estudiante.nombre }}") {
+              images.push({ src: "{{ actividad.estudiante.imagen.url }}", name: "{{ actividad.estudiante.apellido }} {{ actividad.estudiante.apellidoM }} {{ actividad.estudiante.nombre }}" });
+          }
+          if ("{{ actividad.estudiante_uno.imagen|default_if_none:'' }}" && "{{ actividad.estudiante_uno.nombre }}") {
+              images.push({ src: "{{ actividad.estudiante_uno.imagen.url }}", name: "{{ actividad.estudiante_uno.apellido }} {{ actividad.estudiante_uno.apellidoM }} {{ actividad.estudiante_uno.nombre }}" });
+          }
+          let currentIndex = 0;
+      
+          function rotateProfile() {
+              const profileImage = document.getElementById('profileImage');
+              const profileName = document.getElementById('profileName');
+      
+              // Cambiar imagen y nombre solo si hay imágenes
+              if (images.length > 0) {
+                  profileImage.src = images[currentIndex].src;
+                  profileName.textContent = images[currentIndex].name;
+              }
+          }
+      
+          // Mostrar imagen anterior
+          function showPrevImage() {
+              currentIndex = (currentIndex - 1 + images.length) % images.length;
+              rotateProfile();
+          }
+      
+          // Mostrar siguiente imagen
+          function showNextImage() {
+              currentIndex = (currentIndex + 1) % images.length;
+              rotateProfile();
+          }
+      
+          // Ejecutar rotación automática cada 3 segundos solo si hay imágenes
+          if (images.length > 0) {
+              setInterval(showNextImage, 3000); // Rotación automática
+              rotateProfile(); // Mostrar el primer perfil al cargar la página
+          }
+        </script>
+      
+        
+        <!-- Contenido en el otro lado -->
+        <div class="col-md-7 col-lg-8 pb-5">
+          <div class="card-body">
+            <!-- Texto con formato pre -->
+            <pre class="fecha fontI colorestados">Estudiante: <span id="profileName" class="estado colortext">{{ actividad.estudiante.apellido }} {{ actividad.estudiante.apellidoM }} {{ actividad.estudiante.nombre }}</span>       Fecha: <span class="colortext">{{ actividad.fecha|date:"d/m/Y" }}</span></pre>
+            <!-- Título -->
+            <h5 class="title fontI text-center colortitle pb-2">{{ actividad.titulo }}</h5>
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    {% if actividad.tutor.imagen %}
+                      <img src="{{ actividad.tutor.imagen.url }}" class="rounded-img" alt="Foto del tutor">
+                    {% else %}
+                      <img src="{% static 'img/SINFOTO.webp' %}" class="rounded-img" alt="Sin foto">
+                    {% endif %}
+                    <p class="fontI fechas colorestados pt-1">Tutor Asignado:<br>
+                      <span class="colortext">{{ actividad.tutor.apellido }} {{ actividad.tutor.apellidoM }}<br>{{ actividad.tutor.nombre }}</p></span>
+                </div>
+                <div class="col-6 col-md-3">
+                    {% if actividad.jurado_1.imagen %}
+                      <img src="{{ actividad.jurado_1.imagen.url }}" class="rounded-img" alt="Foto del jurado 1">
+                    {% else %}
+                      <img src="{% static 'img/SINFOTO.webp' %}" class="rounded-img" alt="Sin foto">
+                    {% endif %}
+                    <p class="fontI fechas colorestados pt-1">Tribunal Calificador:
+                      <br> <span class="colortext">{{ actividad.jurado_1.apellido }} {{ actividad.jurado_1.apellidoM }}<br>{{ actividad.jurado_1.nombre }}</span></p>
+                    <div class="form-check fontI fechas colortext">
+                    <input class="form-check-input " type="checkbox" id="jurado_1_aprobado" name="jurado_1_aprobado" {% if actividad.jurado_1_aprobado %}checked{% endif %} disabled>
+                      <label class="form-check-label" for="jurado_1_aprobado">
+                          {% if actividad.jurado_1_aprobado %}
+                              Revision Aprobado
+                          {% else %}
+                              Revision Pendiente
+                          {% endif %}
+                      </label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    {% if actividad.jurado_2.imagen %}
+                      <img src="{{ actividad.jurado_2.imagen.url }}" class="rounded-img" alt="Foto del jurado 2">
+                    {% else %}
+                      <img src="{% static 'img/SINFOTO.webp' %}" class="rounded-img" alt="Sin foto">
+                    {% endif %}
+                    <p class="fontI fechas colorestados pt-1">Tribunal Calificador:
+                      <br><span class="colortext">{{ actividad.jurado_2.apellido }} {{ actividad.jurado_2.apellidoM }}<br>{{ actividad.jurado_2.nombre }}</span></p>
+                    <div class="form-check fontI fechas colortext">
+                      <input class="form-check-input" type="checkbox" id="jurado_2_aprobado" name="jurado_2_aprobado" {% if actividad.jurado_2_aprobado %}checked{% endif %} disabled>
+                      <label class="form-check-label" for="jurado_2_aprobado">
+                          {% if actividad.jurado_2_aprobado %}
+                             Revision Aprobado
+                          {% else %}
+                             Revision Pendiente
+                          {% endif %}
+                      </label>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    {% if actividad.jurado_3.imagen %}
+                      <img src="{{ actividad.jurado_3.imagen.url }}" class="rounded-img" alt="Foto del jurado 3">
+                    {% else %}
+                      <img src="{% static 'img/SINFOTO.webp' %}" class="rounded-img" alt="Sin foto">
+                    {% endif %}
+                    <p class="fontI fechas colorestados pt-1">Tribunal Calificador: 
+                      <br><span class="colortext">{{ actividad.jurado_3.apellido }} {{ actividad.jurado_3.apellidoM }}<br>{{ actividad.jurado_3.nombre }}</span></p>
+                    <div class="form-check fontI fechas colortext">
+                      <input class="form-check-input" type="checkbox" id="jurado_3_aprobado" name="jurado_3_aprobado" {% if actividad.jurado_3_aprobado %}checked{% endif %} disabled>
+                      <label id="aaa" class="form-check-label" for="jurado_3_aprobado">
+                          {% if actividad.jurado_3_aprobado %}
+                             Revision Aprobado
+                          {% else %}
+                             Revision Pendiente
+                          {% endif %}
+                      </label>
+                  </div>
+                </div>
+                
+            </div>
+            <!-- Descripción -->
+            <p class="text colortext fontI ">Descripción:<br>{{ actividad.resumen }}</p>
+            <div class="text-center ">
+              <div class="row">
+                <div class="col-md-5 col-12 d-flex align-items-center FontI">
+                  <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Espacio para que el postulante agregue datos del proyecto" href="{% url 'crear_actividad' %}" class="btn btn-sm  text contdoc fontI py-2 px-5 mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                  </svg> Editar Proyecto</a>
+                </div>
+                <div class="col-md-4 col-5 contdoc m-2">
+                  <div class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mt-1 bi bi-file-earmark-richtext-fill" viewBox="0 0 16 16">
+                      <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M7 6.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m-.861 1.542 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V9.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V9s1.54-1.274 1.639-1.208M5 11h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1"/>
+                    </svg>
+                    {% if actividad.documentacion %}
+                    <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Documento que sera evaluado por sus Tribunales y administrador" href="{{ actividad.documentacion.url }}" class="mt-1 list-group-item list-group-item-action">Documento a Evaluar</a>
+                  {% else %}
+                    <span class="list-group-item list-group-item-action disabled">No hay documento</span>
+                  {% endif %}
+                  </div>
+                </div>
+                <div class="col-12 col-md-2 me-1 mt-2">
+                  <h5 class="estado colorestados fontI">Revisión: <span class="colortext">{{ actividad.estado }}</span></h5>
+                </div>
+
+              </div> 
+            </div>
+             <!-- Comentarios -->
+             
+              <!--comentarios-->
+              <h5 class="text fontI colortitle text-center pt-3">Comentarios </h5>
+              <div class="contenedorcomentarios p-1 pb-4">
+              {% for comentario in actividad.comentarios.all %}
+              <h6 class="text-end fontI  colorestados fechas">
+                {{ comentario.actfecha_post|date:"d/m/Y H:i:s " }} Revisado por el Docente:  <span class="colortext fontI fecha">{{ comentario.user.docente.titulo }} {{ comentario.user.apellido }} {{ comentario.user.apellidoM }} {{ comentario.user.nombre }}<span>
+              </h6>
+              <p class="comentario fontI colortext">{{ comentario.actcomentario }}</p>
+              {% if comentario.actdocorregido %}
+                <a href="{{ comentario.actdocorregido.url }}" target="_blank" class="text-decoration-none text-end fontI align-items-end colortext fechas contdoc p-2 ">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-check" viewBox="0 0 16 16">
+                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z"/>
+                    <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/>
+                  </svg> Documento Corregido 
+                </a>
+                {% else %}
+                <p class="fontI  colortext fechas">Documento Adecuado <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+                  <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                </svg></p>
+              {% endif %}
+              {% empty %}
+              <p class="comentario fontI colortext">No hay comentarios para este proyecto.</p>
+              {% endfor %}
+              </div>
+           
+        </div>
+      </div>
+    </div>
+    <br>
+    {% endfor %}
+  </div><br>
+  {% else %}
+  <p class="text fontI colorestados text-center pt-3"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-info-square-fill" viewBox="0 0 16 16">
+    <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.93 4.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+  </svg> No hay proyecto habilitado y asociados a este usuario consulte al adm de modalidad de graduación </p>
+  {% endif %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    });
+  </script>
+{% endblock %}

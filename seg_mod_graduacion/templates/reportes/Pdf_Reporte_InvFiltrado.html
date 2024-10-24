@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte Investigaciones Científicas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+        }
+        .title {
+            margin: 2px;
+            margin-bottom: 10px;
+        }
+        .descrip{
+            width: 400px;
+        }
+        table {
+            width: 100%;
+            text-align: center;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 3px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .des {
+            width: 200px;
+        }
+        .textfirma {
+            text-align: center;
+        }
+        .text {
+            text-align: center;
+            font-size: 25px;
+        }
+        .text1 {
+            text-align: center;
+            font-size: 18px;
+        }
+        .firma {
+            width: 100px; /* Ajusta el tamaño de la firma */
+            height: auto;
+
+        }
+        .titulo{
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 1px;
+        }
+        .subtitulo{
+            font-size: 14px;
+            margin: 2px;
+            margin-bottom: 1px;
+        }
+        .log {
+            font-size: 20px;
+            width: 100px;
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th class="log">
+                    UAB
+                </th>
+                <th class="">
+                    <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
+                    <p class="subtitulo">REPORTE DE ALCANZE INVESTIGACIÓN CIENTIFICA</p>
+                </th>
+                <th class="log">JE-CIS
+                   
+                </th>
+                
+            </tr>
+            
+            
+        </thead>
+    </table>
+    {% for actividad in cientifica %}
+    <table>
+        <hr ></hr>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Estudiante</th>
+                <th>Título</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ actividad.invfecha_creacion|date:"d/m/Y" }}</td>
+                <td id="descrip">
+                    <ul class="pl">{{ actividad.user.apellido }} {{ actividad.user.apellidoM }} {{ actividad.user.nombre }}</ul>
+                    <ul id="estudianteUno">
+                        {% if actividad.user_uno %}
+                        {{ actividad.user_uno.apellido }} {{ actividad.user_uno.apellidoM }} {{ actividad.user_uno.nombre }}
+                        {% endif %}
+                    </ul>
+                    <!-- Datos del tercer estudiante (estudiante_dos) -->
+                    <ul id="estudianteDos">
+                        {% if actividad.user_dos %}
+                        {{ actividad.user_dos.apellido }} {{ actividad.user_dos.apellidoM }} {{ actividad.user_dos.nombre }}
+                        {% endif %}
+                    </ul>
+                </td>   
+                <td class="des">{{ actividad.invtitulo }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>El Documento Fue</th>
+                <th>Revisión</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="descrip">{{ actividad.invdescripcion }}</td>
+                <td>{{ actividad.investado }}</td>
+                <td class="des">
+                    {% for comentario in actividad.comentarios %}
+                    {{ comentario.user.apellido }} {{ comentario.user.apellidoM }} {{ comentario.user.nombre }}<br>
+                        {{ comentario.invcomentario }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    {% endfor %}
+
+    {% if cientifica|length > 0 %}
+        {% with comentario=cientifica.0.comentarios.0 %}
+            <ul>
+                <br><br><br><br>
+                <span class="textfirma">{{ comentario.user.docente.titulo }} {{ comentario.user.apellido }} {{ comentario.user.apellidoM }} {{ comentario.user.nombre }} <br>
+                Docente de Modalidad Graduación</span>
+            </ul>
+        {% endwith %}
+    {% endif %}
+    
+</body>
+</html>

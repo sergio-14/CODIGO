@@ -1,0 +1,55 @@
+{% extends 'Dashboard.html' %} 
+{% block content %}
+<div class="container  p-1 font p-lg-5 no-gutters">
+    <div class=" no-guttee">
+        <h2 class="text-center p-2 titulosgeneral">PLANILLA DE TRABAJOS SUBIDOS A PLATAFORMA I.I.I.S.P</h2>
+        <form method="get" action="{% url 'clasificar_proyectos' %}" class="mb-4 px-lg-5 px-3 card-text">
+            <div class="row">
+                <div class="col-9">
+                    <label class="pb-2 card-name" for="gestion">Ingresa el Periodo y Gestión:</label> 
+                    <input type="text" name="gestion" id="gestion" class="form-control card-text card-ct" placeholder="Ejemplo: '1/año' o 2/año">
+                </div>
+                <div class="col-3 pt-4">
+                    <button type="submit" class="btn btn-primary mt-2">Mostrar Datos</button>
+                </div>
+            </div>
+        </form><br>
+
+        <div class="row px-lg-5 px-3">
+            <div class="col-md-6 pb-4">
+                <h6 class="card-name">Materias que Subieron Proyecto</h6>
+                <ul class="list-group card-ct pb-4">
+                    {% for item in materias_con_proyectos %}
+                        <li class="list-group-item card-texto">
+                            {{ item.materia.nombre_materia }} <br>
+                            Docente: {{ item.persona.docente.titulo }} {{ item.persona.nombre }} {{ item.persona.apellido }} {{ item.persona.apellidoM }} <br>
+                            
+                            <input type="checkbox" checked disabled class="ml-2">
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-6 pb-4">
+                <h6 class="card-name">Materias que no Subieron Proyecto</h6>
+                <ul class="list-group card-ct pb-4">
+                    {% for materia in materias_sin_proyectos %}
+                        <li class="list-group-item card-texto">
+                            {{ materia.nombre_materia }}
+                            {% comment %} {% if materia.docente %}
+                                Docente: {{ materia.docente.titulo }} {{ materia.docente.nombre }} {{ materia.docente.apellido }} {{ materia.docente.apellidoM }} <br>
+                            {% else %}
+                                Docente no asignado <br>
+                            {% endif %} {% endcomment %}
+                            <input type="checkbox" disabled class="ml-2">
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+</div><br>
+{% endblock %}
+
+
+

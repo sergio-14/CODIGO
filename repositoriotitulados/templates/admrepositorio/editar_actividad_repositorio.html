@@ -1,0 +1,78 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="p-lg-5 p-3 no-gutters">
+  <div class="container no-gutte p-lg-4 fontI p-3 ">
+    <h3 class="colortext pt-2">Editar Datos y Registro Nuevo Repositorio <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-hdd-rack" viewBox="0 0 16 16">
+      <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1M3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m2 7a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-2.5.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+      <path d="M2 2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1v2H2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1V7h1a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm13 2v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m0 7v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m-3-4v2H4V7z"/>
+    </svg></h3>
+    <div class="row">
+      <div class="col-lg-7 col-12 px-4 card-text">
+        <p class="colortext text pt-4 "><span class="colorestados">Fecha: </span>{{ actividad.fecha|date:"d/m/Y" }}</p>
+        <p class="colortext textrepo text-center "><span class="colorestados">Título: </span>{{ actividad.titulo }}</p>
+        <p  class="textrepo colortext"><span class="colorestados">Estudiante:</span></p>
+        <li class="px-3">{{ actividad.estudiante }}</li>
+        <li id="id_estudiante_uno" class="px-3">{{ actividad.estudiante_uno }}</li>
+        <li id="id_estudiante_dos" class="px-3">{{ actividad.estudiante_dos }}</li>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+              // Seleccionamos los elementos por sus IDs
+              var estudianteUno = document.getElementById('id_estudiante_uno');
+              var estudianteDos = document.getElementById('id_estudiante_dos');
+      
+              // Comprobamos si el contenido de estudiante es 'None' o está vacío
+              if (estudianteUno && (estudianteUno.textContent.trim() === '' || estudianteUno.textContent.trim() === 'None')) {
+                  estudianteUno.style.display = 'none';  // Ocultamos el li de estudiante_uno
+              }
+      
+              if (estudianteDos && (estudianteDos.textContent.trim() === '' || estudianteDos.textContent.trim() === 'None')) {
+                  estudianteDos.style.display = 'none';  // Ocultamos el li de estudiante_dos
+              }
+          });
+        </script>
+      
+        <p  class="textrepo colortext pt-1"><span class="colorestados">Tutor:</span> {{ actividad.tutor }}</p>
+        <p  class="textrepo colortext pt-1"><span class="colorestados">Tutor Externo:</span> {{ actividad.guia_externo }}</p>
+        <p  class="textrepo colortext pt-1"><span class="colorestados">Documentación:</span> {{ actividad.estado }}</p>
+        <p  class="textrepo colortext"><span class="colorestados">Tribunales:</span></p>
+        <li class="px-3">1er. {{ actividad.jurado_1 }}</li>
+        <li class="px-3">2do. {{ actividad.jurado_2 }}</li>
+        <li class="px-3">3er. {{ actividad.jurado_3 }}</li>
+      </div>
+      <div class="col-lg-5 col-12 colorestados text pb-5 ">
+        <form method="post">
+          {% csrf_token %}
+          {% comment %} <div class="form-group">
+            <label class="fontII" for="id_periodo">Periodo y Géstion</label>
+            <select name="periodo" id="id_periodo" class="form-control">
+                <!-- Opciones de periodo, recorriendo la lista 'ultimos_periodos' pasada desde la vista -->
+                {% for periodo in ultimos_periodos %}
+                    <option value="{{ periodo.id }}">{{ periodo }}</option>
+                {% endfor %}
+            </select>
+          </div> {% endcomment %}
+    
+          <!-- Renderizar el resto del formulario excluyendo el campo 'periodo' -->
+          {{ form.non_field_errors }}
+          <div class="form-group" style="display:none;">
+            {{ form.modalidad|as_crispy_field }}
+          </div>
+        
+          <div class="form-group" id="documentacion-group" >
+            {{ form.documentacion|as_crispy_field }}
+          </div>
+          {{ form.numero_acta|as_crispy_field }}
+          {{ form.nota_aprobacion|as_crispy_field }}
+    
+          
+          <button class="btn btn-primary fontII" type="submit">Guardar Datos</button>
+          <a class="btn btn-danger fontII" href="{% url 'listarepositorios' %}">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div><br>
+
+{% endblock %}

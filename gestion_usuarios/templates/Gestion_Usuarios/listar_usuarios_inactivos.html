@@ -1,0 +1,71 @@
+{% extends "dashboard.html" %}
+{% load static %}
+{% block content %}
+<head>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+
+<div class="container no-gutters p-lg-4 p-2">
+    <div class="p-lg-3 p-0 no-gutte">
+        <h2 class="titlegeneral colortext pb-3">Actualizar Datos del Usuario</h2>
+        
+        <a href="{% url 'listar_usuarios' %}" class="btn btn-outline-primary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5"/>
+            </svg> Volver a Usuarios Activos
+        </a>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Nombre Completo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in page_obj %}
+                <tr>
+                    <td data-label="EMAIL">{{ usuario.email }}</td>
+                    <td data-label="NOMBRE">{{ usuario.apellido }} {{ usuario.apellidoM }} {{ usuario.nombre }} </td>
+                    <td data-label="ACCIONES">
+                        <a class="btn btn-outline-success" href="javascript:void(0);" onclick="confirmReactivar('{{ usuario.pk }}')">
+                            Reactivar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No hay usuarios inactivos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <div class="pagination">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <a class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                    </li>
+                    
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/confirmations.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,285 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Crear Form{% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="container no-gutters p-lg-5 p-3 font ">
+  <div class="no-gutte container p-lg-5 p-0">
+    <h1 class="text-center pb-2 colortitle titlesuperior">REGISTRADO DE ACTA DEFENSA PUBLICA</h1>
+    
+    <article class="pb-2 colortext" >
+      <form id="pot" method="post" enctype="multipart/form-data" onsubmit="showConfirmationModal(event)">
+        {% csrf_token %}
+        <div class="fechas fontI">
+            <div class="row mb-3">
+              <div class="col-md-8 pt-1">
+                {{ form.estudiante.label_tag }}<br>{{ form.estudiante }}
+                {% if form.estudiante.errors %}
+                  <div class="text-danger">{{ form.estudiante.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.carrera.label_tag }}<br>{{ form.carrera }}
+                {% if form.carrera.errors %}
+                  <div class="text-danger">{{ form.carrera.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.lugar.label_tag }}<br>{{ form.lugar }}
+                {% if form.lugar.errors %}
+                  <div class="text-danger">{{ form.lugar.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 col-6 pt-1">
+                {{ form.acta.label_tag }}<br>{{ form.acta }}
+                {% if form.acta.errors %}
+                  <div class="text-danger">{{ form.acta.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.perperiodo.label_tag }}<br>
+                <select name="perperiodo" class="form-control">
+                    {% for periodo in ultimos_periodos %}
+                        <option value="{{ periodo.id }}">{{ periodo }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.perperiodo.errors %}
+                    <div class="text-danger">{{ form.perperiodo.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 pt-1">
+                {{ form.estudiante_uno.label_tag }}<br>{{ form.estudiante_uno }}
+                {% if form.estudiante_uno.errors %}
+                  <div class="text-danger">{{ form.estudiante_uno.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.tutor.label_tag }}<br>{{ form.tutor }}
+                {% if form.tutor.errors %}
+                  <div class="text-danger">{{ form.tutor.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.presidenteacta.label_tag }}<br>{{ form.presidenteacta }}
+                {% if form.presidenteacta.errors %}
+                  <div class="text-danger">{{ form.presidenteacta.errors }}</div>
+                {% endif %}
+              </div>
+              
+            </div>
+            <div class="col-md-12 pt-1">
+              {{ form.titulo.label_tag }}<br>{{ form.titulo }}
+              {% if form.titulo.errors %}
+                <div class="text-danger">{{ form.titulo.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="row mb-3 pt-2">
+              <div class="col-md-4 pt-1">
+                {{ form.fechadefensa.label_tag }}<br>{{ form.fechadefensa }}
+                {% if form.fechadefensa.errors %}
+                  <div class="text-danger">{{ form.fechadefensa.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.horainicio.label_tag }}<br>{{ form.horainicio }}
+                {% if form.horainicio.errors %}
+                  <div class="text-danger">{{ form.horainicio.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.horafin.label_tag }}<br>{{ form.horafin }}
+                {% if form.horafin.errors %}
+                  <div class="text-danger">{{ form.horafin.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 pt-1">
+                {{ form.jurado_1.label_tag }}<br>{{ form.jurado_1 }}
+                {% if form.jurado_1.errors %}
+                  <div class="text-danger">{{ form.jurado_1.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.jurado_2.label_tag }}<br>{{ form.jurado_2 }}
+                {% if form.jurado_2.errors %}
+                  <div class="text-danger">{{ form.jurado_2.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.jurado_3.label_tag }}<br>{{ form.jurado_3 }}
+                {% if form.jurado_3.errors %}
+                  <div class="text-danger">{{ form.jurado_3.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6 pt-1">
+                {{ form.modalidad.label_tag }}<br>{{ form.modalidad }}
+                {% if form.modalidad.errors %}
+                  <div class="text-danger">{{ form.modalidad.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-2 col-4 pt-1">
+                {{ form.calificacion1.label_tag }}<br>
+                <input type="number" id="id_calificacion1" name="calificacion1" value="{{ form.calificacion1.value }}" class="form-control" min="0" max="30" readonly>
+                {% if form.calificacion1.errors %}
+                  <div class="text-danger">{{ form.calificacion1.errors }}</div>
+                {% endif %}
+              </div>
+            
+              <div class="col-md-2 col-4 pt-1">
+                {{ form.calificacion2.label_tag }}<br>
+                <input type="number" id="id_calificacion2" name="calificacion2" value="{{ form.calificacion2.value }}" class="form-control" min="0" max="70">
+                {% if form.calificacion2.errors %}
+                  <div class="text-danger">{{ form.calificacion2.errors }}</div>
+                {% endif %}
+              </div>
+            
+              <div class="col-md-2 col-3 pt-1">
+                {{ form.notatotal.label_tag }}<br>
+                <input type="number" id="id_notatotal" name="notatotal" value="{{ form.notatotal.value }}" class="form-control" min="0" max="100" readonly>
+                {% if form.notatotal.errors %}
+                  <div class="text-danger">{{ form.notatotal.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-3 pt-1">
+                {% comment %} {{ form.resultado.label_tag }}{% endcomment %}
+                <br>{{ form.resultado }} 
+                {% if form.resultado.errors %}
+                  <div class="text-danger">{{ form.resultado.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        <br>
+        <input name="" id="" class="btn btn-dark me-2 fontII" type="submit" value="Enviar Información" {% if form_disabled %}disabled{% endif %}>
+        <a class="btn btn-secondary fontII" href="{% url 'dashboard' %}">Cancelar</a>
+      </form>
+      <br>
+    </article>
+  </div> 
+</div><br>
+
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-mdal">
+      <div class="modal-header">
+        <h5 class="modal-title font" id="confirmationModalLabel"> Confirmacion de Formulario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center font">
+        <img src="{% static 'img/confi.png' %}" class="img-close" alt="" /><br>
+        ¡Formulario Enviado con Exito!
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('id_estudiante').addEventListener('change', function() {
+    let estudianteId = this.value;  // Asume que id_estudiante es el id del campo de selección
+
+    fetch(`/buscar_estudiante_publica?id=${estudianteId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+              document.getElementById('id_estudiante_uno').value = data.estudiante_uno !== null ? data.estudiante_uno : '';
+              document.getElementById('id_titulo').value = data.titulo !== null ? data.titulo : '';
+              document.getElementById('id_lugar').value = data.lugar !== null ? data.lugar : '';
+              document.getElementById('id_tutor').value = data.tutor !== null ? data.tutor : '';
+              document.getElementById('id_jurado_1').value = data.jurado_1 !== null ? data.jurado_1 : '';
+              document.getElementById('id_jurado_2').value = data.jurado_2 !== null ? data.jurado_2 : '';
+              document.getElementById('id_jurado_3').value = data.jurado_3 !== null ? data.jurado_3 : '';
+              document.getElementById('id_modalidad').value = data.modalidad !== null ? data.modalidad : '';
+              document.getElementById('id_calificacion1').value = data.calificacion1 || '';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  function updateNotaTotal() {
+      var calificacion1 = parseFloat(document.getElementById('id_calificacion1').value) || 0;
+      var calificacion2 = parseFloat(document.getElementById('id_calificacion2').value) || 0;
+      var notatotal = calificacion1 + calificacion2;
+      document.getElementById('id_notatotal').value = notatotal;
+  }
+
+  document.getElementById('id_calificacion1').addEventListener('input', updateNotaTotal);
+  document.getElementById('id_calificacion2').addEventListener('input', updateNotaTotal);
+});
+
+
+  function showConfirmationModal(event) {
+    event.preventDefault(); 
+    $('#confirmationModal').modal('show'); 
+    
+    setTimeout(function() {
+      $('#confirmationModal').modal('hide'); 
+      document.getElementById("pot").submit(); 
+    }, 2000);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const estudianteSelects = [
+      document.getElementById('id_estudiante'),
+      document.getElementById('id_estudiante_uno'),
+    ];
+    
+    const juradoSelects = [
+      document.getElementById('id_tutor'),
+      document.getElementById('id_jurado_1'),
+      document.getElementById('id_jurado_2'),
+      document.getElementById('id_jurado_3')
+    ];
+  
+    // Actualiza las opciones disponibles para los estudiantes
+    function updateEstudianteOptions() {
+      const selectedValues = estudianteSelects.map(select => select.value);
+      estudianteSelects.forEach(select => {
+        Array.from(select.options).forEach(option => {
+          option.hidden = selectedValues.includes(option.value) && option.value !== select.value;
+        });
+      });
+    }
+  
+    // Actualiza las opciones disponibles para los jurados
+    function updateJuradoOptions() {
+      const selectedValues = juradoSelects.map(select => select.value);
+      juradoSelects.forEach(select => {
+        Array.from(select.options).forEach(option => {
+          option.hidden = selectedValues.includes(option.value) && option.value !== select.value;
+        });
+      });
+    }
+  
+    // Agregar evento change para cada select de estudiantes
+    estudianteSelects.forEach(select => {
+      select.addEventListener('change', updateEstudianteOptions);
+    });
+  
+    // Agregar evento change para cada select de jurados
+    juradoSelects.forEach(select => {
+      select.addEventListener('change', updateJuradoOptions);
+    });
+  
+    // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
+    updateEstudianteOptions();
+    updateJuradoOptions();
+  });
+</script>
+{% endblock %}
+
+
+
+

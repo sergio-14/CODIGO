@@ -1,0 +1,151 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<article > 
+  <h1 class="text-center colortitle fontI titlesuperior">REVISIÓN DE FORMULARIOS DE INVESTIGACIÓN CIENTÍFICA </h1><br>
+  
+  <div class="container ">
+    {% if proyectos.items %}
+    {% for proyecto, formulario in proyectos.items %}
+    <div class="mb-2 mx-auto no-gutte px-lg-5" style="max-width: 940px;">
+      <div class="row g-0 ">
+        <div class="col-md-4 m-2">
+          <img id="profileImage" 
+               src="{% if proyecto.user.imagen %}{{ proyecto.user.imagen.url }}{% else %}{% static 'img/SINFOTO.webp' %}{% endif %}" 
+               class="p-2 mt-4 no-gutters img-fluid rounded-left and rounded-right to rounded-start and rounded-end" 
+               style="height: 300px;" alt="Imagen de perfil" />
+        </div>
+      
+      
+      <!-- Botones para cambiar de imagen -->
+     
+        <div class="col-md-7 px-2">
+          <div class="card-body"><br>
+            <h5 class="title pb-1 fontI colortitle">Título : {{ proyecto.invtitulo }}</h5>
+            <h5 class="fontI colorestados">Estudiante: <span id="profileName" class="fontI colortext">{{ proyecto.user.apellido }} {{ proyecto.user.apellidoM }} {{ proyecto.user.nombre }}</span></h5>
+            <p class="fontI px-1 colortext">Descripción:<br>{{ proyecto.invdescripcion }}</p>
+            <h2 class="no-guttee col-lg-6 py-2 col-7 " data-label="Documento Proyecto"><a href="{{ proyecto.invdocumentacion.url }}" class="list-group-item list-group-item-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16">
+                <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2m0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1M3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>
+              </svg> Ver Documento a Evaluar</a>
+            </h2>
+          </div>
+        </div>
+      </div><br>
+      <p class="px-3 fontI colortext comentario">Comentario Dirigido para el Proyecto</p>
+      <div class="container fontI px-2">
+        <form id="approvalForm" method="POST" action="{% url 'ProyectosParaAprobar' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
+          <textarea class="comentari-field no-guttee" name="invcomentario" required></textarea><br><br>
+          <label for="invdocorregido">Agregar Documentación:</label>
+          <input type="file" name="invdocorregido" id="invdocorregido" class="form-control no-guttee" accept=".pdf,.doc,.docx"><br>
+          <button type="button" name="aprobar" class="btn btn-primary fontII me-2" data-bs-toggle="modal" data-bs-target="#approveModal">Aprobar</button> 
+          <button type="button" name="rechazar" class="btn btn-danger fontII" data-bs-toggle="modal" data-bs-target="#rejectModal">Rechazar</button>
+        </form><br>
+      </div><br>
+    </div><br>
+    <div class="d-flex justify-content-center align-items-center flex-column">
+      <div>
+        {% if paginador.has_previous %}
+        <a class="btn btn-sm btn-dark mx-2" href="?page={{ paginador.previous_page_number }}">Anterior</a>
+        {% endif %}
+        <span> Página {{ paginador.number }} de {{ paginador.paginator.num_pages }} </span>
+        {% if paginador.has_next %}          
+        <a class="btn btn-sm btn-dark mx-2" href="?page={{ paginador.next_page_number }}">Siguiente</a>
+        {% endif %}
+      </div>
+    </div>
+    <script>
+      // Crear una lista solo con los datos que existen
+      const images = [];
+  
+      // Agregar solo las imágenes y nombres que existen
+      if ("{{ proyecto.user.imagen|default_if_none:'' }}" && "{{ proyecto.user.nombre }}") {
+          images.push({ src: "{{ proyecto.user.imagen.url }}", name: "{{ proyecto.user.apellido }} {{ proyecto.user.apellidoM }} {{ proyecto.user.nombre }} " });
+      }
+      if ("{{ proyecto.user_uno.imagen|default_if_none:'' }}" && "{{ proyecto.user_uno.nombre }}") {
+          images.push({ src: "{{ proyecto.user_uno.imagen.url }}", name: "{{ proyecto.user_uno.apellido }} {{ proyecto.user_uno.apellidoM }} {{ proyecto.user_uno.nombre }} " });
+      }
+      let currentIndex = 0;
+  
+      function updateProfile() {
+          const profileImage = document.getElementById('profileImage');
+          const profileName = document.getElementById('profileName');
+  
+          // Cambiar imagen y nombre solo si hay imágenes
+          if (images.length > 0) {
+              profileImage.src = images[currentIndex].src;
+              profileName.textContent = images[currentIndex].name;
+          }
+      }
+  
+      function nextProfile() {
+          currentIndex = (currentIndex + 1) % images.length;
+          updateProfile();
+      }
+  
+      // Mostrar el primer perfil al inicio
+      updateProfile();
+  
+      // Cambiar de imagen cada 3 segundos
+      setInterval(nextProfile, 3000);
+  </script>
+    {% endfor %}
+    {% else %}
+    <p class="text-center fontI colorestados">La lista de Formulario de Investigación Científica para aprobar esta vacía</p>
+    {% endif %}<br><br>
+  </div>
+
+</article>
+<!-- Modal de confirmación de aprobación -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-mdal">
+        <div class="modal-header">
+          <h5 class="modal-title font" id="approveModalLabel">Confirmar Aprobación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center font">
+            <img src="{% static 'img/siguiente.png' %}" class="img-close" alt="" /><br>
+            ¿Estás seguro que quiere Aprobar formulario?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary fontII" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-success fontII" onclick="submitForm('aprobar')">Sí, Aprobar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal de confirmación de rechazo -->
+  <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-mdal">
+        <div class="modal-header">
+          <h5 class="modal-title font" id="rejectModalLabel">Confirmar Rechazo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center font">
+            <img src="{% static 'img/rechazado.png' %}" class="img-close" alt="" /><br>
+            ¿Estás seguro que quiere Rechazar formulario?
+        </div>
+        <div class="modal-footer ">
+          <button type="button" class="btn btn-secondary fontII " data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-danger  fontII" onclick="submitForm('rechazar')">Sí, Rechazar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+    function submitForm(action) {
+      const form = document.getElementById('approvalForm');
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = action;
+      form.appendChild(hiddenInput);
+      form.submit();
+    }
+</script>
+{% endblock %}

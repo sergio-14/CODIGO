@@ -1,0 +1,21 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Crear Form{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container p-lg-5 no-gutters p-0">
+  <div class="no-guttee container p-lg-3 p-3">
+    <h1 class="text-center colortitle titlesuperior pb-2">EDITAR FASE O ETAPA </h1>
+    <article class="pb-2 fontI" >
+        <form method="post">
+            {% csrf_token %}
+            {{ formf|crispy }}
+            <input name="" id="" class="btn btn-primary me-2 fontII" type="submit" value="Enviar Informacion"> 
+            <a name="" id="" class="btn btn-danger fontII" href="{% url 'listarf' %}" role="button">Cancelar</a>
+        </form>
+      <br>
+    </article>
+  </div> 
+</div><br>
+
+{% endblock %}

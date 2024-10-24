@@ -1,0 +1,154 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container px-lg-5 fontI colortext">
+  <div class="pb-5 no-gutters p-lg-5 p-2">
+    <div class="no-gutte p-lg-4 p-0">
+      <h1 class="px-lg-5 title px-3 colortext py-5 fontI">
+        Habilitación de Documento Final para el Estudiante
+        <svg xmlns="http://www.w3.org/2000/svg" width="76" height="76" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+          <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+          <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+        </svg>
+      </h1>
+      <div class="card-body font px-lg-5 px-3">
+        <form method="post" id="approvalForm" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="fechas">
+            <div class="row mb-3">
+              <div class="col-md-7 pt-1">
+                {{ form.estudiante.label_tag }} <br>{{ form.estudiante }}
+              </div>
+              <div class="col-md-5 pt-1">
+                {{ form.estudiante_uno.label_tag }} <br>{{ form.estudiante_uno }}
+              </div>
+            </div><br>
+            <div class="row mb-3">
+              <div class="col-md-6 pt-1">
+                {{ form.tutor.label_tag }} <br>{{ form.tutor }}
+              </div>
+              <div class="col-md-6 pt-1">
+                {{ form.modalidad.label_tag }}<br> {{ form.modalidad }}
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 pt-1">
+                {{ form.jurado_1.label_tag }}<br> {{ form.jurado_1 }}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.jurado_2.label_tag }}<br> {{ form.jurado_2 }}
+              </div>
+              <div class="col-md-4 pt-1">
+                {{ form.jurado_3.label_tag }}<br> {{ form.jurado_3 }}
+              </div>
+            </div>
+            <br>
+            <button type="button" class="btn btn-primary fontII" data-bs-toggle="modal" data-bs-target="#approveModal">Confirmar Activación</button>
+            <a class="btn btn-danger fontII" href="{% url 'lista_actividad_control' %}">Cancelar</a>
+          </div>
+        </form>
+        <br>
+      </div>
+    </div>
+  </div>
+</div><br>
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-mdal">
+      <div class="modal-header">
+        <h5 class="modal-title font" id="approveModalLabel">Confirmar Aprobación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center font">
+        <img src="{% static 'img/confi.png' %}" class="img-close" alt="" /><br>
+        ¿Estás seguro que quiere habilitar proyecto final a este usuario?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark fontII" onclick="submitForm('aprobar')">Sí, Aprobar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+  
+<script>
+  document.getElementById('id_estudiante').addEventListener('change', function() {
+    let estudianteId = this.value;  // Asume que id_estudiante es el id del campo de selección
+    fetch(`/buscar_estudiante_paractivar?id=${estudianteId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        document.getElementById('id_estudiante_uno').value = data.estudiante_uno !== null ? data.estudiante_uno : '';
+        document.getElementById('id_tutor').value = data.tutor !== null ? data.tutor : '';
+        document.getElementById('id_jurado_1').value = data.jurado_1 !== null ? data.jurado_1 : '';
+        document.getElementById('id_jurado_2').value = data.jurado_2 !== null ? data.jurado_2 : '';
+        document.getElementById('id_jurado_3').value = data.jurado_3 !== null ? data.jurado_3 : '';
+        document.getElementById('id_modalidad').value = data.modalidad !== null ? data.modalidad : '';
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  });
+  function submitForm(action) {
+    const form = document.getElementById('approvalForm');
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = action;
+    hiddenInput.value = 'true'; // Agrega un valor al input oculto
+    form.appendChild(hiddenInput);
+    form.submit();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const estudianteSelects = [
+      document.getElementById('id_estudiante'),
+      document.getElementById('id_estudiante_uno'),
+    ];
+    
+    const juradoSelects = [
+      document.getElementById('id_tutor'),
+      document.getElementById('id_jurado_1'),
+      document.getElementById('id_jurado_2'),
+      document.getElementById('id_jurado_3')
+    ];
+  
+    // Actualiza las opciones disponibles para los estudiantes
+    function updateEstudianteOptions() {
+      const selectedValues = estudianteSelects.map(select => select.value);
+      estudianteSelects.forEach(select => {
+        Array.from(select.options).forEach(option => {
+          option.hidden = selectedValues.includes(option.value) && option.value !== select.value;
+        });
+      });
+    }
+  
+    // Actualiza las opciones disponibles para los jurados
+    function updateJuradoOptions() {
+      const selectedValues = juradoSelects.map(select => select.value);
+      juradoSelects.forEach(select => {
+        Array.from(select.options).forEach(option => {
+          option.hidden = selectedValues.includes(option.value) && option.value !== select.value;
+        });
+      });
+    }
+  
+    // Agregar evento change para cada select de estudiantes
+    estudianteSelects.forEach(select => {
+      select.addEventListener('change', updateEstudianteOptions);
+    });
+  
+    // Agregar evento change para cada select de jurados
+    juradoSelects.forEach(select => {
+      select.addEventListener('change', updateJuradoOptions);
+    });
+  
+    // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
+    updateEstudianteOptions();
+    updateJuradoOptions();
+  });
+ 
+</script>
+{% endblock %}
+{% endblock %}

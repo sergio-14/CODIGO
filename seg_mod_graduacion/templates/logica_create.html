@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>title hola</title>
+</head>
+<body>
+    <h1>hola mundo</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.habilitar_usuarios_extra }}
+    
+        <!-- Muestra todos los demás campos -->
+        {{ form.user }}<br>
+        {{ form.invtitulo }}<br>
+        {{ form.slug }}<br>
+        {{ form.invdescripcion }}<br>
+        {{ form.invdocumentacion }}<br>
+        {{ form.investado }}<br>
+    
+        <div id="extra-users" style="display: {% if form.habilitar_usuarios_extra.value %}block{% else %}none{% endif %};">
+            {{ form.users }}<br>
+            {{ form.usersdos }}<br>
+        </div>
+    
+        <button type="submit">Guardar</button>
+    </form>
+    
+    <script>
+        // Obtiene el checkbox y el contenedor de usuarios extra
+        const checkbox = document.getElementById('{{ form.habilitar_usuarios_extra.id_for_label }}');
+        const extraUsersDiv = document.getElementById('extra-users');
+    
+        // Función para mostrar/ocultar los campos según el estado del checkbox
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                extraUsersDiv.style.display = 'block'; // Muestra los campos
+            } else {
+                extraUsersDiv.style.display = 'none'; // Oculta los campos
+            }
+        });
+    
+        // Inicializa el estado de visibilidad según el checkbox
+        if (!checkbox.checked) {
+            extraUsersDiv.style.display = 'none'; // Asegúrate de ocultarlo al cargar
+        }
+    </script>
+</body>
+</html>

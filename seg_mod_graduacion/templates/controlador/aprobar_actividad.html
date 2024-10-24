@@ -1,0 +1,32 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+<h1 class="text-center colortitle py-2 titlesuperior">Revisión y Devolución de Documento Apropiado</h1>
+<div class="container ">
+    <div class="card narrow-card">
+        <div class="no-gutters p-lg-4">
+            <div class="container  no-gutte p-lg-4 p-2">
+                <h4 class=" colortext fontI pb-3">Título: {{ actividad.titulo }}</h4>
+            
+                <form method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-check mb-3">
+                    {{ form.aprobar }} <label class="form-check-label fontI colorestados" for="{{ form.aprobar.id_for_label }}">Aprobar Documento para Revisión de Tribunales</label>
+                  </div>
+            
+                  <div class="form-group mt-3 pb-3 fontII text">
+                    <label class="pt-2">Agregar Comentario:</label>
+                    {{ form.actcomentario }}  <!-- Este ahora está en el formulario -->
+                    
+                    <label class="pt-2" for="{{ form.actdocorregido.id_for_label }}">Agregar Documento:</label>
+                    {{ form.actdocorregido }}  <!-- Este ahora también está en el formulario -->
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Respuesta</button>
+                <a class="btn btn-danger" href="{% url 'listaractividades' %}">Cancelar</a>
+                <br><br>
+                </form>
+            </div>
+        </div>
+    </div>
+</div><br><br><br>
+{% endblock %}
+

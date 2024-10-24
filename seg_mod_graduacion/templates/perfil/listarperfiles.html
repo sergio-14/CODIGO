@@ -1,0 +1,295 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block content %}
+<div class="container no-gutters px-lg-5 px-1 ">
+    <h1 class="titlesuperior colortext py-4">Reporte de Perfiles de Proyecto <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
+        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z"/>
+        <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z"/>
+    </svg></h1>
+    <a href="{% url 'home_reporte' %}" class="btn btn-outline-primary mb-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-house-check-fill" viewBox="0 0 16 16">
+            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+            <path d="m8 3.293 4.712 4.712A4.5 4.5 0 0 0 8.758 15H3.5A1.5 1.5 0 0 1 2 13.5V9.293z"/>                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.707l.547.547 1.17-1.951a.5.5 0 1 1 .858.514"/>
+        </svg>
+    </a>
+    <!-- Formulario de búsqueda -->
+    <div class="btn-group dropend pb-1" role="group">
+        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Opcion Filtro
+        </button>
+        <ul class="dropdown-menu">
+            <!-- Enlace al home del reporte -->
+            
+            <!-- Botón para abrir el modal de filtrado por modalidad -->
+            <li>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#filtrarModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg> Buscar por Modalidad
+                </a>
+            </li>
+            <!-- Formulario para generar el reporte general -->
+            <li>
+                <form method="GET" action="{% url 'Pdf_Reporte_Perfiles' %}" target="_blank" class="dropdown-item p-0">
+                    <input type="hidden" name="modalidad" value="{{ modalidad }}">
+                    <button type="submit" class="dropdown-item">
+                        Generar Reporte PDF
+                    </button>
+                </form>
+            </li>
+            <li>
+                <form method="GET" action="{% url 'exportar_excel_perfiles' %}" class="dropdown-item p-0">
+                    <input type="hidden" name="modalidad" value="{{ modalidad }}">
+                    <button type="submit" class="dropdown-item">
+                        Generar Reporte EXCEL
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <div class="btn-group  pb-1" role="group">
+        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Opcion Filtro
+        </button>
+        <ul class="dropdown-menu">
+            <!-- Botón para abrir el modal de búsqueda por nombre -->
+            <li>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg> Buscar por Nombre
+                </a>
+            </li>
+            <!-- Botón para generar el reporte general -->
+            <li>
+                <form method="GET" action="{% url 'Pdf_Reporte_Perfiles' %}" target="_blank">
+                    <input type="hidden" name="q" value="{{ query }}">
+                    <button type="submit" class="dropdown-item">
+                        Generar Reporte PDF
+                    </button>
+                </form>
+            </li>
+            <li>
+                <form method="GET" action="{% url 'exportar_excel_perfiles' %}" class="dropdown-item p-0">
+                    <input type="hidden" name="q" value="{{ query }}">
+                    <button type="submit" class="dropdown-item">
+                        Generar Reporte EXCEL
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <a href="{% url 'actaperfil_list' %}" class="btn btn-outline-primary mb-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-up-right mb-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+            <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+        </svg> Actas
+    </a>
+    <hr>
+    <!-- Mostrar todas las actividades científicas relacionadas -->
+    {% if page_obj.object_list %}
+        {% for actividad in page_obj %}
+            <div class=" no-guttee mb-5 fontI">
+                <div class="row py-5">
+                    <div class="col-md-9 px-5 text-wrap">
+                        <p class="fecha colorestados ">Fecha: {{ actividad.perfecha_creacion|date:"d/m/Y" }}</p>
+                        <p class="title colortitle">Título: {{ actividad.pertitulo }}</p>
+                        <h5 class="text colortext">
+                            <p class="text colorestados">Nombre Egresado:</p>
+                            <p id="nombre1" class="title colortext" style="display: none;">{{ actividad.user_dos }}</p>
+                            <p id="nombre2" class="title colortext" style="display: none;">{{ actividad.user_uno }}</p>
+                            <p id="nombre3" class="title colortext" style="display: block;">{{ actividad.user }}</p>
+                        </h5>
+                        <p class="text colortext ">Modalidad Optada: {{ actividad.permodalidad }}</p>
+                        <p class="text colortext ">Descripción: {{ actividad.perdescripcion }}</p>
+                        <p class="text colorestados ">El Documento Fue: {{ actividad.perestado }} </p>
+                        {% if actividad.perdocumentacion %}
+                            <a href="{{ actividad.perdocumentacion.url }}" target="_blank" class="fontII btn btn-sm btn-outline-primary  ">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-pdf" viewBox="0 0 16 16">
+                                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                                    <path d="M4.603 14.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a11 11 0 0 0 .98 1.686 5.8 5.8 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.86.86 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.7 5.7 0 0 1-.911-.95 11.7 11.7 0 0 0-1.997.406 11.3 11.3 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.8.8 0 0 1-.58.029m1.379-1.901q-.25.115-.459.238c-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361q.016.032.026.044l.035-.012c.137-.056.355-.235.635-.572a8 8 0 0 0 .45-.606m1.64-1.33a13 13 0 0 1 1.01-.193 12 12 0 0 1-.51-.858 21 21 0 0 1-.5 1.05zm2.446.45q.226.245.435.41c.24.19.407.253.498.256a.1.1 0 0 0 .07-.015.3.3 0 0 0 .094-.125.44.44 0 0 0 .059-.2.1.1 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a4 4 0 0 0-.612-.053zM8.078 7.8a7 7 0 0 0 .2-.828q.046-.282.038-.465a.6.6 0 0 0-.032-.198.5.5 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822q.036.167.09.346z"/>
+                                </svg> Documento Del Estudiante
+                            </a>
+                        {% else %}
+                            Sin documentación
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3 pt-4 d-flex flex-column align-items-center">
+                        <div class="image-container">
+                            {% if actividad.user.imagen %}
+                            <!-- Imágenes (se ocultan inicialmente) -->
+                            <img id="imagen1" src="{{ actividad.user_dos.imagen.url }}" class="imgrepo" alt="." style="display: none;">
+                            <img id="imagen2" src="{{ actividad.user_uno.imagen.url }}" class="imgrepo" alt="." style="display: none;">
+                            <img id="imagen3" src="{{ actividad.user.imagen.url }}" class="imgrepo" alt="." style="display: block;"> <!-- Se muestra por defecto -->
+                            {% else %}
+                            <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
+                            {% endif %}
+                        </div>
+                        
+                        <div class="btn-group ">
+                            
+                            <button id="btnAnterior" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                              </svg></button>
+                            <button id="btnSiguiente" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+                              </svg></button>
+                        </div>
+                    
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Array de imágenes y nombres
+                                const imagenes = [];
+                                const nombres = [];
+                                
+                                const imagen1 = document.getElementById('imagen1');
+                                const imagen2 = document.getElementById('imagen2');
+                                const imagen3 = document.getElementById('imagen3');
+                                
+                                const nombre1 = document.getElementById('nombre1');
+                                const nombre2 = document.getElementById('nombre2');
+                                const nombre3 = document.getElementById('nombre3');
+                                
+                                // Solo agregar las imágenes y nombres que existen al array
+                                if (imagen1 && nombre1) {
+                                    imagenes.push(imagen1);
+                                    nombres.push(nombre1);
+                                }
+                                if (imagen2 && nombre2) {
+                                    imagenes.push(imagen2);
+                                    nombres.push(nombre2);
+                                }
+                                if (imagen3 && nombre3) {
+                                    imagenes.push(imagen3);
+                                    nombres.push(nombre3);
+                                }
+                            
+                                let indiceActual = imagenes.length - 1; // Mostrar la última imagen (estudiante) al inicio
+                            
+                                // Función para mostrar la imagen y el nombre actuales
+                                function mostrarActual() {
+                                    imagenes.forEach(function(imagen, index) {
+                                        imagen.style.display = index === indiceActual ? 'block' : 'none';
+                                    });
+                                    
+                                    nombres.forEach(function(nombre, index) {
+                                        nombre.style.display = index === indiceActual ? 'block' : 'none';
+                                    });
+                                }
+                            
+                                // Botones
+                                const btnAnterior = document.getElementById('btnAnterior');
+                                const btnSiguiente = document.getElementById('btnSiguiente');
+                                
+                                // Evento botón "Siguiente"
+                                btnSiguiente.addEventListener('click', function() {
+                                    if (indiceActual < imagenes.length - 1) {
+                                        indiceActual++;
+                                    } else {
+                                        indiceActual = 0; // Volver al inicio si llegamos al final
+                                    }
+                                    mostrarActual();
+                                });
+                            
+                                // Evento botón "Anterior"
+                                btnAnterior.addEventListener('click', function() {
+                                    if (indiceActual > 0) {
+                                        indiceActual--;
+                                    } else {
+                                        indiceActual = imagenes.length - 1; // Volver al final si estamos al principio
+                                    }
+                                    mostrarActual();
+                                });
+                            
+                                // Mostrar la imagen y nombre iniciales
+                                mostrarActual();
+                            });
+                            
+                        </script>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- Paginación -->
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="btn btn-sm btn-dark me-1" href="?page=1{% if query %}&q={{ query }}{% endif %}">Primero</a></li>
+                    <li class="page-item"><a class="btn btn-sm btn-dark" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a></li>
+                {% endif %}
+
+                <li class="page-item active"><a class="btn btn-sm btn-light">{{ page_obj.number }}</a></li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="btn btn-sm btn-dark me-1" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Siguiente</a></li>
+                    <li class="page-item"><a class="btn btn-sm btn-dark" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}">Último</a></li>
+                {% endif %}
+            </ul>
+        </nav><br>
+    {% else %}
+        <p>No se encontraron actividades científicas.</p>
+    {% endif %}
+</div><br>
+
+<div class="modal fade" id="filtrarModal" tabindex="-1" aria-labelledby="filtrarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content colortext fontI">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filtrarModalLabel">Filtrar Perfiles</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="{% static 'img/logofiltros.png' %}" class="img-close" alt="" /><br>
+                UNIVERDIDAD AUTONOMA DEL BENI JOSE BALLIVIAN 
+            </div>
+            <div class="modal-body">
+                <form method="GET" action="{% url 'listarperfiles' %}">
+                    <div class="mb-3">
+                        <label for="modalidad" class="form-label">Modalidad</label>
+                        <select class="form-control" id="modalidad" name="modalidad">
+                            <option value="">Todas las modalidades</option>
+                            {% for mod in modalidades %}
+                                <option value="{{ mod.id }}" {% if modalidad == mod.id %}selected{% endif %}>{{ mod.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-dark">Filtrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content colortext fontI">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Buscar por Nombre del Estudiante</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center ">
+                <img src="{% static 'img/logofiltros.png' %}" class="img-close" alt="" /><br>
+                UNIVERDIDAD AUTONOMA DEL BENI JOSE BALLIVIAN 
+            </div>
+            <div class="modal-body">
+                <!-- Formulario dentro del modal -->
+                <form method="GET" action="">
+                    <div class="">
+                        <div class="col-lg-10 col-8 form-group">
+                            <input type="text" name="q" class="form-control" placeholder="Buscar por nombre del estudiante">
+                        </div>
+                        <div class="col-lg-1 col-3 mt-1">
+                            <button type="submit" class="btn btn-dark px-lg-3">Buscar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

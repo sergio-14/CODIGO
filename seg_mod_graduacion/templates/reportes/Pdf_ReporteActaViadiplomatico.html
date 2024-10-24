@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte Defensa pública</title>
+    <style>
+        
+        .descripcion{
+            text-align: center;
+            font-size: 13px;
+        }
+        .des {
+            width: 200px;
+            background: #d0d4db;
+        }
+        .desletrar {
+            font-size: 10px;
+        }
+        #contfirma {
+            width: 350px;
+            text-align: center;
+            border: 1px solid #ffffff;
+            
+        }
+        .contfirmapresidente {
+            width: 300px;
+            text-align: center;
+            font-weight: bold;
+            
+        }
+        .lugar {
+            width: 260px;
+            
+        }
+        
+        .textfirma {
+            text-align: center;
+        }
+        .text {
+            text-align: center;
+            font-size: 25px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+        }
+        .text1 {
+            
+            font-size: 15px;
+        }
+        .firma {
+            width: 250px; /* Ajusta el tamaño de la firma */
+            height: 50px;
+            margin-top: 10px;
+        }
+        #firm{
+            border: 1px solid #ffffff;
+        }
+        
+    </style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+        }
+    
+        .titulo{
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 1px;
+        }
+        .subtitulo{
+            font-size: 14px;
+            margin: 2px;
+            margin-bottom: 1px;
+        }
+        table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #969696;
+        }
+        th, td {
+            padding: 2px;
+            font-size: 12px;
+        }
+        .descrip{
+            width: 600px;
+            text-align: left;
+        }
+        .descriper{
+            width: 650px;
+            text-align: left;
+        }
+        #descripe{
+            width: 750px;
+            text-align: left;
+        }
+        .pl{
+            text-align: left;
+        }
+        .descripcion{
+            text-align: center;
+            font-size: 18px;
+        }
+        .des {
+            width: auto;
+            background: #f1f1f1;
+            text-align: left;
+        }
+        .col1 {
+            width: 250px;
+            text-align: center;
+            background: #f1f1f1;
+            text-align: center;
+        }
+        .col2 {
+            width: 130px;
+            text-align: center;
+            background: #f1f1f1;
+            text-align: center;
+        }
+        .col3 {
+            width: auto;
+            
+            background: #f1f1f1;
+            text-align: center;
+        }
+        .col4{
+            text-align: center;
+        }
+        .desdes {
+            width: 100px;
+            background: #f1f1f1;
+            text-align: left;
+        }
+        .destext {
+            width: 100%;
+            background: #f1f1f1;
+            text-align: center;
+        }
+        .log {
+            font-size: 20px;
+            width: 100px;
+            border: 1px solid #ffffff;
+        }
+        .contfirma {
+            width: 200px;
+            
+        }
+        .lugar {
+            width: 300px;
+            
+        }
+        .textfirma {
+            text-align: center;
+        }
+        .text {
+            text-align: justify;
+            font-size: 14px;
+            width: 100%; 
+            margin: 0;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+        }
+        .text1 {
+            
+            font-size: 15px;
+        }
+        .firma {
+            width: 100px; /* Ajusta el tamaño de la firma */
+            height: auto;
+        }
+        .espacios {
+            font-size: 20px;
+            width: 40px;
+            border: 1px solid #ffffff;
+            z-index: 1;
+        }
+        .espaciosos {
+            font-size: 24px;
+            width: 38px;
+
+            border: 1px solid #ffffff;
+            z-index: 1;
+        }
+        .acta{
+            text-align: right;
+            padding-right: 38px;
+            font-size: 16px;
+        }
+        .tivia{
+            text-align: center;
+            
+            font-size: 14px;
+        }
+        #tablainicio{
+            border: 1px solid #ffffff;
+        }
+        .bold{
+            font-weight: bold;
+        }
+        .new-page {
+            page-break-before: always; /* Esto hará que el contenido siguiente comience en una nueva página */
+        }
+       
+    </style>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener las celdas de los estudiantes
+            const estudianteUno = document.getElementById('estudianteUno');
+            const estudianteDos = document.getElementById('estudianteDos');
+        
+            // Verificar si el contenido de cada celda está vacío (por si el backend no tiene datos)
+            if (!estudianteUno || !estudianteUno.innerText.trim()) {
+                estudianteUno.style.display = 'none'; // Oculta la celda si no hay datos
+            }
+        
+            if (!estudianteDos || !estudianteDos.innerText.trim()) {
+                estudianteDos.style.display = 'none'; // Oculta la celda si no hay datos
+            }
+        });
+    </script>
+   
+</head>
+<body>
+    <table>
+        <thead >
+            <tr>
+                <th id="tablainicio" class="log">
+                    <img src="{{ logo_url }}" alt="Logo" width="100">
+                    
+                </th>
+                <th id="tablainicio" class="">
+                    <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
+                    <p class="subtitulo">VICERECTORADO DE POSGRADO</p>
+                    <p class="subsubtitulo">Trinidad-Beni-Bolovia</p>
+                    <hr>
+                </th>
+                <th id="tablainicio" class="log">
+                    <img src="{{ logopg_url }}" alt="Logo" width="100">
+                </th>
+                
+            </tr>
+            
+            
+        </thead>
+    </table>
+    <h2 class="tivia">METODOLOGIA DEL PROCESO DE DISERTACIÓN PÚBLICA DEL TRABAJO DE INVESTIGACION PARA LA MODALIDAD DE TITULACIÓN VÍA DIPLOMADO POSGRADO - U.A.B.J.B.</h2><br>
+    <p class="text bold">Mienbros  del Tribunal:</p>
+    <ul>
+        <li class="text">Presidente: <span class="bold">{{ acta.tutor.presidente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}</span </li>
+        <li class="text">Secretario: <span class="bold">{{ acta.tutor.secretario.titulo }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }} {{ acta.secretario.nombre }}</span> </li>
+        <li class="text">1er. Vocal: <span class="bold">{{ acta.vocal_1.docente.titulo }} {{ acta.vocal_1.apellido }} {{ acta.vocal_1.apellidoM }} {{ acta.vocal_1.nombre }}</span> </li>
+        <li class="text">2do. Vocal: <span class="bold">{{ acta.vocal_2.docente.titulo }} {{ acta.vocal_2.apellido }} {{ acta.vocal_2.apellidoM }} {{ acta.vocal_2.nombre }}</span> </li>
+    </ul><br>
+    <p class="text">Fecha de Defensa: <span class="bold">{{ acta.fechadefensa|date:"d/m/Y" }}</span> Horas: <span class="bold">{{ acta.horainicio }}</span> Lugar: <span class="bold">{{ acta.lugar }}</span></p><br>
+    <p class="text">El Aspirante (Nombre Completo): <span class="bold">{{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}</span></span></p><br>
+    <p class="text">Nombre de la Facultad: <span class="bold">{{ acta.carrera.facultad.nombre }}</span></p>
+    <p class="text">Nombre de la Carrera: <span class="bold">{{ acta.carrera }}</span></p><br>
+    <p class="text bold"> Desarrollo del Proceso:</p>
+    <p class="text">Se ponen de pie los mienbros del Tribunal. El Presidente del Tribunal, saluda a los asistentes y al mismo tiempo presenta a los mienbros del Tribunal y al Aspirante</p><br>
+    <p class="text">Acto seguido, el Presidente del Tribunal solicita al Aspirante proceder con la <span class="bold">exposición de su Trabajo de Investigación</span>, efecto para el cuál dispondrá de un tiempo de <span class="bold">20 minutos </span>y un mínimo de <span class="bold">15 minutos</span></p><br>
+    <p class="text">Finalizado el proceso de Exposición y preguntas, el Presidente del Tribunal solicita a los asistentes desocupar la sala para realizar la deliberación correspondiente. Posteriormente convoca al Aspirante y al público asistente a fin de dar a conocer el <span class="bold">Resultado Final de la Evaluación </span>en finción a la tabla de <span class="bold">VALORACIÓN del acta correspondiente.</p><br>
+    <div >
+        <table >
+            <thead>
+                <tr>
+                    <th class="col1">PUNTAJE</th>
+                    <th class="col2">VALORACIÓN</th>
+                    <th class="col3">OBSERVACIONES</th>
+                </tr>
+            </thead>
+            <thead >
+                <tr>
+                    <td class="col4">Menos o igual a 65 puntos</td>
+                    <td class="col4">Insificiente</td>
+                    <td class="">Reprobado, Sujeta a nueva fecha de defensa</td>
+                </tr>
+                <tr>
+                    <td class="col4">De 66 a 70 puntos</td>
+                    <td class="col4">Suficiente</td>
+                    <td class="">Aprobado</td>
+                </tr>
+                <tr>
+                    <td class="col4">De 71 a 80 puntos</td>
+                    <td class="col4">Suficiente</td>
+                    <td class="">Bueno</td>
+                </tr>
+                <tr>
+                    <td class="col4">De 81 a 90 puntos</td>
+                    <td class="col4">Sobresaliente</td>
+                    <td class="">Aporbado, con felicitación</td>
+                </tr>
+                <tr>
+                    <td class="col4">De 91 a 100 puntos</td>
+                    <td class="col4">Excelente</td>
+                    <td class="">Aporbado, con recomendación a Publucación</td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="new-page">
+    </div> 
+
+    <table>
+        <thead >
+            <tr>
+                <th id="tablainicio" class="log">
+                    <img src="{{ logo_url }}" alt="Logo" width="100">
+                    
+                </th>
+                <th id="tablainicio" class="">
+                    <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
+                    <p class="subtitulo">VICERECTORADO DE POSGRADO</p>
+                    <p class="subsubtitulo">Trinidad-Beni-Bolovia</p>
+                    <hr>
+                </th>
+                <th id="tablainicio" class="log">
+                    <img src="{{ logopg_url }}" alt="Logo" width="100">
+                </th>
+                
+            </tr>
+            
+            
+        </thead>
+    </table>
+    <h2 class="tivia">ACTA DE DISERTACIÓN PÚBLICA DEL TRABAJO DE INVESTIGACIÓN PARA LA MODALIDAD DE TITULACIÓN VÍA DIPLOMMADO DEL: Programa de Piplomado en Seguridad Informatica.</h2>
+    <h2 class="acta">Acta de Defensa N° {{ acta.acta }} {{acta.perperiodo.gestion.anio}}</h2>
+    <p class="text">En la Ciudad de <span class="bold">{{ acta.lugar }}</span> el <span class="bold">{{ acta.fechadefensa|date:"d/m/Y" }}</span></p>
+    <p class="text">Se hicieron persentes en (local): Auditorio del Vicerrectorado de Posgrado de la Universidad Autonóma del Beni "José Ballivián"</p><br>
+    <p class="text">El Aspirante (Nombre Completo): <span class="bold">{{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}</span></span></p><br>
+    <p class="text">y el Tribunal de Grado formado por las siguientes personas:</p>
+    <ul>
+        <li class="text">Presidente: <span class="bold">{{ acta.tutor.presidente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}</span </li>
+        <li class="text">Secretario: <span class="bold">{{ acta.tutor.secretario.titulo }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }} {{ acta.secretario.nombre }}</span> </li>
+        <li class="text">1er. Vocal: <span class="bold">{{ acta.vocal_1.docente.titulo }} {{ acta.vocal_1.apellido }} {{ acta.vocal_1.apellidoM }} {{ acta.vocal_1.nombre }}</span> </li>
+        <li class="text">2do. Vocal: <span class="bold">{{ acta.vocal_2.docente.titulo }} {{ acta.vocal_2.apellido }} {{ acta.vocal_2.apellidoM }} {{ acta.vocal_2.nombre }}</span> </li>
+    </ul><br>
+    <p class="text">Título del Trabajo: <span class="bold">{{ acta.titulo }}</span></p><br>
+    <p class="text">El Acta de defensa contó con la debida publicidad, participando .................personas, además de las ya mencionadas, desarrollándose de la siguiente manera: 
+        <ul>
+            <li class="text">Presentacíon del Aspirante.</li>
+            <li class="text">Exposición del Aspirante de los principales aspectos de su Trabajo Cientifico.</li>
+            <li class="text">Respuesta por parte del Aspirante a un total de............... preguntas realizadas por los integrantes del Tribunal y por el público asistente.</li>
+        </ul>
+    </p><br>
+    <p class="text"> En base al análisis de los aspectos más importantes del proceso de Disertación pública presentada, el Tribunal Calificador realizó la siguiente Evaluación:</p>
+
+
+    <div >
+        <table>
+            <thead>
+                <tr>
+                  
+                    <th class="destext">CALIFICACIÓN DEL TRIBUNAL</th>
+                    
+                </tr>
+            </thead>
+        </table>
+        <table >
+            <thead>
+                <tr>
+                    <th class="col1">PRODUCTO A SER EVALUADOS POR LOS TRIBUNALES</th>
+                    <th class="col3">Numeral</th>
+                    <th class="col3">Literal</th>
+                    <th class="col3">RANGO MÁXIMO</th>
+                </tr>
+            </thead>
+            <thead >
+                <tr>
+                    <td class="">a) Presentación del trabajo de investigación hasta</td>
+                    <td class="col4">{{ acta.valor_1 }} </td>
+                    <td class="col4">{{ acta.get_valor_1 }} </td>
+                    <td class="col4">40 puntos </td>
+                </tr>
+                <tr>
+                    <td class="">b) Exposición, orden y dominio del tema hasta</td>
+                    <td class="col4">{{ acta.valor_2 }} </td>
+                    <td class="col4">{{ acta.get_valor_2 }} </td>
+                    <td class="col4">30 puntos </td>
+                </tr>
+                <tr>
+                    <td class="">c) Solvencia y criterio profesional hasta</td>
+                    <td class="col4">{{ acta.valor_3 }} </td>
+                    <td class="col4">{{ acta.get_valor_3 }} </td>
+                    <td class="col4">30 puntos </td>
+                </tr>
+                <tr>
+                    <td class="">d) Nota final de la evaluación</td>
+                    <td class="col4">{{ acta.totalnota }} </td>
+                    <td class="col4">{{ acta.get_totalnota }} </td>
+                    <td class="col4">100 puntos </td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="new-page">
+    </div> 
+    <table>
+        <thead >
+            <tr>
+                <th id="tablainicio" class="log">
+                    <img src="{{ logo_url }}" alt="Logo" width="100">
+                    
+                </th>
+                <th id="tablainicio" class="">
+                    <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
+                    <p class="subtitulo">VICERECTORADO DE POSGRADO</p>
+                    <p class="subsubtitulo">Trinidad-Beni-Bolovia</p>
+                    <hr>
+                </th>
+                <th id="tablainicio" class="log">
+                    <img src="{{ logopg_url }}" alt="Logo" width="100">
+                </th>
+                
+            </tr>
+            
+            
+        </thead>
+    </table><br><br>
+    <p class="text">Lo cual permitió llegar a las siguientes Conclusiones:</p>
+    <p class="text">Trabajo de Investigación y disertación pública "<span class="bold">{{ acta.get_obse }}"</span> y valorada como <span class="bold">"{{ acta.get_valoriz }}"</span> habiendo obtenido 
+    la <span class="bold">calificación total de {{ acta.totalnota }}</span> puntos(Numeral), <span class="bold">{{ acta.get_totalnota }}</span> puntos (Literal).</p><br>
+    <p class="text">En constancia de lo anteriormente expuesto, los miembros  del Tribunal Calificador firman por <span class="bold">duplicado la presente acta del aspirante: 
+        {{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}
+    </span></p><br>
+    <table id="firm">
+        <div class="contfirmapresidente letrafirmas"><br><br><br><br><br><br><br>
+           
+            PRESIDENTE<br>                    
+            {{ acta.presidente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}
+        </div><br>
+        <thead id="firm">
+            <tr id="firm">
+                <th class="espaciosos"></th>
+                <th  id="contfirma"><br><br><br>
+                   
+                    SECRETARIO
+                    <br>
+                    {{ acta.secretario.docente.titulo }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }} {{ acta.secretario.nombre }}
+                </th>
+                <th  id="contfirma"><br><br><br>
+                    
+                    VOCAL
+                    <br>
+                    {{ acta.vocal_1.docente.titulo }} {{ acta.vocal_1.apellido }} {{ acta.vocal_1.apellidoM }} {{ acta.vocal_1.nombre }}
+                </th>
+                <th  id="contfirma"><br><br><br>
+                    
+                    VOCAL
+                    <br>
+                    {{ acta.vocal_2.docente.titulo }} {{ acta.vocal_2.apellido }} {{ acta.vocal_2.apellidoM }} {{ acta.vocal_2.nombre }}
+                </th>
+                
+                
+            </tr>
+        </thead>
+        
+    </table><br><br><br>
+    
+    <p class="text"><span class="bold">Nota:</span> Se adjunta al Acta, los siguientes documentos: Certificado de cumplimiento de la facultad a la que pertenece, Certificado de Cumplimiento de Posgrado, Certificado de calificaciones del diplomado y Certificado de solvencia económica.</p>
+        
+</body>
+
+</html>

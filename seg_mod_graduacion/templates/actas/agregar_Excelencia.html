@@ -1,0 +1,144 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Crear Form{% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="container no-gutters p-lg-5 p-3 font ">
+  <div class="no-gutte container p-lg-5 p-0">
+    <h1 class="text-center pb-2 colortitle titlesuperior">REGISTRADO DE ACTA DEFENSA EXCELENCIA ACADEMICA</h1>
+    
+    <article class="pb-2 colortext" >
+      <form id="pot" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="fechas fontI">
+            <div class="row mb-3">
+                {{ form.non_field_errors }}
+                {{ form.errors }}
+            </div>
+            
+            <div class="row mb-1">
+                <div class="col-md-8">
+                  
+                    {{ form.estudiante|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    
+                    {{ form.carrera|as_crispy_field }}
+                </div>
+            </div>
+    
+            <div class="row mb-1">
+                <div class="col-md-4">
+                  
+                    {{ form.lugar|as_crispy_field }}
+                </div>
+                <div class="col-md-4 ">
+                
+                    {{ form.acta|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.perperiodo.id_for_label }}" class="form-label">Periodo</label>
+                    <select name="perperiodo" class="form-control">
+                        {% for periodo in ultimos_periodos %}
+                            <option value="{{ periodo.id }}">{{ periodo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    {{ form.presidenteacta|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.secretario|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-4">
+                  
+                    {{ form.fechadefensa|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                  
+                    {{ form.horainicio|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    
+                    {{ form.horafin|as_crispy_field }}
+                </div>
+            </div>
+    
+            <div class="row mb-1">
+                <div class="col-md-4">
+                   
+                    {{ form.jurado_1|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                   
+                    {{ form.jurado_2|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.jurado_3|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-4">
+                    
+                    {{ form.modalidad|as_crispy_field }}
+                </div>
+               
+                <div class="col-md-2">
+                  
+                    {{ form.notatotal|as_crispy_field }}
+                </div>
+            </div>
+        <br>
+        <input  class="btn btn-dark me-2 fontII" type="submit" value="Enviar Información">
+        <a class="btn btn-secondary fontII" href="{% url 'dashboard' %}">Cancelar</a>
+      </form>
+      <br>
+    </article>
+  </div> 
+</div><br>
+
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-mdal">
+      <div class="modal-header">
+        <h5 class="modal-title font" id="confirmationModalLabel"> Confirmacion de Formulario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center font">
+        <img src="{% static 'img/confi.png' %}" class="img-close" alt="" /><br>
+        ¡Formulario Enviado con Exito!
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+
+
+
+
+  function showConfirmationModal(event) {
+    event.preventDefault(); 
+    $('#confirmationModal').modal('show'); 
+    
+    setTimeout(function() {
+      $('#confirmationModal').modal('hide'); 
+      document.getElementById("pot").submit(); 
+    }, 2000);
+  }
+
+  
+</script>
+{% endblock %}
+
+

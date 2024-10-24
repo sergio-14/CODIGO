@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte Defensa Privada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+        }
+    
+        .titulo{
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 1px;
+        }
+        .subtitulo{
+            font-size: 14px;
+            margin: 2px;
+            margin-bottom: 1px;
+        }
+        table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #969696;
+        }
+        th, td {
+            padding: 2px;
+            font-size: 12px;
+        }
+        .descrip{
+            width: 600px;
+            text-align: left;
+        }
+        #descripe{
+            width: 750px;
+            text-align: left;
+        }
+        .pl{
+            text-align: left;
+        }
+        .descripcion{
+            text-align: center;
+            font-size: 18px;
+        }
+        .des {
+            width: 150px;
+            background: #f1f1f1;
+            text-align: left;
+        }
+        .destext {
+            width: 100%;
+            background: #f1f1f1;
+            text-align: center;
+        }
+        .log {
+            font-size: 20px;
+            width: 100px;
+            background: #f1f1f1;
+        }
+        .contfirma {
+            width: 200px;
+            
+        }
+        .lugar {
+            width: 300px;
+            
+        }
+        .textfirma {
+            text-align: center;
+        }
+        .text {
+            text-align: center;
+            font-size: 25px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+        }
+        .text1 {
+            
+            font-size: 15px;
+        }
+        .firma {
+            width: 100px; /* Ajusta el tamaño de la firma */
+            height: auto;
+        }
+        .espacios {
+            font-size: 20px;
+            width: 40px;
+            border: 1px solid #ffffff;
+            z-index: 1;
+        }
+        .espaciosos {
+            font-size: 24px;
+            width: 38px;
+
+            border: 1px solid #ffffff;
+            z-index: 1;
+        }
+        .acta{
+            text-align: right;
+            padding-right: 38px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener las celdas de los estudiantes
+            const estudianteUno = document.getElementById('estudianteUno');
+            const estudianteDos = document.getElementById('estudianteDos');
+        
+            // Verificar si el contenido de cada celda está vacío (por si el backend no tiene datos)
+            if (!estudianteUno || !estudianteUno.innerText.trim()) {
+                estudianteUno.style.display = 'none'; // Oculta la celda si no hay datos
+            }
+        
+            if (!estudianteDos || !estudianteDos.innerText.trim()) {
+                estudianteDos.style.display = 'none'; // Oculta la celda si no hay datos
+            }
+        });
+    </script>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th class="log">
+                    UAB
+                </th>
+                <th class="">
+                    <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
+                    <p class="subtitulo">ACTA DE DEFENSA PRIVADA DE PROYECTO </p>
+                    <p class="subsubtitulo">PERÍODO Y GESTIÓN: {{ acta.perperiodo}}</p>
+                </th>
+                <th class="log">JE-CIS
+                    {{ acta.perperiodo.gestion.anio }}
+                </th>
+                
+            </tr>
+            
+            
+        </thead>
+    </table>
+    <h2 class="acta">Acta de Defensa N° {{ acta.acta }}/{{acta.perperiodo.gestion.anio}}</h2>
+    <div >
+        <table>
+            <thead>
+                <tr>
+                    <th class="espaciosos"></th>
+                    <th class="destext">DATOS PERSONALES DEL POSTULANTE</th>
+                    <th class="espaciosos"></th>
+                </tr>
+            </thead>
+        </table>
+        <table >
+            <thead >
+
+                <tr>
+                    <th class="espacios"></th>
+                    <th class="des">Facultad</th>
+                    <th class="descrip">{{ acta.carrera.facultad.nombre }}</th>
+                    <th class="espacios"></th>
+                </tr>
+                <tr>
+                    <th class="espacios"></th>
+                    <th class="des">Carrera</th>
+                    <th class="descrip">{{ acta.carrera }}</th>
+                    <th class="espacios"></th>
+                </tr>
+                <tr>
+                    <th class="espacios"></th>
+                    <th class="des">Modalidad</th>
+                    <th class="descrip">{{ acta.modalidad }}</th>
+                    <th class="espacios"></th>
+                </tr>
+                <tr>
+                    <th class="espacios"></th>
+                    <th class="des">Postulante Nombre Completo</th>
+                    <th id="descripp"> 
+                        <li class="pl">{{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}</li>
+                        <li class="pl" id="estudianteUno">
+                            {% if acta.estudiante_uno %}
+                            {{ acta.estudiante_uno.apellido }} {{ acta.estudiante_uno.apellidoM }} {{ acta.estudiante_uno.nombre }}
+                            {% endif %}
+                        </li>
+                        <!-- Datos del tercer estudiante (estudiante_dos) -->
+                        <li class="pl" id="estudianteDos">
+                            {% if acta.estudiante_dos %}
+                            {{ acta.estudiante_dos.apellido }} {{ acta.estudiante_dos.apellidoM }} {{ acta.estudiante_dos.nombre }}
+                            {% endif %}
+                        </li>
+                    </th>
+                    <th class="espacios"></th>
+                </tr>
+                <tr>
+                    <th class="espacios"></th>
+                    <th class="des">Título</th>
+                    <th class="descrip">{{ acta.titulo }}</th>
+                    <th class="espacios"></th>
+                </tr>
+                <tr>
+                    <th class="espacios"></th>
+                    <th class="des">Tutor del Proyecto</th>
+                    <th class="descrip">{{ acta.tutor.docente.titulo }} {{ acta.tutor.apellido }} {{ acta.tutor.apellidoM }} {{ acta.tutor.nombre }} </th>
+                    <th class="espacios"></th>
+                </tr>
+                
+            </thead>
+    </table>
+    <table> 
+        <thead>
+             <tr>
+                 <th class="espacios"></th>
+                 <th class="des">Lugar y Fecha</th>
+                 <th class="lugar">{{ acta.lugar }}</th>
+                 <th class="lugar">{{ acta.fechadefensa|date:"d/m/Y" }}</th>
+                 <th class="espacios"></th>
+             </tr>
+             <tr>
+                 <th class="espacios"></th>
+                 <th class="des">Hora de Defensa </th>
+                 <th class="lugar">Inicio :{{ acta.horainicio }}</th>
+                 <th class="lugar">Finalización :{{ acta.horafin }}</th>
+                 <th class="espacios"></th>
+             </tr>
+             
+             
+         </thead>
+     </table><br>
+     <table>
+        <thead>
+            <tr>
+                <th class="espaciosos"></th>
+                <th class="destext">TRIBUNAL EVALUADOR</th>
+                <th class="espaciosos"></th>
+            </tr>
+        </thead>
+    </table>
+     <table>
+         <thead>
+             <tr>
+                 <th class="espacios"></th>
+                 <th class="des">1er. Tribunal </th>
+                 <th class="descrip">{{ acta.jurado_1.docente.titulo }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }} {{ acta.jurado_1.nombre }}</th>
+                 <th class="espacios"></th>
+             </tr>
+             <tr>
+                 <th class="espacios"></th>
+                 <th class="des">2do. Tribunal </th>
+                 <th class="descrip">{{ acta.jurado_2.docente.titulo }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }} {{ acta.jurado_2.nombre }} </th>
+                 <th class="espacios"></th>
+             </tr>
+             <tr>
+                 <th class="espacios"></th>
+                 <th class="des">3er. Tribunal </th>
+                 <th class="descrip">{{ acta.jurado_3.docente.titulo }} {{ acta.jurado_3.apellido }} {{ acta.jurado_3.apellidoM }} {{ acta.jurado_3.nombre }} </th>
+                 <th class="espacios"></th>
+             </tr>
+             
+         </thead>
+     </table>
+     <table>
+        <thead>
+            <tr>
+                <th class="espaciosos"></th>
+                <th class="destext">EVALUACIÓN</th>
+                <th class="espaciosos"></th>
+            </tr>
+        </thead>
+    </table>
+     <table>
+        <thead>
+            <tr>
+                <th class="espacios"></th>
+                <th class="descrip">El Proyecto fue Evaluado:</th>
+                <th class="des">{{ acta.get_resultado_display }}</th>
+                <th class="espacios"></th>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th class="espacios"></th>
+                <th class="descrip">Art. 36 R.G.M.G. C.I.S. Del trabajo de graduacion concluido, el Tribunal evaluará
+                    los siguientes aspectos( sobre el 30% de la nota final) 
+                </th>
+                <th class="des">{{ acta.calificacion1 }}</th>
+                <th class="espacios"></th>
+            </tr>
+        </thead>
+        
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th class="espacios"></th>
+                <th id="descripe">
+                    <ul>
+                        <li>
+                            La validez y vigencia del tema, dentro de la modalidad de graduación.
+                        </li>
+                        <li>
+                            La fundamentación, planificación y programación en el desarrollo del tema.
+                        </li>
+                        <li>
+                            La coherencia teórica y su aplicación directa en el diseño
+                        </li>
+                        <li>
+                            El grado de aporte tecnológico, académico, económico, de investigación y/o interacción social.
+                        </li>
+                    </ul>
+                </th>
+                <th class="espacios"></th>
+            </tr>
+        </thead>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th class="espacios"></th>
+                <th class="des">1ra. Observación:</th>
+                <th class="descrip">{{ acta.observacion_1 }}</th>
+                <th class="espacios"></th>
+            </tr>
+            <tr>
+                <th class="espacios"></th>
+                <th class="des">2da. Observación:</th>
+                <th class="descrip">{{ acta.observacion_2 }}</th>
+                <th class="espacios"></th>
+            </tr>
+            <tr>
+                <th class="espacios"></th>
+                <th class="des">3ra: Observación:</th>
+                <th class="descrip">{{ acta.observacion_3 }}</th>
+                <th class="espacios"></th>
+            </tr>
+        </thead>
+        
+    </table>
+    <table>
+        <h2 class="descripcion">CONFORMIDAD</h2>
+        <thead>
+            <tr>
+                <th class="espacios"></th>
+                <th class="contfirma">
+                    <br><br>
+                    <br><br>
+                    Firma:..................................
+                    <br>
+                    DOCENTE 1ER. TRIBUNAL
+                </th>
+                <th class="contfirma">
+                    <br><br>
+                    <br><br>
+                    Firma:..................................
+                    <br>
+                    DOCENTE 2DO. TRIBUNAL
+                </th>
+                <th class="contfirma">
+                    <br><br>
+                    <br><br>
+                    Firma:..................................
+                    <br>
+                    DOCENTE 3ER. TRIBUNAL
+                </th>
+                <th class="contfirma">
+                    <br><br>
+                    <br><br>
+                    Firma:..................................
+                    <br>
+                    DOCENTE TUTOR
+                </th>
+                <th class="espacios"></th>
+            </tr>
+        </thead>
+        
+    </table>    
+    <p>Asignatura de Modalidad de Graduación</p>
+</body>
+</html>

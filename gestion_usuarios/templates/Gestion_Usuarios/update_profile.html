@@ -1,0 +1,162 @@
+{% extends "dashboard.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="p-lg-5 p-2 container fontII no-gutters">
+    <div class="container  p-lg-5  p-0 no-gutte">
+        <h2 class="titlegeneral colortext pb-3">Editar Datos Perfil de Usuario <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
+            <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5"/>
+            <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z"/>
+          </svg>
+        </h2>
+        {% if errors %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <form id="update-user-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- User Image Section -->
+            <div class="row radio-border= 50%">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="id_imagen">Imagen</label>
+                        <input type="file" name="imagen" id="id_imagen">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <img id="preview" 
+                             src="{% if form.instance.imagen %}{{ form.instance.imagen.url }}{% endif %}" 
+                             alt="." 
+                             style="max-width: 150px; height: 150px; border-radius: 50%; display: none;">
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Name and Surname Section -->
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    {{ user_form.nombre.label_tag }}
+                    {{ user_form.nombre }}
+                </div>
+                <div class="col-md-3 form-group">
+                    {{ user_form.apellido.label_tag }}
+                    {{ user_form.apellido }}
+                </div>
+                <div class="col-md-3 form-group">
+                    {{ user_form.apellidoM.label_tag }}
+                    {{ user_form.apellidoM }}
+                </div>
+            </div>
+        
+            <!-- Birthdate and CI Section -->
+            <div class="row">
+                <div class="col-lg-6 col-12 form-group">
+                    {{ user_form.fecha_nac.label_tag }}
+                    {{ user_form.fecha_nac }}
+                    {{ user_form.fecha_nac.errors }}
+                </div>
+                
+                <div class="col-lg-6 col-12 form-group">
+                    {{ user_form.telefono.label_tag }}
+                    {{ user_form.telefono }}
+                </div>
+            </div>
+            <!-- Student or Teacher Information Section -->
+            {% if estudiante_form %}
+                <div class="mb-3 fontII">
+                    <h4 class="fontI">Datos Estudiante</h4>
+                    {{ estudiante_form|crispy }}
+                </div>
+                {% elif docente_form %}
+                <div class="row mb-3 fontII">
+                    <h4 class="fontI">Datos Docente</h4>
+
+                    <div class="col-6 mb-3 form-group">
+
+                        {{ docente_form.dni.label_tag }}
+
+                        {{ docente_form.dni }}  
+
+                        {{ docente_form.dni.errors }}
+
+                    </div>
+
+
+        
+                    <div class="col-8 mb-3 form-group">
+        
+                        {{ docente_form.especialidad.label_tag }}
+        
+                        {{ docente_form.especialidad }}  
+        
+                        {{ docente_form.especialidad.errors }}
+        
+                    </div>
+
+        
+                    <div class="col-4 mb-3 form-group">
+        
+                        {{ docente_form.titulo.label_tag }}
+        
+                        {{ docente_form.titulo }} 
+        
+                        {{ docente_form.titulo.errors }}
+        
+                    </div>
+    
+                </div>
+            {% endif %}
+        
+            <!-- Submit and Cancel Buttons -->
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-danger">Cancelar Cambios</a>
+                </div>
+            </div>
+        </form><br>
+    </div>
+</div><br><br>
+
+<script>
+    document.getElementById('id_imagen').addEventListener('change', function(event) {
+        var input = event.target;
+        var reader = new FileReader();
+        
+        reader.onload = function(){
+            var dataURL = reader.result;
+            var preview = document.getElementById('preview');  // Asegúrate de seleccionar el correcto
+            preview.src = dataURL;
+            preview.style.display = 'block';  // Muestra la vista previa cuando se selecciona la imagen
+        };
+        
+        if (input.files.length > 0) {
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            document.getElementById('preview').style.display = 'none';
+        }
+    });
+    
+    // Mostrar la imagen previa si existe al cargar la página
+    window.onload = function() {
+        var preview = document.getElementById('preview');
+        if (preview.src && preview.src !== '') {
+            preview.style.display = 'block';  // Mostrar la imagen si ya existe al cargar la página
+        }
+    };
+    
+</script>
+
+{% endblock %}

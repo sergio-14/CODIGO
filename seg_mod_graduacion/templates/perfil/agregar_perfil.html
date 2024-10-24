@@ -1,0 +1,105 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Crear Form{% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="container no-gutters p-lg-5 p-2 fontI ">
+  <div class="no-gutte container p-lg-4 p-0">
+    <h1  class="text-center pb-2 fontI colortitle titlesuperior">AGREGAR NUEVO FORMULARIO DE PERFIL DE PROYECTO</h1>
+    <article class="pb-3 colortext" >
+      <form method="post" enctype="multipart/form-data" id="perfilForm" onsubmit="showConfirmationModal(event)">
+        {% csrf_token %}
+        <div id="extra-users" style="display: block {% if formp.habilitar_users.value %}block{% else %}none{% endif %};">
+          <div class="row">
+            <div class="col-md-12 col-11">
+              {{ formp.user_uno|as_crispy_field }}
+            </div>
+          </div>
+        </div>
+    
+        <!-- Render the rest of the form excluding user_uno and user_dos -->
+        {{ form.non_field_errors }}
+        {% for field in formp %}
+          {% if field.name != 'user_uno' and field.name != 'user_dos' %}
+            {{ field|as_crispy_field }}
+          {% endif %}
+        {% endfor %}
+        {% if formp.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field in formp %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% if not form_disabled %}
+        <br>
+        <input name="" id="" class="btn btn-primary me-2 fontII" type="submit" value="Enviar Información" {% if form_disabled %}disabled{% endif %}>
+        <a href="{% url 'dashboard' %}" class="btn btn-danger fontII ">Cancelar</a>
+        {% else %}
+            <p class="text-end text colorestados">Formulario deshabilitado. Perfil "Aprobado" o Debe tener la investigación Cientifca "Aprobada" para agregar un perfil.</p>
+        {% endif %}
+      </form>
+      {% block scripts %}
+      <script>
+        $("#id_user_uno").select2();
+
+        const checkbox = document.getElementById('{{ formp.habilitar_users.id_for_label }}');
+        const extraUsersDiv = document.getElementById('extra-users');
+
+        checkbox.addEventListener('change', function() {
+          if (this.checked) {
+            extraUsersDiv.style.display = 'block'; // Show the extra user fields
+          } else {
+            extraUsersDiv.style.display = 'none'; // Hide the extra user fields
+          }
+        });
+
+        // Initialize visibility of extra user fields
+        if (!checkbox.checked) {
+          extraUsersDiv.style.display = 'none';
+        }
+      </script>
+            
+      {% endblock %}
+    </article>
+  </div> 
+</div><br>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-mdal">
+      <div class="modal-header">
+        <h5 class="modal-title font" id="confirmationModalLabel"> Confirmacion de Formulario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center font">
+        <img src="{% static 'img/confi.png' %}" class="img-close" alt="" /><br>
+        ¡Formulario Enviado con Exito!
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showConfirmationModal(event) {
+    event.preventDefault(); 
+    console.log("Formulario enviado"); // Agregar esta línea para verificar
+    $('#confirmationModal').modal('show'); 
+    
+    setTimeout(function() {
+      $('#confirmationModal').modal('hide'); 
+      document.getElementById("perfilForm").submit(); 
+    }, 2000);
+  }
+</script>
+{% endblock %}
