@@ -73,8 +73,7 @@ def handle_permission_denied(request, exception):
 def vista_investigacion(request):
     proyectos_usuario = InvCientifica.objects.filter(
         Q(user=request.user) | 
-        Q(user_uno=request.user) | 
-        Q(user_dos=request.user)
+        Q(user_uno=request.user)
     ).order_by('-invfecha_creacion').prefetch_related('comentarioinvcientifica_set')
     #proyectos_usuario = InvCientifica.objects.filter(user=request.user).order_by('-invfecha_creacion').prefetch_related('comentarioinvcientifica_set')
 
@@ -177,7 +176,7 @@ def agregar_investigacion(request):
 
     # Verifica si el usuario, user_uno o user_dos tienen una investigación aprobada
     tiene_investigacion_aprobada = InvCientifica.objects.filter(
-        Q(user=request.user) | Q(user_uno=request.user) | Q(user_dos=request.user),
+        Q(user=request.user) | Q(user_uno=request.user),
         investado='Aprobado'
         ).exists()
     # Deshabilitar el formulario si no está habilitado globalmente o si hay una investigación aprobada
@@ -188,14 +187,7 @@ def agregar_investigacion(request):
         if form.is_valid():
             proyecto = form.save(commit=False)
 
-            # Generar slug único
-            slug = slugify(proyecto.invtitulo)
-            counter = 1
-            while InvCientifica.objects.filter(slug=slug).exists():
-                slug = f"{slug}-{counter}"
-                counter += 1
-            proyecto.slug = slug
-
+            
             # Asignar el usuario autenticado al proyecto
             proyecto.user = request.user
             proyecto.save()
@@ -220,8 +212,7 @@ def agregar_investigacion(request):
 def vista_perfil(request):
     proyectos_usuario = PerfilProyecto.objects.filter(
         Q(user=request.user) | 
-        Q(user_uno=request.user) | 
-        Q(user_dos=request.user)
+        Q(user_uno=request.user)
     ).order_by('-perfecha_creacion').prefetch_related('comentarios')
     paginator = Paginator(proyectos_usuario, 1) 
     page_number = request.GET.get('page')
@@ -292,13 +283,13 @@ class RechazarPerfil(View):
 def agregar_perfil(request):
     # Verificar si el usuario autenticado tiene una investigación aprobada como 'user', 'user_uno' o 'user_dos'
     tiene_investigacion_aprobada = InvCientifica.objects.filter(
-        Q(user=request.user) | Q(user_uno=request.user) | Q(user_dos=request.user),
+        Q(user=request.user) | Q(user_uno=request.user),
         investado='Aprobado'
         ).exists()
     # Verificar si el usuario tiene un perfil de proyecto aprobado
     
     tiene_perfil_aprobado = PerfilProyecto.objects.filter(
-        Q(user=request.user) | Q(user_uno=request.user) | Q(user_dos=request.user),
+        Q(user=request.user) | Q(user_uno=request.user),
         perestado='Aprobado'
         ).exists()
     # Deshabilitar el formulario si no tiene investigación aprobada o si tiene un perfil aprobado
@@ -308,14 +299,7 @@ def agregar_perfil(request):
         formp = PerfilForm(request.POST, request.FILES, request=request)
         if formp.is_valid():
             proyecto = formp.save(commit=False)
-            
-            slug = slugify(proyecto.pertitulo)
-            counter = 1
-            while PerfilProyecto.objects.filter(slug=slug).exists():
-                slug = f"{slug}-{counter}"
-                counter += 1
-            proyecto.slug = slug
-            
+        
             proyecto.user = request.user
             proyecto.save()
             return redirect('dashboard')
@@ -480,10 +464,10 @@ class Pdf_ReporteActa(View):
     def get(self, request, *args, **kwargs):
         acta_id = self.kwargs.get('pk')  
         acta = get_object_or_404(ActaProyectoPerfil, pk=acta_id)  
-        
+        logo_url = request.build_absolute_uri('/static/img/logouab.png')
         context = {
             'acta': acta,
-            
+            'logo_url': logo_url,
         }
         
         # Generar el PDF
@@ -513,10 +497,11 @@ class Pdf_ReporteActaPrivada(View):
     def get(self, request, *args, **kwargs):
         acta_id = self.kwargs.get('pk')  # Obtener el id desde la URL
         acta = get_object_or_404(ActaPrivada, pk=acta_id)  # Recuperar la instancia ActaPerfil
-        
-        # Construir URLs absolutas para las firmas
+        logo_url = request.build_absolute_uri('/static/img/logouab.png')
         context = {
             'acta': acta,
+            'logo_url': logo_url,
+            
         }
         
         # Generar el PDF
@@ -764,7 +749,8 @@ def crear_actividad(request):
     form = None
 
     try:
-        actividad = ProyectoFinal.objects.get(estudiante=estudiante)
+        # Buscar actividad en ProyectoFinal donde el usuario sea estudiante o estudiante_uno
+        actividad = ProyectoFinal.objects.get(Q(estudiante=estudiante) | Q(estudiante_uno=estudiante))
     except ProyectoFinal.DoesNotExist:
         actividad = None
 
@@ -804,7 +790,7 @@ def lista_actividad(request):
     user = request.user
     # Filtrar actividades donde el usuario sea estudiante, estudiante_uno o estudiante_dos
     actividades = ProyectoFinal.objects.filter(
-        Q(estudiante=user) | Q(estudiante_uno=user) | Q(estudiante_dos=user)
+        Q(estudiante=user) | Q(estudiante_uno=user)
     ).prefetch_related('comentarios').order_by('-fecha')
     
     return render(request, 'proyectofinal/lista_actividad.html', {'actividades': actividades})
@@ -1379,3 +1365,84 @@ def filtraracta(request):
         }
 
     return JsonResponse(data)
+
+
+from django.urls import reverse
+
+from .forms import ActaPerForm, ActaPrivForm, ActaPubForm,ActaViadiploForm
+
+def Acta_per_doc(request, acta_id):
+    acta = get_object_or_404(ActaProyectoPerfil, id=acta_id)
+    if request.method == 'POST':
+        form = ActaPerForm(request.POST, request.FILES, instance=acta)
+        if form.is_valid():
+            form.save()
+            # Redirigir a `actaperfil_list` después de guardar exitosamente
+            return JsonResponse({'success': True, 'redirect_url': reverse('actaperfil_list')})
+    else:
+        form = ActaPerForm(instance=acta)
+
+    # Detectar si es una solicitud AJAX y devolver solo el HTML
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_form = render_to_string('reportes/Acta_per_doc.html', {'form': form, 'acta': acta}, request=request)
+        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+
+    # Para solicitudes normales, renderiza una plantilla
+    return render(request, 'reportes/Acta_per_doc.html', {'form': form, 'acta': acta})
+
+def Acta_priv_doc(request, acta_id):
+    acta = get_object_or_404(ActaPrivada, id=acta_id)
+    if request.method == 'POST':
+        form = ActaPrivForm(request.POST, request.FILES, instance=acta)
+        if form.is_valid():
+            form.save()
+            # Redirigir a `actaperfil_list` después de guardar exitosamente
+            return JsonResponse({'success': True, 'redirect_url': reverse('actaprivada_list')})
+    else:
+        form = ActaPrivForm(instance=acta)
+
+    # Detectar si es una solicitud AJAX y devolver solo el HTML
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_form = render_to_string('reportes/Acta_priv_doc.html', {'form': form, 'acta': acta}, request=request)
+        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+
+    # Para solicitudes normales, renderiza una plantilla
+    return render(request, 'reportes/Acta_priv_doc.html', {'form': form, 'acta': acta})
+
+def Acta_pub_doc(request, acta_id):
+    acta = get_object_or_404(ActaPublica, id=acta_id)
+    if request.method == 'POST':
+        form = ActaPubForm(request.POST, request.FILES, instance=acta)
+        if form.is_valid():
+            form.save()
+            # Redirigir a `actaperfil_list` después de guardar exitosamente
+            return JsonResponse({'success': True, 'redirect_url': reverse('actapublica_list')})
+    else:
+        form = ActaPubForm(instance=acta)
+
+    # Detectar si es una solicitud AJAX y devolver solo el HTML
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_form = render_to_string('reportes/Acta_pub_doc.html', {'form': form, 'acta': acta}, request=request)
+        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+
+    # Para solicitudes normales, renderiza una plantilla
+    return render(request, 'reportes/Acta_pub_doc.html', {'form': form, 'acta': acta})
+
+def Acta_viadiplo_doc(request, acta_id):
+    acta = get_object_or_404(ActaViaDiplomado, id=acta_id)
+    if request.method == 'POST':
+        form = ActaViadiploForm(request.POST, request.FILES, instance=acta)
+        if form.is_valid():
+            form.save()
+            # Redirigir a `actaperfil_list` después de guardar exitosamente
+            return JsonResponse({'success': True, 'redirect_url': reverse('actaviadiplomado_list')})
+    else:
+        form = ActaViadiploForm(instance=acta)
+
+    # Detectar si es una solicitud AJAX y devolver solo el HTML
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_form = render_to_string('reportes/Acta_viadiplo_doc.html', {'form': form, 'acta': acta}, request=request)
+        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+
+    # Para solicitudes normales, renderiza una plantilla
+    return render(request, 'reportes/Acta_viadiplo_doc.html', {'form': form, 'acta': acta})

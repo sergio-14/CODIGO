@@ -123,11 +123,12 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomClearableFileInput(forms.ClearableFileInput):
     # Define aquí tu widget personalizado si es necesario
     pass
+
 class CustomUserChangeForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ('email', 'nombre', 'apellido', 'apellidoM', 'imagen', 'fecha_nac', 'telefono', 'is_active', 'is_staff','is_superuser', 'groups')
+        fields = ('email', 'nombre', 'apellido', 'apellidoM', 'imagen','dni', 'fecha_nac', 'telefono', 'is_active', 'is_staff','is_superuser', 'groups')
         widgets = {
             'imagen': CustomClearableFileInput(),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch', 'id': 'flexSwitchCheckActive'}),
@@ -182,7 +183,7 @@ class CustomUserChangeForm(forms.ModelForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['imagen', 'nombre', 'apellido', 'apellidoM', 'fecha_nac', 'telefono']
+        fields = ['imagen', 'nombre', 'apellido', 'apellidoM', 'dni', 'fecha_nac', 'telefono']
         widgets = {
             'imagen': CustomClearableFileInput(),
             'fecha_nac': forms.DateInput(attrs={'type': 'date'}),
@@ -203,9 +204,8 @@ class UserUpdateForm(forms.ModelForm):
 class EstudianteUpdateForm(forms.ModelForm):
     class Meta:
         model = Estudiante
-        fields = ['dni', 'Ru']
+        fields = ['Ru']
         labels = {
-            'dni': 'Carnet de Identidad',
             'Ru': 'R.U.'
         }
 
@@ -213,9 +213,8 @@ class EstudianteUpdateForm(forms.ModelForm):
 class DocenteUpdateForm(forms.ModelForm):
     class Meta:
         model = Docente
-        fields = ['dni', 'especialidad', 'titulo']
+        fields = ['especialidad', 'titulo']
         labels = {
-            'dni': 'Carnet de Identidad',
             'especialidad': 'Título',
             'titulo': 'Abreviación ',
         }

@@ -242,6 +242,17 @@ select {
   border-radius: 50%;
   object-fit: cover;
 }
+.image-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+.image-containerr {
+  position: relative;
+  width: 90px;
+  height: 120px;
+}
 .imgrepo{
   width: 130px;
   height: 130px;
@@ -251,6 +262,29 @@ select {
   box-shadow: 9px 9px 9px #a6a6a6, -9px -9px 9px #ffffff;
   border: 6px solid #ececec;
 }
+
+.image-left, .image-right {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10%;
+  background: #f0f0f0;
+  box-shadow: 9px 9px 9px #a6a6a6, -9px -9px 9px #ffffff18;
+  border: 6px solid #ececec;
+}
+
+.image-left {
+  transform: rotate(-10deg);
+  left: -40px;
+}
+
+.image-right {
+  transform: rotate(10deg);
+  right: -40px;
+}
+
+
 .rounded-img2 {
   background: #f0f0f0;
   box-shadow: 9px 9px 9px #a6a6a6, -9px -9px 9px #ffffff;

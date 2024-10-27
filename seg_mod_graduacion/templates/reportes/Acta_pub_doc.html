@@ -1,0 +1,31 @@
+<form method="post" enctype="multipart/form-data" id="editDocForm" action="{% url 'Acta_pub_doc' acta.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+  </form>
+  <script>
+    document.addEventListener("submit", function(event) {
+      if (event.target && event.target.id === "editDocForm") {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+    
+        fetch(form.action, {
+          method: 'POST',
+          body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Cerrar modal y actualizar la página si es necesario
+            const modalInstance = bootstrap.Modal.getInstance(editDocModal);
+            modalInstance.hide();
+            location.reload(); // Refresca la página o actualiza el contenido según lo necesites
+          } else {
+            // Actualiza el contenido del formulario si hay errores
+            editDocModal.querySelector('.modal-body').innerHTML = data.html_form;
+          }
+        });
+      }
+    });
+  </script>

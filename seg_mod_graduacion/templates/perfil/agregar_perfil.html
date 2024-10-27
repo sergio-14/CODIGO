@@ -21,7 +21,7 @@
         <!-- Render the rest of the form excluding user_uno and user_dos -->
         {{ form.non_field_errors }}
         {% for field in formp %}
-          {% if field.name != 'user_uno' and field.name != 'user_dos' %}
+          {% if field.name != 'user_uno' %}
             {{ field|as_crispy_field }}
           {% endif %}
         {% endfor %}

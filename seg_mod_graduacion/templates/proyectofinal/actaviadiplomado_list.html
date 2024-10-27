@@ -48,55 +48,49 @@
                         <p class="fecha colortext ">Facultad: {{ acta.carrera.facultad.nombre }}</p>
                     </div>
                     <div class="col-lg-4 col-12 text-center">
-                        <p class="fecha colortext ">Carreta: {{ acta.carrera }}</p>
+                        <p class="fecha colortext ">Carrera: {{ acta.carrera }}</p>
                     </div>
                 </div>
                 <p class="title colortext text-lg-start text-center">Título: {{ acta.titulo }}</p>
                 <div class="row">
                     <div class="col-lg-4 col-12 text-lg-start text-center">
-                        <p class="fecha colortext ">Tutur:<br> {{ acta.tutor.nombre }} {{ acta.tutor.apellido }} {{ acta.tutor.apellidoM }}</p>
+                        <p class="fecha colortext ">Presidente:<br> {{ acta.presidente.nombre }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }}</p>
                     </div >
                     <div class="col-lg-4 col-6 text-lg-start text-center">
                         <p class="fecha colortext ">Modalidad:<br> {{ acta.modalidad }}</p>
                     </div>
                     <div class="col-lg-4 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">Calificación:<br> <span class="colorestados">{{ acta.get_resultado_display }}</span> <span class="colorestados">con la Nota de {{ acta.notatotal }} pts.</span></p>
+                        <p class="fecha colortext ">Calificación:<br><span class="colorestados">Nota de {{ acta.totalnota }} pts.</span></p>
                         
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">1er. Tribunal:<br> {{ acta.jurado_1.nombre }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }}</p>
+                        <p class="fecha colortext ">Secretario:<br> {{ acta.secretario.nombre }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }}</p>
                     </div >
                     <div class="col-lg-4 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">2do. Tribunal:<br> {{ acta.jurado_2.nombre }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }}</p>
+                        <p class="fecha colortext ">1er. Vocal:<br> {{ acta.vocal_1.nombre }} {{ acta.vocal_1.apellido }} {{ acta.vocal_1.apellidoM }}</p>
                     </div>
                     <div class="col-lg-4 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">3er. Tribunal:<br> {{ acta.jurado_3.nombre }} {{ acta.jurado_3.apellido }} {{ acta.jurado_3.apellidoM }}</p>
+                        <p class="fecha colortext ">2do. Vocal:<br> {{ acta.vocal_2.nombre }} {{ acta.vocal_2.apellido }} {{ acta.vocal_2.apellidoM }}</p>
                         
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12 ">
-                        <p class="fecha colortext ">Nota Total Literal: <br> <span class="colorestados fechas">{{ acta.get_notatotal_literal }}</span></p>
-                    </div >
-                    <div class="col-lg-4 col-12 ">
-                        <p class="fecha colortext ">Observación: <br> <span class="colorestados fechas">{{ acta.get_observacion }}</span></p>
-                    </div>
-                    <div class="col-lg-4 col-12 ">
-                        <p class="fecha colortext ">Valorización: <br> <span class="colorestados fechas">{{ acta.get_valorizacion }}</span></p>
-                        
-                    </div>
-                    
-                </div>
+                <p class="no-guttee py-2 col-lg-5 col-6 text-center">
+                    {% if acta.docrespaldo %}
+                        <a href="{{ acta.docrespaldo.url }}" class=" text-center list-group-item list-group-item-action" target="_blank">
+                            Acta Confirmada
+                        </a>
+                    {% else %}
+                        <span class="text-muted">Sin Confirmación de Acta</span>
+                    {% endif %}
+                </p>
+                
                 
             </div>
-            <div class="col-md-3 pt-4 d-flex flex-column align-items-center">
+            <div class="col-md-3 pt-1 d-flex flex-column align-items-center">
                 <div class="image-container">
                     {% if acta.estudiante.imagen %}
-                    <!-- Imágenes (se ocultan inicialmente) -->
-                    <img id="imagen1" src="{{ acta.estudiante_dos.imagen.url }}" class="imgrepo" alt="Imagen 1" style="display: none;">
-                    <img id="imagen2" src="{{ acta.estudiante_uno.imagen.url }}" class="imgrepo" alt="Imagen 2" style="display: none;">
                     <img id="imagen3" src="{{ acta.estudiante.imagen.url }}" class="imgrepo" alt="Imagen 3" style="display: block;"> <!-- Se muestra por defecto -->
                     {% else %}
                     <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
@@ -104,94 +98,15 @@
                 </div>
                 <h5 class="text colortext text-center">
                     <p class="text colorestados">Nombre Egresado:</p>
-                    <p id="nombre1" class="title colortext" style="display: none;">{{ acta.estudiante_dos }}</p>
-                    <p id="nombre2" class="title colortext" style="display: none;">{{ acta.estudiante_uno }}</p>
                     <p id="nombre3" class="title colortext" style="display: block;">{{ acta.estudiante }}</p>
                 </h5>
-                <div class="btn-group ">
-                    
-                    <button id="btnAnterior" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                      </svg></button>
-                    <button id="btnSiguiente" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
-                      </svg></button>
-                </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        // Array de imágenes y nombres
-                        const imagenes = [];
-                        const nombres = [];
-                        
-                        const imagen1 = document.getElementById('imagen1');
-                        const imagen2 = document.getElementById('imagen2');
-                        const imagen3 = document.getElementById('imagen3');
-                        
-                        const nombre1 = document.getElementById('nombre1');
-                        const nombre2 = document.getElementById('nombre2');
-                        const nombre3 = document.getElementById('nombre3');
-                        
-                        // Solo agregar las imágenes y nombres que existen al array
-                        if (imagen1 && nombre1) {
-                            imagenes.push(imagen1);
-                            nombres.push(nombre1);
-                        }
-                        if (imagen2 && nombre2) {
-                            imagenes.push(imagen2);
-                            nombres.push(nombre2);
-                        }
-                        if (imagen3 && nombre3) {
-                            imagenes.push(imagen3);
-                            nombres.push(nombre3);
-                        }
-                    
-                        let indiceActual = imagenes.length - 1; // Mostrar la última imagen (estudiante) al inicio
-                    
-                        // Función para mostrar la imagen y el nombre actuales
-                        function mostrarActual() {
-                            imagenes.forEach(function(imagen, index) {
-                                imagen.style.display = index === indiceActual ? 'block' : 'none';
-                            });
-                            
-                            nombres.forEach(function(nombre, index) {
-                                nombre.style.display = index === indiceActual ? 'block' : 'none';
-                            });
-                        }
-                    
-                        // Botones
-                        const btnAnterior = document.getElementById('btnAnterior');
-                        const btnSiguiente = document.getElementById('btnSiguiente');
-                        
-                        // Evento botón "Siguiente"
-                        btnSiguiente.addEventListener('click', function() {
-                            if (indiceActual < imagenes.length - 1) {
-                                indiceActual++;
-                            } else {
-                                indiceActual = 0; // Volver al inicio si llegamos al final
-                            }
-                            mostrarActual();
-                        });
-                    
-                        // Evento botón "Anterior"
-                        btnAnterior.addEventListener('click', function() {
-                            if (indiceActual > 0) {
-                                indiceActual--;
-                            } else {
-                                indiceActual = imagenes.length - 1; // Volver al final si estamos al principio
-                            }
-                            mostrarActual();
-                        });
-                    
-                        // Mostrar la imagen y nombre iniciales
-                        mostrarActual();
-                    });
-                    
-                </script>
+                
                 {% if acta.pk %}
-                <a class="btn btn-sm btn-primary fontII" href="{% url 'Pdf_ReporteActaViadiplomatico' pk=acta.pk %}"target="_blank">General Reporte Acta</a>
+                <a class="btn btn-sm btn-primary fontII" href="{% url 'Pdf_ReporteActaViadiplomatico' pk=acta.pk %}"target="_blank">General Reporte Acta</a><br>
                 {% else %}
                 <span>No Acta available</span>
                 {% endif %}
+                <a href="{% url 'Acta_viadiplo_doc' acta.id %}" class="btn btn-sm btn-success fontII" data-bs-toggle="modal" data-bs-target="#editDocModal" data-url="{% url 'Acta_viadiplo_doc' acta.id %}">Subir Acta Firmada</a>
             </div>
         </div>
     </div>
@@ -214,6 +129,67 @@
         </ul>
     </nav><br>
 </div><br>
+<div class="modal fade" id="editDocModal" tabindex="-1" aria-labelledby="editDocModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fontI" id="editDocModalLabel">Agregar Acta Firmada Defensa Vía Diplomado</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+        
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const editDocModal = document.getElementById('editDocModal');
+        
+        editDocModal.addEventListener('show.bs.modal', function (event) {
+          const button = event.relatedTarget;
+          const url = button.getAttribute('data-url');
+      
+          fetch(url, {
+            headers: {
+              'x-requested-with': 'XMLHttpRequest'
+            }
+          })
+          .then(response => response.text())
+          .then(html => {
+            editDocModal.querySelector('.modal-body').innerHTML = html;
+          });
+        });
+      
+        // Enviar el formulario mediante AJAX
+        document.addEventListener("submit", function(event) {
+          if (event.target && event.target.id === "editDocForm") {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+      
+            fetch(form.action, {
+              method: 'POST',
+              body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                // Redirigir a `actaperfil_list` después de guardar exitosamente
+                window.location.href = data.redirect_url;
+              } else {
+                // Actualiza el contenido del formulario si hay errores
+                editDocModal.querySelector('.modal-body').innerHTML = data.html_form;
+              }
+            });
+          }
+        });
+    });
+
+    
+</script>
 {% endblock %}
 
 

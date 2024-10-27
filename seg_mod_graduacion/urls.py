@@ -29,6 +29,10 @@ urlpatterns = [
     path('listarperfiles/', views.listarperfiles, name='listarperfiles'),
     path('reporte-perfiles-pdf/', Pdf_Reporte_Perfiles.as_view(), name='Pdf_Reporte_Perfiles'),
     path('perfil/astas_list', views.actaperfil_list, name='actaperfil_list'),
+    path('acta_doc_perfil/<int:acta_id>/Acta_per_doc/', views.Acta_per_doc, name='Acta_per_doc'),
+    path('acta_doc_privada/<int:acta_id>/Acta_priv_doc/', views.Acta_priv_doc, name='Acta_priv_doc'),
+    path('acta_doc_publica/<int:acta_id>/Acta_prub_doc/', views.Acta_pub_doc, name='Acta_pub_doc'),
+    path('acta_doc_ViaDiplomado/<int:acta_id>/Acta_ViaD_doc/', views.Acta_viadiplo_doc, name='Acta_viadiplo_doc'),
     path('reporte_acta/<int:pk>/', Pdf_ReporteActa.as_view(), name='Pdf_ReporteActa'),
     
     #seguimiento modalidad de graduacion proyecto final
@@ -79,5 +83,7 @@ urlpatterns = [
     path('agregar_Excelencia/', views.agregar_Excelencia, name='agregar_Excelencia'),
     path('proyectofinal/actaexcelencia_list', views.actaexcelencia_list, name='actaexcelencia_list'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) filtrartribunales
 handler403 = handle_permission_denied

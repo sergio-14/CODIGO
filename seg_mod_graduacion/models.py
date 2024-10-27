@@ -35,12 +35,10 @@ class Modalidad(models.Model):
 
 class Estudiante(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    dni = models.CharField(max_length=20)
     Ru = models.CharField(max_length=20, null=True, blank=True)
     
 class Docente(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    dni = models.CharField(max_length=20)
     especialidad = models.CharField(max_length=100)
     titulo = models.CharField(max_length=100)
     
@@ -102,10 +100,8 @@ class Periodo(models.Model):
 class InvCientifica(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Usuario relacionado', related_name='name_user')
     user_uno = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Segundo participante', blank=True, null=True, related_name='name_useruno')
-    user_dos = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Tercer participante', blank=True, null=True, related_name='name_userdos')
     habilitar_users = models.BooleanField(default=False, verbose_name='¡Mas de un Estudiante click aqui!')
     invtitulo = models.CharField(max_length=450, verbose_name='Agregar Título')
-    slug = models.SlugField(unique=True)
     invfecha_creacion = models.DateTimeField(auto_now_add=True)
     invdescripcion = models.TextField(verbose_name='Agregar una Descripción Breve', blank=True)
     invdocumentacion = models.FileField(upload_to='documento/investigacion', verbose_name='Agregar Documentacion', null=True, blank=True)
@@ -147,10 +143,8 @@ class HabilitarSeguimiento(models.Model):
 class PerfilProyecto(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Usuario relacionado', related_name='perfil_name_user')
     user_uno = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Segundo participante', blank=True, null=True, related_name='perfil_name_useruno')
-    user_dos = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Tercer participante', blank=True, null=True, related_name='perfil_name_userdos')
     habilitar_users = models.BooleanField(default=False, verbose_name='¡Mas de un Estudiante click aqui!')
     pertitulo = models.CharField(max_length=450, verbose_name='Agregar Título Perfil')
-    slug = models.SlugField(unique=True)
     perfecha_creacion = models.DateTimeField(auto_now_add=True)
     perdescripcion = models.TextField(verbose_name='Agregar una Descripción', blank=True)
     perdocumentacion = models.FileField(upload_to='documento/perfil', verbose_name='Agregar Documentación', null=True, blank=True)
@@ -217,26 +211,24 @@ class ActaProyectoPerfil(models.Model):
     observacion_1 = models.TextField(max_length=200)
     observacion_2 = models.TextField(max_length=200)
     observacion_3 = models.TextField(max_length=200)
+    docrespaldo = models.FileField(upload_to='documento/perfil', verbose_name='Agregar Documentación', null=True, blank=True)
+
     
     class Meta:
-        verbose_name_plural = "Actas Base General"
-        verbose_name = "Base Actas"
+        verbose_name_plural = "Actas Perfil"
+        verbose_name = "Acta Perfil"
         
     def __str__(self):
         return self.acta
     
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Es una nueva instancia
-            if not self.carrera:
-                self.carrera = Carrera.objects.get(nombre='Ingeniería de Sistemas')
-            super(ActaProyectoPerfil, self).save(*args, **kwargs)
+    
+            
     
 class ActaViaDiplomado(models.Model):
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     perperiodo = models.ForeignKey(Periodo, on_delete=models.CASCADE, null=True)
     acta = models.CharField(max_length=30, unique=True )
     estudiante = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_via_estudiante', on_delete=models.CASCADE)
-    estudiante_uno = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Segundo participante', blank=True, null=True, related_name='acta_via_estudianteuno')
     titulo = models.CharField(max_length=450)
     lugar = models.CharField(max_length=50)
     fechadefensa = models.DateField(default=timezone.now)
@@ -251,6 +243,8 @@ class ActaViaDiplomado(models.Model):
     valor_2 = models.IntegerField()
     valor_3 = models.IntegerField()
     totalnota = models.IntegerField()
+    docrespaldo = models.FileField(upload_to='documento/actaviadiplomado', verbose_name='Agregar Documentacion', null=True, blank=True)
+
     
     def get_valor_1(self):
         # Convertimos el número a palabras en español
@@ -317,6 +311,8 @@ class ActaPrivada(models.Model):
     observacion_2 = models.TextField(max_length=200)
     observacion_3 = models.TextField(max_length=200)
     calificacion1 = models.IntegerField()
+    docrespaldo = models.FileField(upload_to='documento/actaprivada', verbose_name='Agregar Documentacion', null=True, blank=True)
+
     
     
     class Meta:
@@ -326,13 +322,6 @@ class ActaPrivada(models.Model):
     def __str__(self):
         return self.acta
     
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Es una nueva instancia
-            if not self.carrera:
-                self.carrera = Carrera.objects.get(nombre='Ingeniería de Sistemas')
-            super(ActaPrivada, self).save(*args, **kwargs)
-    
-
 
 class ActaPublica(models.Model):
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE )
@@ -358,7 +347,8 @@ class ActaPublica(models.Model):
     calificacion2 = models.IntegerField()
     notatotal = models.IntegerField()
     presidenteacta = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_presidente_Asig', on_delete=models.CASCADE)
-    
+    docrespaldo = models.FileField(upload_to='documento/actapublica', verbose_name='Agregar Documentacion', null=True, blank=True)
+
     class Meta:
         verbose_name_plural = "Actas Defensa Publica"
         verbose_name = "Acta Publica"
@@ -413,7 +403,8 @@ class ActaExcelencia(models.Model):
     modalidad = models.ForeignKey('Modalidad', on_delete=models.CASCADE, verbose_name='Seleccione Una Modalidad')
     notatotal = models.IntegerField()
     presidenteacta = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_presidente_Asi', on_delete=models.CASCADE)
-    
+    docrespaldo = models.FileField(upload_to='documento/actaexcelencia', verbose_name='Agregar Documentacion', null=True, blank=True)
+
     class Meta:
         verbose_name_plural = "Actas Defensa Excelencia"
         verbose_name = "Acta Excelencia"
@@ -465,7 +456,6 @@ class ActaExcelencia(models.Model):
 class HabilitarProyectoFinal(models.Model):
     estudiante = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividad_estudiante', on_delete=models.CASCADE)
     estudiante_uno = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Segundo participante', blank=True, null=True, related_name='actividad_estudiante_uno')
-    estudiante_dos = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Tercer participante', blank=True, null=True, related_name='actividad_estudiante_dos')
     tutor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividad_tutor', on_delete=models.CASCADE)
     jurado_1 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividad_jurado_1', on_delete=models.CASCADE)
     jurado_2 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividad_jurado_2', on_delete=models.CASCADE)
@@ -477,7 +467,6 @@ class HabilitarProyectoFinal(models.Model):
             estudiante=self.estudiante,
             defaults={
                 'estudiante_uno': self.estudiante_uno,
-                'estudiante_dos': self.estudiante_dos,
                 'tutor': self.tutor,
                 'jurado_1': self.jurado_1,
                 'jurado_2': self.jurado_2,
@@ -488,7 +477,6 @@ class HabilitarProyectoFinal(models.Model):
         )
         if not created:
             actividad.estudiante_uno = self.estudiante_uno
-            actividad.estudiante_dos = self.estudiante_dos
             actividad.tutor = self.tutor
             actividad.jurado_1 = self.jurado_1
             actividad.jurado_2 = self.jurado_2
@@ -508,7 +496,6 @@ class HabilitarProyectoFinal(models.Model):
 class ProyectoFinal(models.Model):
     estudiante = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividades_estudiante', on_delete=models.CASCADE)
     estudiante_uno = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Segundo participante', blank=True, null=True, related_name='actividades_estudiante_uno')
-    estudiante_dos = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Tercer participante', blank=True, null=True, related_name='actividades_estudiante_dos')
     tutor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividades_tutor', on_delete=models.CASCADE)
     jurado_1 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividades_jurado_1', on_delete=models.CASCADE)
     jurado_2 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actividades_jurado_2', on_delete=models.CASCADE)
@@ -548,7 +535,6 @@ class ProyectoFinal(models.Model):
         repo_actividad, created = RepositorioTitulados.objects.get_or_create(
             estudiante=self.estudiante,
             estudiante_uno=self.estudiante_uno,
-            estudiante_dos=self.estudiante_dos,
             tutor=self.tutor,
             jurado_1=self.jurado_1,
             jurado_2=self.jurado_2,
@@ -587,7 +573,6 @@ class ComentarioProFinal(models.Model):
 class RepositorioTitulados(models.Model):
     estudiante = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='repo_estudiante', on_delete=models.CASCADE)
     estudiante_uno = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Segundo participante', blank=True, null=True, related_name='repo_estudiante_uno')
-    estudiante_dos = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Tercer participante', blank=True, null=True, related_name='repo_estudiante_dos')
     tutor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='repo_tutor', on_delete=models.CASCADE , blank=True, null=True)
     jurado_1 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='repo_jurado_1', on_delete=models.CASCADE)
     jurado_2 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='repo_jurado_2', on_delete=models.CASCADE)

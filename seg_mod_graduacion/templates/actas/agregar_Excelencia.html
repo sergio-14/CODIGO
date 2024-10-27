@@ -122,23 +122,48 @@
 </div>
 
 <script>
-  
+  document.addEventListener('DOMContentLoaded', function() {
+      const juradoSelects = [
+        document.getElementById('id_secretario'),
+        document.getElementById('id_jurado_1'),
+        document.getElementById('id_jurado_2'),
+        document.getElementById('id_jurado_3')
+      ]; 
 
+      // Actualiza las opciones disponibles para los jurados
+      function updateJuradoOptions() {
+        const selectedValues = juradoSelects.map(select => select.value);
+        juradoSelects.forEach(select => {
+          Array.from(select.options).forEach(option => {
+            option.hidden = selectedValues.includes(option.value) && option.value !== select.value;
+          });
+        });
+      }
 
+      // Agregar evento change para cada select de jurados
+      juradoSelects.forEach(select => {
+        select.addEventListener('change', updateJuradoOptions);
+      });
 
+      // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
+      updateJuradoOptions();
+
+      // Manejo del envío del formulario con el modal de confirmación
+      const form = document.getElementById("pot");
+      form.addEventListener('submit', showConfirmationModal);
+  });
 
   function showConfirmationModal(event) {
     event.preventDefault(); 
     $('#confirmationModal').modal('show'); 
-    
+
     setTimeout(function() {
       $('#confirmationModal').modal('hide'); 
       document.getElementById("pot").submit(); 
     }, 2000);
   }
-
-  
 </script>
+
 {% endblock %}
 
 

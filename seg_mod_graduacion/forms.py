@@ -23,7 +23,7 @@ class ModalidadForm(forms.ModelForm):
 class InvCientificaForm(forms.ModelForm):
     class Meta:
         model = InvCientifica
-        fields = ['user_uno', 'user_dos','habilitar_users','invtitulo', 'invdescripcion', 'invdocumentacion' ]
+        fields = ['user_uno','habilitar_users','invtitulo', 'invdescripcion', 'invdocumentacion' ]
         widgets = {
             'invdescripcion': forms.Textarea(attrs={'class': 'descripcion-field'}),
         }
@@ -40,7 +40,7 @@ class InvCientificaForm(forms.ModelForm):
         investigaciones_aprobadas = InvCientifica.objects.filter(investado='Aprobado')
 
         # Obtener los usuarios que ya están relacionados en una investigación aprobada como user, user_uno o user_dos
-        usuarios_con_inv = investigaciones_aprobadas.values_list('user', 'user_uno', 'user_dos')
+        usuarios_con_inv = investigaciones_aprobadas.values_list('user', 'user_uno')
         
         # Aplanar la lista de usuarios (eliminando duplicados con set) y excluir None
         usuarios_con_inv = set(
@@ -56,7 +56,7 @@ class InvCientificaForm(forms.ModelForm):
 
         # Establecer el queryset filtrado en los campos 'user_uno' y 'user_dos'
         self.fields['user_uno'].queryset = estudiantes_users
-        self.fields['user_dos'].queryset = estudiantes_users
+        
         # Marcar los campos como requeridos
         self.fields['invtitulo'].required = True
         self.fields['invdescripcion'].required = True
@@ -83,7 +83,7 @@ class GlobalSettingsForm(forms.ModelForm):
 class PerfilForm(forms.ModelForm):
     class Meta:
         model = PerfilProyecto
-        fields = ['user_uno', 'user_dos','habilitar_users','pertitulo', 'perdescripcion', 'perdocumentacion', 'permodalidad']
+        fields = ['user_uno','habilitar_users','pertitulo', 'perdescripcion', 'perdocumentacion', 'permodalidad']
         widgets = {
             'perdescripcion': forms.Textarea(attrs={'class': 'descripcion-field'}),
         }
@@ -98,17 +98,25 @@ class PerfilForm(forms.ModelForm):
 
         # Filtrar las investigaciones que tienen el estado 'Aprobado'
         perfiles_aprobadas = PerfilProyecto.objects.filter(perestado='Aprobado')
+        inv_aprobadas = InvCientifica.objects.filter(investado='Aprobado')
 
         # Obtener los usuarios que ya están relacionados en una investigación aprobada como user, user_uno o user_dos
-        usuarios_con_perfil = perfiles_aprobadas.values_list('user', 'user_uno', 'user_dos')
-        
+        usuarios_con_perfil = perfiles_aprobadas.values_list('user', 'user_uno')
+        usuarios_con_inv = inv_aprobadas.values_list('user', 'user_uno')
         # Aplanar la lista de usuarios (eliminando duplicados con set) y excluir None
         usuarios_con_perfil = set(
             usuario for usuarios in usuarios_con_perfil for usuario in usuarios if usuario is not None
         )
+        usuarios_con_inv = set(
+            usuario for usuarios in usuarios_con_inv for usuario in usuarios if usuario is not None
+        )
+
 
         # Excluir los usuarios que ya tienen una investigación aprobada
-        estudiantes_users = estudiantes_users.exclude(id__in=usuarios_con_perfil)
+        estudiantes_users = estudiantes_users.filter(
+            id__in=usuarios_con_inv
+            ).exclude(id__in=usuarios_con_perfil
+            )
 
         # Si el usuario autenticado está creando la investigación, exclúyelo también de las opciones de user_uno y user_dos
         if self.request and self.request.user.is_authenticated:
@@ -116,7 +124,7 @@ class PerfilForm(forms.ModelForm):
 
         # Establecer el queryset filtrado en los campos 'user_uno' y 'user_dos'
         self.fields['user_uno'].queryset = estudiantes_users
-        self.fields['user_dos'].queryset = estudiantes_users
+       
         
          # Set all fields as required
         self.fields['pertitulo'].required = True
@@ -458,7 +466,7 @@ class ActaViaDiplomadoForm(forms.ModelForm):
     class Meta:
         model = ActaViaDiplomado
         fields = [
-            'carrera', 'perperiodo', 'acta', 'estudiante', 'estudiante_uno',  'titulo', 
+            'carrera', 'perperiodo', 'acta', 'estudiante', 'titulo', 
             'lugar', 'fechadefensa', 'horainicio', 'horafin','presidente', 'secretario', 'vocal_1', 'vocal_2','modalidad' ,
             'valor_1', 'valor_2', 'valor_3', 'totalnota'
         ]  
@@ -468,8 +476,6 @@ class ActaViaDiplomadoForm(forms.ModelForm):
             'acta': forms.TextInput(attrs={'class': 'form-control', 'required': 'required', 'readonly': 'readonly'}),
             'carrera': forms.Select(attrs={'class': 'form-select', 'required': 'required'}),
             'estudiante': forms.Select(attrs={'class': 'form-select', 'required': 'required'}),
-            'estudiante_uno': forms.Select(attrs={'class': 'form-select'}),
-           
             'titulo': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
             'lugar': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
             'fechadefensa': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'required': 'required'}),
@@ -529,10 +535,20 @@ class ActaViaDiplomadoForm(forms.ModelForm):
         docentes_group = Group.objects.get(name="Docentes")
         presidentes_group = Group.objects.get(name="Presidentes Defensas")
         estudiantes_users = User.objects.filter(groups=estudiantes_group, is_active=True)
+        usuarios_con_repositorio = RepositorioTitulados.objects.values_list('estudiante', flat=True) 
+        usuarios_con_inv = InvCientifica.objects.filter(
+            investado='Aprobado'
+            ).filter(Q(user__isnull=False) | Q(user_uno__isnull=False)
+                     ).values_list('user', 'user_uno').distinct()
+        usuarios_con_inv = list(set(
+                [user_id for pair in usuarios_con_inv for user_id in pair if user_id]
+            ))
         
         self.fields['estudiante'].queryset = User.objects.filter(
             groups=estudiantes_group
-        )
+        ).filter(id__in=estudiantes_users
+        ).exclude(id__in=usuarios_con_inv
+        ).exclude(id__in=usuarios_con_repositorio)
         
         
         INCLUDED_MODALITIES = ['Vía Diplomado']
@@ -543,7 +559,7 @@ class ActaViaDiplomadoForm(forms.ModelForm):
         ]
         
         # Filtra los usuarios del grupo "Docentes"
-        self.fields['presidente'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
+        self.fields['presidente'].queryset = User.objects.filter(groups=presidentes_group, is_active=True)
         self.fields['secretario'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['vocal_1'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['vocal_2'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
@@ -633,10 +649,22 @@ class ActaExcelenciaForm(forms.ModelForm):
         estudiantes_group = Group.objects.get(name="Estudiantes")
         docentes_group = Group.objects.get(name="Docentes")
         presidentes_group = Group.objects.get(name="Presidentes Defensas")
-
+        estudiantes_users = User.objects.filter(groups=estudiantes_group, is_active=True)
+        usuarios_con_repositorio = RepositorioTitulados.objects.values_list('estudiante', flat=True) 
+        usuarios_con_inv = InvCientifica.objects.filter(
+            investado='Aprobado'
+            ).filter(Q(user__isnull=False) | Q(user_uno__isnull=False)
+                     ).values_list('user', 'user_uno').distinct()
+        usuarios_con_inv = list(set(
+                [user_id for pair in usuarios_con_inv for user_id in pair if user_id]
+            ))
+        
         self.fields['estudiante'].queryset = User.objects.filter(
             groups=estudiantes_group
-        )
+        ).filter(id__in=estudiantes_users
+        ).exclude(id__in=usuarios_con_inv
+        ).exclude(id__in=usuarios_con_repositorio)
+        
         
         INCLUDED_MODALITIES = ['Excelencia Academica']
         self.fields['modalidad'].choices = [
@@ -823,11 +851,10 @@ class ActaPrivadaForm(forms.ModelForm):
 class ActividadControlForm(forms.ModelForm):
     class Meta:
         model = HabilitarProyectoFinal
-        fields = ['estudiante','estudiante_uno','estudiante_dos', 'tutor', 'jurado_1', 'jurado_2', 'jurado_3', 'modalidad']
+        fields = ['estudiante','estudiante_uno', 'tutor', 'jurado_1', 'jurado_2', 'jurado_3', 'modalidad']
         labels = {
             'estudiante': 'Seleccionar Postulante',
             'estudiante_uno': 'Postulante dos',
-            'estudiante_dos': 'Postulante tres',
             'tutor': 'Seleccione al Tutor Designado',
             'jurado_1': 'Primero Tribunal Designado',
             'jurado_2': 'Segundo Tribunal Designado',
@@ -837,7 +864,6 @@ class ActividadControlForm(forms.ModelForm):
         widgets = {
             'estudiante': forms.Select(attrs={'class': 'form-select'}),
             'estudiante_uno': forms.Select(attrs={'class': 'form-select'}),
-            'estudiante_dos': forms.Select(attrs={'class': 'form-select'}),
             'tutor': forms.Select(attrs={'class': 'form-select'}),
             'jurado_1': forms.Select(attrs={'class': 'form-select'}),
             'jurado_2': forms.Select(attrs={'class': 'form-select'}),
@@ -860,11 +886,7 @@ class ActividadControlForm(forms.ModelForm):
             groups=estudiantes_group,
             is_active=True  # Solo usuarios activos
             ).exclude(id__in=usuarios_con_actividad)#.filter(id__in=usuarios_con_perfil_aprobado)
-        self.fields['estudiante_dos'].queryset = User.objects.filter(
-            groups=estudiantes_group,
-            is_active=True  # Solo usuarios activos
-            ).exclude(id__in=usuarios_con_actividad)#.filter(id__in=usuarios_con_perfil_aprobado)
-
+      
         self.fields['tutor'].queryset = User.objects.filter(groups=docentes_group)
         self.fields['jurado_1'].queryset = User.objects.filter(groups=docentes_group)
         self.fields['jurado_2'].queryset = User.objects.filter(groups=docentes_group)
@@ -873,11 +895,10 @@ class ActividadControlForm(forms.ModelForm):
 class EditarActividadControlForm(forms.ModelForm):
     class Meta:
         model = HabilitarProyectoFinal
-        fields = ['estudiante', 'estudiante_uno', 'estudiante_dos', 'tutor', 'jurado_1', 'jurado_2', 'jurado_3','modalidad']
+        fields = ['estudiante', 'estudiante_uno', 'tutor', 'jurado_1', 'jurado_2', 'jurado_3','modalidad']
         labels = {
             'estudiante': 'Postulante',
             'estudiante_uno': 'Postulante dos',
-            'estudiante_dos': 'Postulante tres',
             'tutor': 'Seleccione al Tutor Designado',
             'jurado_1': 'Primero Tribumal Designado',
             'jurado_2': 'Segundo Tribumal Designado',
@@ -887,7 +908,6 @@ class EditarActividadControlForm(forms.ModelForm):
         widgets = {
             'estudiante': forms.Select(attrs={'class': 'form-select'}),
             'estudiante_uno': forms.Select(attrs={'class': 'form-select'}),
-            'estudiante_dos': forms.Select(attrs={'class': 'form-select'}),
             'tutor': forms.Select(attrs={'class': 'form-select'}),
             'jurado_1': forms.Select(attrs={'class': 'form-select'}),
             'jurado_2': forms.Select(attrs={'class': 'form-select'}),
@@ -907,16 +927,14 @@ class EditarActividadControlForm(forms.ModelForm):
         if self.instance and self.instance.pk:
           self.fields['estudiante'].disabled = True
           self.fields['estudiante_uno'].disabled = True
-          self.fields['estudiante_dos'].disabled = True
              
 class ActividadForm(forms.ModelForm):
     class Meta:
         model = ProyectoFinal
-        fields = ['estudiante', 'estudiante_uno', 'estudiante_dos', 'tutor', 'jurado_1', 'jurado_2', 'jurado_3', 'titulo', 'resumen', 'modalidad', 'guia_externo', 'documentacion']
+        fields = ['estudiante', 'estudiante_uno', 'tutor', 'jurado_1', 'jurado_2', 'jurado_3', 'titulo', 'resumen', 'modalidad', 'guia_externo', 'documentacion']
         widgets = {
             'estudiante': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
             'estudiante_uno': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
-            'estudiante_dos': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
             'tutor': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
             'jurado_1': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
             'jurado_2': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
@@ -1062,11 +1080,38 @@ class EditarHabilitarTribunalesPerfilForm(forms.ModelForm):
         
        
         
-        
-        
- 
+class ActaPerForm(forms.ModelForm):
+    class Meta:
+        model = ActaProyectoPerfil
+        fields = ['docrespaldo']
+        widgets = {
+            'docrespaldo': forms.FileInput(attrs={'class': 'form-control'})
+        }
       
-
+class ActaPrivForm(forms.ModelForm):
+    class Meta:
+        model = ActaPrivada
+        fields = ['docrespaldo']
+        widgets = {
+            'docrespaldo': forms.FileInput(attrs={'class': 'form-control'})
+        }
+      
+class ActaPubForm(forms.ModelForm):
+    class Meta:
+        model = ActaPublica
+        fields = ['docrespaldo']
+        widgets = {
+            'docrespaldo': forms.FileInput(attrs={'class': 'form-control'})
+        }
+      
+class ActaViadiploForm(forms.ModelForm):
+    class Meta:
+        model = ActaViaDiplomado
+        fields = ['docrespaldo']
+        widgets = {
+            'docrespaldo': forms.FileInput(attrs={'class': 'form-control'})
+        }
+      
 
    
   

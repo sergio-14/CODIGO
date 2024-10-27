@@ -106,101 +106,22 @@
                 <div class="px-lg-4 px-2 py-4 border no-guttee">
                     <div class="row d-flex justify-content-center">
                         <div class="col-md-5 col-12 d-flex flex-column align-items-center">
-                            <div class="image-container">
+                            <div class="image-container"> 
                                 {% if actividad.estudiante.imagen %}
-                                <!-- Imágenes (se ocultan inicialmente) -->
-                                <img id="imagen1" src="{{ actividad.estudiante_dos.imagen.url }}" class="imgrepo" alt="." style="display: none;">
-                                <img id="imagen2" src="{{ actividad.estudiante_uno.imagen.url }}" class="imgrepo" alt="." style="display: none;">
-                                <img id="imagen3" src="{{ actividad.estudiante.imagen.url }}" class="imgrepo" alt="." style="display: block;"> <!-- Se muestra por defecto -->
+                                <div class="image-containerr">
+                                    <img src="{{ actividad.estudiante_uno.imagen.url }}" alt="" class="image-left">
+                                    <img src="{{ actividad.estudiante.imagen.url }}" alt="" class="image-right">
+                                </div>
                                 {% else %}
                                 <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
                                 {% endif %}
                             </div>
-                            <div class="btn-group ">
-                                
-                                <button id="btnAnterior" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-                                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                                  </svg></button>
-                                <button id="btnSiguiente" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="colorestados bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-                                    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
-                                  </svg></button>
-                            </div>
                         </div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                // Array de imágenes y nombres
-                                const imagenes = [];
-                                const nombres = [];
-                                
-                                const imagen1 = document.getElementById('imagen1');
-                                const imagen2 = document.getElementById('imagen2');
-                                const imagen3 = document.getElementById('imagen3');
-                                
-                                const nombre1 = document.getElementById('nombre1');
-                                const nombre2 = document.getElementById('nombre2');
-                                const nombre3 = document.getElementById('nombre3');
-                                
-                                // Solo agregar las imágenes y nombres que existen al array
-                                if (imagen1 && nombre1) {
-                                    imagenes.push(imagen1);
-                                    nombres.push(nombre1);
-                                }
-                                if (imagen2 && nombre2) {
-                                    imagenes.push(imagen2);
-                                    nombres.push(nombre2);
-                                }
-                                if (imagen3 && nombre3) {
-                                    imagenes.push(imagen3);
-                                    nombres.push(nombre3);
-                                }
-                            
-                                let indiceActual = imagenes.length - 1; // Mostrar la última imagen (estudiante) al inicio
-                            
-                                // Función para mostrar la imagen y el nombre actuales
-                                function mostrarActual() {
-                                    imagenes.forEach(function(imagen, index) {
-                                        imagen.style.display = index === indiceActual ? 'block' : 'none';
-                                    });
-                                    
-                                    nombres.forEach(function(nombre, index) {
-                                        nombre.style.display = index === indiceActual ? 'block' : 'none';
-                                    });
-                                }
-                            
-                                // Botones
-                                const btnAnterior = document.getElementById('btnAnterior');
-                                const btnSiguiente = document.getElementById('btnSiguiente');
-                                
-                                // Evento botón "Siguiente"
-                                btnSiguiente.addEventListener('click', function() {
-                                    if (indiceActual < imagenes.length - 1) {
-                                        indiceActual++;
-                                    } else {
-                                        indiceActual = 0; // Volver al inicio si llegamos al final
-                                    }
-                                    mostrarActual();
-                                });
-                            
-                                // Evento botón "Anterior"
-                                btnAnterior.addEventListener('click', function() {
-                                    if (indiceActual > 0) {
-                                        indiceActual--;
-                                    } else {
-                                        indiceActual = imagenes.length - 1; // Volver al final si estamos al principio
-                                    }
-                                    mostrarActual();
-                                });
-                            
-                                // Mostrar la imagen y nombre iniciales
-                                mostrarActual();
-                            });
-                            
-                        </script>
+                        
                         <div class="col-md-7 col-12 mt-4 text-center">
                             <p class="text colorestados">Nombre Egresado:</p>
-                            <p id="nombre1" class="title colortext" style="display: none;">{{ actividad.estudiante_dos }}</p>
-                            <p id="nombre2" class="title colortext" style="display: none;">{{ actividad.estudiante_uno }}</p>
-                            <p id="nombre3" class="title colortext" style="display: block;">{{ actividad.estudiante }}</p> <!-- Se muestra por defecto -->
+                            <p id="nombre2" class="title colortext">{{ actividad.estudiante_uno }}</p>
+                            <p id="nombre3" class="title colortext">{{ actividad.estudiante }}</p> <!-- Se muestra por defecto -->
                         </div>
                     </div>
                     <div class="text-center pt-2">

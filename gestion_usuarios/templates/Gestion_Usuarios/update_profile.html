@@ -62,13 +62,16 @@
         
             <!-- Birthdate and CI Section -->
             <div class="row">
-                <div class="col-lg-6 col-12 form-group">
+                <div class="col-lg-4 col-12 form-group">
+                    {{ user_form.dni.label_tag }}
+                    {{ user_form.dni }}
+                </div>
+                <div class="col-lg-4 col-12 form-group">
                     {{ user_form.fecha_nac.label_tag }}
                     {{ user_form.fecha_nac }}
                     {{ user_form.fecha_nac.errors }}
                 </div>
-                
-                <div class="col-lg-6 col-12 form-group">
+                <div class="col-lg-4 col-12 form-group">
                     {{ user_form.telefono.label_tag }}
                     {{ user_form.telefono }}
                 </div>

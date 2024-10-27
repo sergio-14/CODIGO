@@ -29,15 +29,15 @@
             </div>
     
             <div class="row mb-1">
-                <div class="col-md-4">
+                <div class="col-md-2">
                   
                     {{ form.lugar|as_crispy_field }}
                 </div>
-                <div class="col-md-4 ">
+                <div class="col-md-2 ">
                 
                     {{ form.acta|as_crispy_field }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <label for="{{ form.perperiodo.id_for_label }}" class="form-label">Periodo</label>
                     <select name="perperiodo" class="form-control">
                         {% for periodo in ultimos_periodos %}
@@ -45,9 +45,7 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-6">
-                    {{ form.estudiante_uno|as_crispy_field }}
-                </div>
+               
                 <div class="col-md-6">
                     {{ form.presidente|as_crispy_field }}
                 </div>
@@ -105,10 +103,14 @@
                     
                     {{ form.valor_3|as_crispy_field }}
                 </div>
-                <div class="col-md-2">
-                  
-                    {{ form.totalnota|as_crispy_field }}
+                <div class="col-md-2 pt-1">
+                    {{ form.totalnota.label_tag }}<br>
+                    <input type="number" id="id_totalnota" name="totalnota" value="{{ form.totalnota.value }}" class="form-control" min="0" max="100" readonly>
                 </div>
+                {% comment %} <div class="col-md-2">
+                  
+                    {{ form.totalnota|as_crispy_field }} class="form-control" min="0" max="100" readonly
+                </div> {% endcomment %}
             </div>
         <br>
         <input  class="btn btn-dark me-2 fontII" type="submit" value="Enviar Información">
@@ -141,12 +143,33 @@
 </div>
 
 <script>
-  
+    document.addEventListener('DOMContentLoaded', function() {    
+        const juradoSelects = [
+          document.getElementById('id_secretario'),
+          document.getElementById('id_vocal_1'),
+          document.getElementById('id_vocal_2')
+        ];
+      
+        // Actualiza las opciones disponibles para los jurados
+        function updateJuradoOptions() {
+          const selectedValues = juradoSelects.map(select => select.value);
+          juradoSelects.forEach(select => {
+            Array.from(select.options).forEach(option => {
+              option.hidden = selectedValues.includes(option.value) && option.value !== select.value;
+            });
+          });
+        }  
+        // Agregar evento change para cada select de jurados
+        juradoSelects.forEach(select => {
+          select.addEventListener('change', updateJuradoOptions);
+        });
+      
+        // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
+        updateEstudianteOptions();
+        updateJuradoOptions();
+    });
 
-
-
-
-  function showConfirmationModal(event) {
+    function showConfirmationModal(event) {
     event.preventDefault(); 
     $('#confirmationModal').modal('show'); 
     
@@ -157,6 +180,29 @@
   }
 
   
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const valor1 = document.getElementById("id_valor_1");
+        const valor2 = document.getElementById("id_valor_2");
+        const valor3 = document.getElementById("id_valor_3");
+        const totalNota = document.getElementById("id_totalnota");
+
+        function actualizarTotal() {
+            const v1 = parseFloat(valor1.value) || 0;
+            const v2 = parseFloat(valor2.value) || 0;
+            const v3 = parseFloat(valor3.value) || 0;
+
+            const suma = v1 + v2 + v3;
+
+            // Redondear el resultado a un número entero
+            totalNota.value = Math.round(suma);
+        }
+
+        valor1.addEventListener("input", actualizarTotal);
+        valor2.addEventListener("input", actualizarTotal);
+        valor3.addEventListener("input", actualizarTotal);
+    });
 </script>
 {% endblock %}
 

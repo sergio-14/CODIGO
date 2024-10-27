@@ -32,6 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     apellidoM = models.CharField(max_length=50, null=True, blank=True)
+    dni = models.CharField(max_length=20, unique=True, null=True, blank=True, verbose_name='Carnet Identidad:')
     fecha_nac = models.DateField(null=True, blank=True)
     telefono = models.CharField(max_length=20, null=True, blank=True)
     estado = models.BooleanField(default=False)

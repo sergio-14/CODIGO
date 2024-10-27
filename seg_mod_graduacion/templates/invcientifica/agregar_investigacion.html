@@ -26,7 +26,7 @@
         <!-- Render the rest of the form excluding user_uno and user_dos -->
         {{ form.non_field_errors }}
         {% for field in form %}
-          {% if field.name != 'user_uno' and field.name != 'user_dos' %}
+          {% if field.name != 'user_uno' %}
             {{ field|as_crispy_field }}
           {% endif %}
         {% endfor %}
@@ -38,7 +38,6 @@
       {% block scripts %}
       <script>
         $("#id_user_uno").select2();
-        $("#id_user_dos").select2();
 
         const checkbox = document.getElementById('{{ form.habilitar_users.id_for_label }}');
         const extraUsersDiv = document.getElementById('extra-users');
