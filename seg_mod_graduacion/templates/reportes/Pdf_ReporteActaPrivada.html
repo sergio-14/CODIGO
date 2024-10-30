@@ -224,8 +224,8 @@
              <tr>
                  <th class="espacios"></th>
                  <th class="des">Hora de Defensa </th>
-                 <th class="lugar">Inicio :{{ acta.horainicio }}</th>
-                 <th class="lugar">Finalización :{{ acta.horafin }}</th>
+                 <th class="lugar">Inicio :{{ acta.horainicio|time:"H:i" }}</th>
+                 <th class="lugar">Finalización :{{ acta.horafin|time:"H:i" }}</th>
                  <th class="espacios"></th>
              </tr>
              

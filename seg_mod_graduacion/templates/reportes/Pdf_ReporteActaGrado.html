@@ -276,8 +276,8 @@
     <p class="text"> <span class="bold">HORA Y FECHA:</span> {{acta.lugar_3}} {{ acta.fechadefensa_3|date:"d/m/Y" }} Hora de Inicio: {{ acta.horainicio_3|time:"H:i" }} Hora fin: {{ acta.horafin_3|time:"H:i" }}</p><br>
     <p class="text bold">MIENBROS  DEL TRIBUNAL:</p><br>
     <ul>
-        <li class="text">Presidente: <span class="bold">{{ acta.presidenteacta.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}</span </li>
-        <li class="text">1er. Tribunal: <span class="bold">{{ acta.jurado_1.titulo }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }} {{ acta.jurado_1.nombre }}</span> </li>
+        <li class="text">Presidente: <span class="bold">{{ acta.presidenteacta.docente.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}</span </li>
+        <li class="text">1er. Tribunal: <span class="bold">{{ acta.jurado_1.docente.titulo }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }} {{ acta.jurado_1.nombre }}</span> </li>
         <li class="text">2do. Tribunal: <span class="bold">{{ acta.jurado_2.docente.titulo }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }} {{ acta.jurado_2.nombre }}</span> </li>
         <li class="text">3er. Tribunal: <span class="bold">{{ acta.jurado_3.docente.titulo }} {{ acta.jurado_3.apellido }} {{ acta.jurado_3.apellidoM }} {{ acta.jurado_3.nombre }}</span> </li>
     </ul>
@@ -375,7 +375,7 @@
         <div class="contfirmapresidente letrafirmas"><br><br><br><br><br>
            
             PRESIDENTE<br>                    
-            {{ acta.presidenteacta.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}
+            {{ acta.presidenteacta.docente.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}
         </div><br>
         <thead id="firm">
             <tr id="firm">

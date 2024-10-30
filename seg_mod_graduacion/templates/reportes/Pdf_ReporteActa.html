@@ -120,7 +120,7 @@
                 </th>
                 <th class="">
                     <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
-                    <p class="subtitulo">ACTA DE DEFENSA PERFIL DE PROYECTO </p>
+                    <p class="subtitulo">ACTA DE DEFENSA DE PERFIL</p>
                     <p class="subsubtitulo">PERÍODO Y GESTIÓN: {{ acta.perperiodo}}</p>
                 </th>
                 <th class="log">JE-CIS
@@ -202,8 +202,8 @@
                 <tr>
                     <th class="espacios"></th>
                     <th class="des">Hora de Defensa </th>
-                    <th class="lugar">Inicio :{{ acta.horainicio }}</th>
-                    <th class="lugar">Finalización :{{ acta.horafin }}</th>
+                    <th class="lugar">Inicio :{{ acta.horainicio|time:"H:i" }}</th>
+                    <th class="lugar">Finalización :{{ acta.horafin|time:"H:i" }}</th>
                     <th class="espacios"></th>
                 </tr>
                 

@@ -42,27 +42,11 @@ class ActividadRepositorioForm(forms.ModelForm):
         widget=forms.NumberInput(attrs={'min': 50, 'max': 100})
     )
     
-    modalidad = forms.ChoiceField(  
-        choices=[
-            ('Vía Diplomado', 'Vía Diplomado'),
-        ],
-        label='Modalidad'
-    )
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-       
-        self.fields['documentacion'] 
 
     def clean(self):
         cleaned_data = super().clean()
-        modalidad = cleaned_data.get('modalidad')
-    
-        if modalidad == 'Vía Diplomado':
-            documentacion = cleaned_data.get('documentacion')
-            if not documentacion:
-                self.add_error('documentacion', 'Este campo es obligatorio para la modalidad "Vía Diplomado".')
-        
         return cleaned_data
 
     class Meta:
@@ -73,6 +57,7 @@ class ActividadRepositorioForm(forms.ModelForm):
             'nota_aprobacion': 'Nota',
             'documentacion': 'Documentación'
         }
+
         
 
 class ActividadFilterForm(forms.Form):

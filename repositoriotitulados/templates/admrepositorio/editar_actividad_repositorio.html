@@ -31,18 +31,22 @@
         <li class="px-3">2do. {{ actividad.jurado_2 }}</li>
         <li class="px-3">3er. {{ actividad.jurado_3 }}</li>
       </div>
-      <div class="col-lg-5 col-12 colorestados text pb-5 ">
-        <form method="post">
+      <div class="col-lg-5 col-12 colorestados fonII text pb-5 ">
+        <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           {{ form.non_field_errors }}
           <div class="form-group" style="display:none;">
             {{ form.modalidad|as_crispy_field }}
           </div>
-          <div class="form-group" id="documentacion-group" >
+          <div class="form-group fontII " id="documentacion-group" >
             {{ form.documentacion|as_crispy_field }}
           </div>
-          {{ form.numero_acta|as_crispy_field }}
-          {{ form.nota_aprobacion|as_crispy_field }}
+          <div class="form-group" style="display:none;">
+            {{ form.numero_acta|as_crispy_field }}
+          </div>
+          <div class="form-group" style="display:none;">
+            {{ form.nota_aprobacion|as_crispy_field }}
+          </div>
           <button class="btn btn-primary fontII" type="submit">Guardar Datos</button>
           <a class="btn btn-danger fontII" href="{% url 'listarepositorios' %}">Cancelar</a>
         </form>

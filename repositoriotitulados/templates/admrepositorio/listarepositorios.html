@@ -97,24 +97,61 @@
                 <div class="px-lg-4 px-2 py-4 border no-guttee">
                     <div class="row d-flex justify-content-center">
                         <div class="col-md-5 col-12 d-flex flex-column align-items-center">
-                            <div class="image-container"> 
+                            <div class="image-container" id="fotoContainer">
                                 {% if actividad.estudiante.imagen %}
                                 <div class="image-containerr">
-                                    <img src="{{ actividad.estudiante_uno.imagen.url }}" alt="" class="image-left">
+                                    {% if actividad.estudiante_uno and actividad.estudiante_uno.imagen %}
+                                        <img src="{{ actividad.estudiante_uno.imagen.url }}" alt="" class="image-left">
+                                    {% endif %}
                                     <img src="{{ actividad.estudiante.imagen.url }}" alt="" class="image-right">
                                 </div>
                                 {% else %}
-                                <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
+                                <img id="sinFoto" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto" style="display: none;">
                                 {% endif %}
                             </div>
                         </div>
                         
                         <div class="col-md-7 col-12 mt-4 text-center">
                             <p class="text colorestados">Nombre Egresado:</p>
-                            <p id="nombre2" class="title colortext">{{ actividad.estudiante_uno }}</p>
-                            <p id="nombre3" class="title colortext">{{ actividad.estudiante }}</p> <!-- Se muestra por defecto -->
+                            <p class="estudianteUno  text colortext">{{ actividad.estudiante_uno }}</p>
+                            <p id="estudiante" class="text colortext">{{ actividad.estudiante }}</p> <!-- Se muestra por defecto -->
                         </div>
                     </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const fotoContainer = document.getElementById('fotoContainer');
+                            const sinFoto = document.getElementById('sinFoto');
+                            const estudiantes = document.querySelectorAll('.estudianteUno'); // Selecciona todos los elementos con la clase estudianteUno
+                        
+                            // Mostrar "Sin Foto" solo si el contenedor de fotos no tiene imágenes visibles
+                            const images = fotoContainer.getElementsByTagName('img');
+                            let hasVisibleImage = false;
+                        
+                            for (let img of images) {
+                                if (img.style.display !== 'none') {
+                                    hasVisibleImage = true;
+                                    break;
+                                }
+                            }
+                        
+                            if (!hasVisibleImage) {
+                                sinFoto.style.display = 'block';
+                            }
+                        
+                            // Ocultar elementos de estudianteUno si su contenido está vacío, es "None", o contiene solo espacios en blanco
+                            estudiantes.forEach(estudiante => {
+                                const textContent = estudiante.textContent.trim().toLowerCase();
+                                if (!textContent || textContent === 'none') {
+                                    estudiante.style.display = 'none';
+                                }
+                            });
+                        });
+                    </script>
+                    {% comment %} <div class="col-md-7 col-12 mt-4 text-center">
+                        <p class="text colorestados">Nombre Egresado:</p>
+                        <p class="estudianteUno colortext">{{ actividad.estudiante_uno }}</p>
+                        <p id="estudiante" class="colortext">{{ acta.estudiante }}</p><!-- Se muestra por defecto -->
+                    </div> {% endcomment %}
                     <div class="text-center pt-2">
                         <p class="text colortext">{{ actividad.titulo }}</p>
                     </div>
@@ -200,7 +237,7 @@
         <div class="pagination text-center fontI">
             <span class="step-links">
                 {% if page_obj.has_previous %}
-                    <a class="btn btn-sm btn-dark" href="?q={{ query }}&page=1">&laquo; primero</a>
+                  
                     <a class="btn btn-sm btn-dark" href="?q={{ query }}&page={{ page_obj.previous_page_number }}">anterior</a>
                 {% endif %}
         
@@ -210,7 +247,7 @@
         
                 {% if page_obj.has_next %}
                     <a class="btn btn-sm btn-dark" href="?q={{ query }}&page={{ page_obj.next_page_number }}">siguiente</a>
-                    <a class="btn btn-sm btn-dark" href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">último &raquo;</a>
+                    
                 {% endif %}
             </span>
         </div>

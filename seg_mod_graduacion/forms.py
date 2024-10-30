@@ -452,7 +452,13 @@ class ActaViaDiplomadoForm(forms.ModelForm):
             'lugar', 'fechadefensa', 'horainicio', 'horafin','presidente', 'secretario', 'vocal_1', 'vocal_2','modalidad' ,
             'valor_1', 'valor_2', 'valor_3', 'totalnota'
         ]  
-
+        labels = {
+            'valor_1': '1ra. Calificicación',
+            'valor_2': '2da. Calificicación',
+            'valor_3': '3ra. Calificicación',
+            'totalnota': 'Calificicación Total',
+            
+        }
         widgets = {
             'perperiodo': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
             'acta': forms.TextInput(attrs={'class': 'form-control', 'required': 'required', 'readonly': 'readonly'}),
@@ -568,7 +574,13 @@ class ActaExcelenciaForm(forms.ModelForm):
             'lugar', 'fechadefensa', 'horainicio', 'horafin', 'secretario', 'jurado_1', 'jurado_2', 'jurado_3', 'modalidad', 
             'notatotal', 'presidenteacta'
         ]
-
+        labels = {
+            'jurado_1': '1er. Tribunal',
+            'jurado_2': '2do. Tribunal',
+            'jurado_3': '3er. Tribunal',
+            'notatotal': 'Nota',
+            
+        }
         widgets = {
             'perperiodo': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
             'acta': forms.TextInput(attrs={'class': 'form-control', 'required': 'required', 'readonly': 'readonly'}),

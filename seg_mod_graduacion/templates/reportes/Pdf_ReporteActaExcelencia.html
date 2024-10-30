@@ -281,8 +281,8 @@
              <tr>
                  <th class="espacios"></th>
                  <th class="des">Hora de Defensa </th>
-                 <th class="lugar">Inicio :{{ acta.horainicio }}</th>
-                 <th class="lugar">Finalización :{{ acta.horafin }}</th>
+                 <th class="lugar">Inicio :{{ acta.horainicio|time:"H:i" }}</th>
+                 <th class="lugar">Finalización :{{ acta.horafin|time:"H:i" }}</th>
                  <th class="espacios"></th>
              </tr>
              
@@ -302,7 +302,7 @@
          <thead>
             <tr><th class="espacios"></th>
                 <th class="des">Presidente </th>
-                <th class="descrip">{{ acta.presidenteacta.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}</th>
+                <th class="descrip">{{ acta.presidenteacta.docente.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}</th>
                 <th class="espacios"></th>
             </tr>
             <tr>
@@ -388,7 +388,7 @@
         <div class="contfirmapresidente letrafirmas"><br><br><br><br><br>
            
             PRESIDENTE<br>                    
-            {{ acta.presidenteacta.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}
+            {{ acta.presidenteacta.docente.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}
         </div>
         <thead id="firm">
             <tr id="firm">

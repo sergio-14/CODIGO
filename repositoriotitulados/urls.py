@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler403
 from repositoriotitulados import views
+from .views import handle_permission_denied
 from .views import TransferirActividadView, pdf_reporte_repositorio
 
 #from .views import crear_repositorio
@@ -20,7 +21,6 @@ urlpatterns = [
     
     path('admrepositorio/pdf/', pdf_reporte_repositorio.as_view(), name='pdf_reporte_repositorio'),
     
-    path('exportar_excel_repositorios/', views.exportar_excel_repositorios, name='exportar_excel_repositorios'),
-    
-    
+    path('exportar_excel_repositorios/', views.exportar_excel_repositorios, name='exportar_excel_repositorios'),   
 ]
+handler403 = handle_permission_denied

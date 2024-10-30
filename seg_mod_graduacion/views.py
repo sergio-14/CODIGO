@@ -14,16 +14,13 @@ from .models import Estudiante, InvCientifica, ComentarioInvCientifica, Habilita
 ##############  permisos decoradores  para funciones y clases   ################  
 
 #modalidad de graduación permigroup 
-def permiso_M_G(user, ADMMGS):
-    try:
-        grupo = Group.objects.get(name=ADMMGS)
-    except Group.DoesNotExist:
-        raise PermissionDenied(f"El grupo '{ADMMGS}' no existe.")
-    
-    if grupo in user.groups.all():
+def permiso_M_G(user, group_name='ADMMGS'):
+    if user.is_superuser:
+        return True
+    elif user.groups.filter(name=group_name).exists():
         return True
     else:
-        raise PermissionDenied
+        raise PermissionDenied(f"El usuario no pertenece al grupo '{group_name}' y no es superusuario.")
     
 #permiso para docentes  
 def permiso_Docentes(user, Docentes):
@@ -213,7 +210,7 @@ def vista_perfil(request):
 
     return render(request, 'perfil/vista_perfil.html', {'proyectos': proyectos_paginados})
 
-@method_decorator(user_passes_test(lambda u: permiso_M_G(u, 'ADMIIISP')), name='dispatch')
+
 class PerfilesParaAprobar(View):
     def get(self, request):
         proyectos = PerfilProyecto.objects.filter(perestado='Pendiente')
@@ -435,6 +432,7 @@ def agregar_actapublica(request):
 
 from .models import ActaProyectoPerfil
 
+@user_passes_test(lambda u: permiso_M_G(u, 'ADMMGS'))
 def actaperfil_list(request):
     query = request.GET.get('q')  
     actas_list = ActaProyectoPerfil.objects.all().order_by('-id')
@@ -714,7 +712,7 @@ def crear_actividad_control(request):
         if form.is_valid():
             actividad_control = form.save()
             actividad_control.habilitar_actividad()
-            return redirect('dashboard') 
+            return redirect('lista_actividad_control') 
     else:
         form = ActividadControlForm()
     
@@ -1163,7 +1161,6 @@ def exportar_excel(request):
         'ID', 
         '1er. Estudiante', 
         '2do. Estudiante', 
-        '3er. Estudiante', 
         'Título del Proyecto', 
         'Fecha de Creación', 
         'Descripción del Proyecto', 

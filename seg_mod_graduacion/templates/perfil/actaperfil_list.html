@@ -27,14 +27,14 @@
     {% for acta in actas %}
     <div class="no-guttee mb-5 fontI">
         <div class="row py-5">
-            <div class="col-md-9 px-5 text-wrap">
+            <div class="col-md-8 px-5 text-wrap">
                 <!-- Your existing content for displaying actas -->
                 <div class="row">
                     <div class="col-lg-4 col-12 text-center">
                         <p class="fecha colortext ">Fecha: <span class="colorestados">{{ acta.fechadefensa|date:"d/m/Y" }} - {{ acta.lugar }}</span></p>
                     </div>
                     <div class="col-lg-4 col-12 text-center">
-                        <p class="fecha colortext ">Hora de: <span class="colorestados"> {{ acta.horainicio }}</span> a: <span class="colorestados"> {{ acta.horafin }}</span></p>
+                        <p class="fecha colortext ">Hora de: <span class="colorestados"> {{ acta.horainicio|time:"H:i" }}</span> a: <span class="colorestados"> {{ acta.horafin|time:"H:i" }}</span></p>
                     </div>
                     <div class="col-lg-4 col-12 text-center">
                         <p class="fecha colortext ">Periodo y Gestión: <span class="colorestados"> {{ acta.perperiodo }}</span></p>
@@ -76,7 +76,7 @@
                         
                     </div>
                 </div>
-                <p class="no-guttee py-2 col-lg-5 col-6 text-center">
+                <p class="no-guttee py-2 col-lg-5 col-12 text-center">
                     {% if acta.docrespaldo %}
                         <a href="{{ acta.docrespaldo.url }}" class=" text-center list-group-item list-group-item-action" target="_blank">
                             Acta Confirmada
@@ -87,25 +87,54 @@
                 </p>
                 
             </div>
-            <div class="col-md-3 d-flex flex-column align-items-center">
-                <div class="image-container"> 
+            <div class="col-md-4 d-flex flex-column align-items-center">
+                <div class="image-container" id="fotoContainer">
                     {% if acta.estudiante.imagen %}
                     <div class="image-containerr">
-                        <img src="{{ acta.estudiante_uno.imagen.url }}" alt="" class="image-left">
+                        {% if acta.estudiante_uno and acta.estudiante_uno.imagen %}
+                            <img src="{{ acta.estudiante_uno.imagen.url }}" alt="" class="image-left">
+                        {% endif %}
                         <img src="{{ acta.estudiante.imagen.url }}" alt="" class="image-right">
                     </div>
                     {% else %}
-                    <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
+                    <img id="sinFoto" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto" style="display: none;">
                     {% endif %}
                 </div>
-                <h5 class="text colortext pt-3 text-center">
+                <h5 class="text colortext pt-3 text-center" id="universitarios">
                     <p class="text colorestados">Nombre Egresado:</p>
-                    <p id="nombre2" class=" colortext" >{{ acta.estudiante_uno }}</p>
-                    <p id="nombre3" class=" colortext" >{{ acta.estudiante }}</p>
+                    <p class="estudianteUno colortext">{{ acta.estudiante_uno }}</p>
+                    <p id="estudiante" class="colortext">{{ acta.estudiante }}</p>
                 </h5>
+                
                 <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const fotoContainer = document.getElementById('fotoContainer');
+                        const sinFoto = document.getElementById('sinFoto');
+                        const estudiantes = document.querySelectorAll('.estudianteUno'); // Selecciona todos los elementos con la clase estudianteUno
                     
+                        // Mostrar "Sin Foto" solo si el contenedor de fotos no tiene imágenes visibles
+                        const images = fotoContainer.getElementsByTagName('img');
+                        let hasVisibleImage = false;
                     
+                        for (let img of images) {
+                            if (img.style.display !== 'none') {
+                                hasVisibleImage = true;
+                                break;
+                            }
+                        }
+                    
+                        if (!hasVisibleImage) {
+                            sinFoto.style.display = 'block';
+                        }
+                    
+                        // Ocultar elementos de estudianteUno si su contenido está vacío, es "None", o contiene solo espacios en blanco
+                        estudiantes.forEach(estudiante => {
+                            const textContent = estudiante.textContent.trim().toLowerCase();
+                            if (!textContent || textContent === 'none') {
+                                estudiante.style.display = 'none';
+                            }
+                        });
+                    });
                 </script>
                 {% if acta.pk %}
                 <a class="btn btn-sm btn-primary fontII" href="{% url 'Pdf_ReporteActa' pk=acta.pk %}" target="_blank">General Reporte Acta</a><br>

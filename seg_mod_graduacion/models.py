@@ -79,7 +79,6 @@ class Materia(models.Model):
     nombre_materia = models.CharField(max_length=150)
     codigo = models.CharField(max_length=50, unique=True)
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
-    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):

@@ -178,4 +178,4 @@ class SemestreForm(forms.ModelForm):
 class MateriaForm(forms.ModelForm):
     class Meta:
         model = Materia
-        fields = ['nombre_materia','codigo','semestre','carrera','area']
+        fields = ['nombre_materia','codigo','semestre','area']

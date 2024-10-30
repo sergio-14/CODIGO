@@ -255,8 +255,8 @@
     <h2 class="tivia">METODOLOGIA DEL PROCESO DE DISERTACIÓN PÚBLICA DEL TRABAJO DE INVESTIGACION PARA LA MODALIDAD DE TITULACIÓN VÍA DIPLOMADO POSGRADO - U.A.B.J.B.</h2><br>
     <p class="text bold">Mienbros  del Tribunal:</p>
     <ul>
-        <li class="text">Presidente: <span class="bold">{{ acta.presidente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}</span </li>
-        <li class="text">Secretario: <span class="bold">{{ acta.secretario.titulo }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }} {{ acta.secretario.nombre }}</span> </li>
+        <li class="text">Presidente: <span class="bold">{{ acta.presidente.docente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}</span </li>
+        <li class="text">Secretario: <span class="bold">{{ acta.secretario.docente.titulo }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }} {{ acta.secretario.nombre }}</span> </li>
         <li class="text">1er. Vocal: <span class="bold">{{ acta.vocal_1.docente.titulo }} {{ acta.vocal_1.apellido }} {{ acta.vocal_1.apellidoM }} {{ acta.vocal_1.nombre }}</span> </li>
         <li class="text">2do. Vocal: <span class="bold">{{ acta.vocal_2.docente.titulo }} {{ acta.vocal_2.apellido }} {{ acta.vocal_2.apellidoM }} {{ acta.vocal_2.nombre }}</span> </li>
     </ul><br>
@@ -338,8 +338,8 @@
     <p class="text">El Aspirante (Nombre Completo): <span class="bold">{{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}</span></span></p><br>
     <p class="text">y el Tribunal de Grado formado por las siguientes personas:</p>
     <ul>
-        <li class="text">Presidente: <span class="bold">{{ acta.tutor.presidente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}</span </li>
-        <li class="text">Secretario: <span class="bold">{{ acta.tutor.secretario.titulo }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }} {{ acta.secretario.nombre }}</span> </li>
+        <li class="text">Presidente: <span class="bold">{{ acta.presidente.docente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}</span </li>
+        <li class="text">Secretario: <span class="bold">{{ acta.secretario.docente.titulo }} {{ acta.secretario.apellido }} {{ acta.secretario.apellidoM }} {{ acta.secretario.nombre }}</span> </li>
         <li class="text">1er. Vocal: <span class="bold">{{ acta.vocal_1.docente.titulo }} {{ acta.vocal_1.apellido }} {{ acta.vocal_1.apellidoM }} {{ acta.vocal_1.nombre }}</span> </li>
         <li class="text">2do. Vocal: <span class="bold">{{ acta.vocal_2.docente.titulo }} {{ acta.vocal_2.apellido }} {{ acta.vocal_2.apellidoM }} {{ acta.vocal_2.nombre }}</span> </li>
     </ul><br>
@@ -377,25 +377,25 @@
                 <tr>
                     <td class="">a) Presentación del trabajo de investigación hasta</td>
                     <td class="col4">{{ acta.valor_1 }} </td>
-                    <td class="col4">{{ acta.get_valor_1 }} </td>
+                    <td class="col4">{{ acta.get_valor_1|capfirst }} </td>
                     <td class="col4">40 puntos </td>
                 </tr>
                 <tr>
                     <td class="">b) Exposición, orden y dominio del tema hasta</td>
                     <td class="col4">{{ acta.valor_2 }} </td>
-                    <td class="col4">{{ acta.get_valor_2 }} </td>
+                    <td class="col4">{{ acta.get_valor_2|capfirst }} </td>
                     <td class="col4">30 puntos </td>
                 </tr>
                 <tr>
                     <td class="">c) Solvencia y criterio profesional hasta</td>
                     <td class="col4">{{ acta.valor_3 }} </td>
-                    <td class="col4">{{ acta.get_valor_3 }} </td>
+                    <td class="col4">{{ acta.get_valor_3|capfirst }} </td>
                     <td class="col4">30 puntos </td>
                 </tr>
                 <tr>
                     <td class="">d) Nota final de la evaluación</td>
                     <td class="col4">{{ acta.totalnota }} </td>
-                    <td class="col4">{{ acta.get_totalnota }} </td>
+                    <td class="col4">{{ acta.get_totalnota|capfirst }} </td>
                     <td class="col4">100 puntos </td>
                 </tr>
             </thead>
@@ -427,7 +427,7 @@
     </table><br><br>
     <p class="text">Lo cual permitió llegar a las siguientes Conclusiones:</p>
     <p class="text">Trabajo de Investigación y disertación pública "<span class="bold">{{ acta.get_obse }}"</span> y valorada como <span class="bold">"{{ acta.get_valoriz }}"</span> habiendo obtenido 
-    la <span class="bold">calificación total de {{ acta.totalnota }}</span> puntos(Numeral), <span class="bold">{{ acta.get_totalnota }}</span> puntos (Literal).</p><br>
+    la <span class="bold">calificación total de {{ acta.totalnota }}</span> puntos(Numeral), <span class="bold">{{ acta.get_totalnota|capfirst }}</span> puntos (Literal).</p><br>
     <p class="text">En constancia de lo anteriormente expuesto, los miembros  del Tribunal Calificador firman por <span class="bold">duplicado la presente acta del aspirante: 
         {{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}
     </span></p><br>
@@ -435,7 +435,7 @@
         <div class="contfirmapresidente letrafirmas"><br><br><br><br><br><br><br>
            
             PRESIDENTE<br>                    
-            {{ acta.presidente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}
+            {{ acta.presidente.docente.titulo }} {{ acta.presidente.apellido }} {{ acta.presidente.apellidoM }} {{ acta.presidente.nombre }}
         </div><br>
         <thead id="firm">
             <tr id="firm">

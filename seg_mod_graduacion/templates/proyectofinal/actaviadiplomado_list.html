@@ -89,14 +89,16 @@
                 
             </div>
             <div class="col-md-3 pt-1 d-flex flex-column align-items-center">
-                <div class="image-container">
+                <div class="image-container" id="fotoContainer">
                     {% if acta.estudiante.imagen %}
-                    <img id="imagen3" src="{{ acta.estudiante.imagen.url }}" class="imgrepo" alt="Imagen 3" style="display: block;"> <!-- Se muestra por defecto -->
+                    <div class="image-containerr">
+                        <img src="{{ acta.estudiante.imagen.url }}" alt="" class="image-right">
+                    </div>
                     {% else %}
-                    <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
+                    <img id="sinFoto" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto" style="display: none;">
                     {% endif %}
                 </div>
-                <h5 class="text colortext text-center">
+                <h5 class="text colortext pt-3 text-center">
                     <p class="text colorestados">Nombre Egresado:</p>
                     <p id="nombre3" class="title colortext" style="display: block;">{{ acta.estudiante }}</p>
                 </h5>

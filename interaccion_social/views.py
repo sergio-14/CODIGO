@@ -204,9 +204,12 @@ def repoin(request):
 
     primer_proyecto = listaproyectos.first() if listaproyectos.exists() else None
 
+    # Obtener solo las últimas tres gestiones
+    t_gestiones = Periodo.objects.all().order_by('-gestion__anio', '-numero')[:10]
+
     context = {
         'primer_proyecto': primer_proyecto,
-        't_gestiones': Periodo.objects.all(),
+        't_gestiones': t_gestiones,
         't_semestres': Semestre.objects.all(),
         'listaproyectos': listaproyectos,
         'selected_t_gestion': gestion_id,

@@ -21,6 +21,16 @@ from .utils import render_pdf
 from .forms import ActividadFilterForm, AgregarForm
 from django.db.models import Q
 
+def permiso_M_G(user, group_name='ADMMGS'):
+    if user.is_superuser:
+        return True
+    elif user.groups.filter(name=group_name).exists():
+        return True
+    else:
+        raise PermissionDenied(f"El usuario no pertenece al grupo '{group_name}' y no es superusuario.")
+    
+def handle_permission_denied(request, exception):
+    return render(request, '403.html', status=403)
 
 class TransferirActividadView(View):
     
@@ -71,7 +81,9 @@ class TransferirActividadView(View):
             'actividad': actividad,
             'ultimos_periodos': ultimos_periodos  
         })
-
+        
+        
+@user_passes_test(lambda u: permiso_M_G(u, 'ADMMGS'))
 def listaractividadesaprovadas(request):
     repositorios_existentes = RepositorioTitulados.objects.values_list('estudiante_id', flat=True)
     actividades_aprobadas = ProyectoFinal.objects.filter(
@@ -86,7 +98,7 @@ def editar_actividad_repositorio(request, pk):
     ultimos_periodos = Periodo.objects.all().order_by('-gestion__anio', '-numero')[:4]
     
     if request.method == 'POST':
-        form = ActividadRepositorioForm(request.POST, instance=actividad)
+        form = ActividadRepositorioForm(request.POST, request.FILES, instance=actividad)  # Incluye request.FILES
         if form.is_valid():
             form.save()
             return redirect('listarepositorios')
@@ -97,7 +109,8 @@ def editar_actividad_repositorio(request, pk):
         'form': form, 
         'actividad': actividad,
         'ultimos_periodos': ultimos_periodos 
-        })
+    })
+
 
 def actividad_list(request):
     actividades = RepositorioTitulados.objects.all()
