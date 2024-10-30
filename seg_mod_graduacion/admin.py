@@ -3,7 +3,7 @@ from .models import InvCientifica, Modalidad, ComentarioInvCientifica, Comentari
 
 from .models import ProyectoFinal, HabilitarProyectoFinal,ComentarioProFinal,RepositorioTitulados,Facultad,Gestion
 from .models import ActaProyectoPerfil,ActaPrivada, ActaPublica, Estudiante, Docente, Carrera,Periodo, HabilitarTribunalesPerfil
-from .models import ActaViaDiplomado,ActaExcelencia
+from .models import ActaViaDiplomado,ActaExcelencia,Area,ActaGrado
 admin.site.register(ProyectoFinal)
 admin.site.register(HabilitarProyectoFinal)
 
@@ -27,3 +27,5 @@ admin.site.register(Facultad)
 admin.site.register(HabilitarTribunalesPerfil)
 admin.site.register(ActaViaDiplomado)
 admin.site.register(ActaExcelencia)
+admin.site.register(Area)
+admin.site.register(ActaGrado)

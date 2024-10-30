@@ -21,46 +21,44 @@ from .utils import render_pdf
 from .forms import ActividadFilterForm, AgregarForm
 from django.db.models import Q
 
-# Vista basada en clases para transferir una actividad al repositorio
+
 class TransferirActividadView(View):
     
     def get(self, request, actividad_id):
-        # Obtener la actividad aprobada
+      
         actividad = get_object_or_404(ProyectoFinal, id=actividad_id, estado='Aprobado')
-        
-        # Obtener el último acta pública relacionado con el estudiante de la actividad
+     
         ultimo_acta = ActaPublica.objects.filter(estudiante=actividad.estudiante).order_by('-id').first()
         
-        # Si hay un acta, se pasa el estudiante al formulario
         if ultimo_acta:
-            estudiante = ultimo_acta.estudiante  # Obtener el estudiante desde el último acta
-            form = TransferirActividadForm(estudiante=estudiante)  # Pasar el estudiante al formulario
+            estudiante = ultimo_acta.estudiante  
+            form = TransferirActividadForm(estudiante=estudiante)  
         else:
-            form = TransferirActividadForm()  # Crear un formulario vacío si no hay acta
+            form = TransferirActividadForm()  
         
         ultimos_periodos = Periodo.objects.all().order_by('-gestion__anio', '-numero')[:4]
         
         return render(request, 'admrepositorio/transferir_actividad.html', {
             'form': form, 
             'actividad': actividad,
-            'ultimos_periodos': ultimos_periodos  # Agregar los periodos
+            'ultimos_periodos': ultimos_periodos  
         })
     
     def post(self, request, actividad_id):
         actividad = get_object_or_404(ProyectoFinal, id=actividad_id, estado='Aprobado')
         
-        # Obtener el último acta pública relacionado con el estudiante de la actividad
+     
         ultimo_acta = ActaPublica.objects.filter(estudiante=actividad.estudiante).order_by('-id').first()
         
-        # Obtener el estudiante desde el último acta
+    
         estudiante = ultimo_acta.estudiante if ultimo_acta else None  
-        form = TransferirActividadForm(request.POST, estudiante=estudiante)  # Pasar el estudiante al formulario
+        form = TransferirActividadForm(request.POST, estudiante=estudiante)  
         
         if form.is_valid():
             numero_acta = form.cleaned_data['numero_acta']
             nota_aprobacion = form.cleaned_data['nota_aprobacion']
             actividad.transferir_a_repositorio(
-                form.cleaned_data['periodo'],  # Se pasa el periodo seleccionado
+                form.cleaned_data['periodo'],  
                 numero_acta,
                 nota_aprobacion
             )
@@ -71,11 +69,9 @@ class TransferirActividadView(View):
         return render(request, 'admrepositorio/transferir_actividad.html', {
             'form': form,
             'actividad': actividad,
-            'ultimos_periodos': ultimos_periodos  # También aquí en caso de error
+            'ultimos_periodos': ultimos_periodos  
         })
 
-
-      
 def listaractividadesaprovadas(request):
     repositorios_existentes = RepositorioTitulados.objects.values_list('estudiante_id', flat=True)
     actividades_aprobadas = ProyectoFinal.objects.filter(
@@ -112,7 +108,7 @@ def actividad_list(request):
         modalidad = form.cleaned_data.get('modalidad')
         periodo_str = form.cleaned_data.get('periodo')
 
-        # Filtrar por nombre completo
+       
         if nombre_completo:
             nombres = nombre_completo.split()
             if len(nombres) == 2:
@@ -121,32 +117,27 @@ def actividad_list(request):
                     Q(estudiante__nombre__icontains=nombre) & 
                     Q(estudiante__apellido__icontains=apellido) |
                     Q(estudiante_uno__nombre__icontains=nombre) & 
-                    Q(estudiante_uno__apellido__icontains=apellido) |
-                    Q(estudiante_dos__nombre__icontains=nombre) & 
-                    Q(estudiante_dos__apellido__icontains=apellido)
+                    Q(estudiante_uno__apellido__icontains=apellido)
                 )
             else:
                 actividades = actividades.filter(
                     Q(estudiante__nombre__icontains=nombre_completo) |
                     Q(estudiante__apellido__icontains=nombre_completo) |
                     Q(estudiante_uno__nombre__icontains=nombre_completo) |
-                    Q(estudiante_uno__apellido__icontains=nombre_completo) |
-                    Q(estudiante_dos__nombre__icontains=nombre_completo) |
-                    Q(estudiante_dos__apellido__icontains=nombre_completo)
+                    Q(estudiante_uno__apellido__icontains=nombre_completo) 
                 )
         
-        # Filtrar por modalidad
+        
         if modalidad:
             actividades = actividades.filter(modalidad=modalidad)
-        
-        # Filtrar por periodo
+      
         if periodo_str:
             try:
-                # Separar el número del año del periodo
+              
                 numero, gestion_anio = map(int, periodo_str.split('/'))
                 actividades = actividades.filter(periodo__numero=numero, periodo__gestion__anio=gestion_anio)
             except ValueError:
-                # Manejar el caso en que la entrada no es válida
+               
                 pass  
     paginator = Paginator(actividades, 15)  
     page_number = request.GET.get('page')
@@ -187,12 +178,10 @@ def listarepositorios(request):
     if query:
         actividades_repositorio = actividades_repositorio.annotate(
             estudiante_completo=Concat('estudiante__nombre', Value(' '), 'estudiante__apellido'),
-            estudiante_uno_completo=Concat('estudiante_uno__nombre', Value(' '), 'estudiante_uno__apellido'),
-            estudiante_dos_completo=Concat('estudiante_dos__nombre', Value(' '), 'estudiante_dos__apellido')
+            estudiante_uno_completo=Concat('estudiante_uno__nombre', Value(' '), 'estudiante_uno__apellido')
         ).filter(
             Q(estudiante_completo__icontains=query) |
-            Q(estudiante_uno_completo__icontains=query) |
-            Q(estudiante_dos_completo__icontains=query)
+            Q(estudiante_uno_completo__icontains=query)
         )
 
     if modalidad_id and modalidad_id.isdigit():
@@ -224,12 +213,10 @@ class pdf_reporte_repositorio(View):
         if query:
             actividades_repositorio = actividades_repositorio.annotate(
                 estudiante_completo=Concat('estudiante__nombre', Value(' '), 'estudiante__apellido'),
-                estudiante_uno_completo=Concat('estudiante_uno__nombre', Value(' '), 'estudiante_uno__apellido'),
-                estudiante_dos_completo=Concat('estudiante_dos__nombre', Value(' '), 'estudiante_dos__apellido')
+                estudiante_uno_completo=Concat('estudiante_uno__nombre', Value(' '), 'estudiante_uno__apellido')
             ).filter(
                 Q(estudiante_completo__icontains=query) |
-                Q(estudiante_uno_completo__icontains=query) |
-                Q(estudiante_dos_completo__icontains=query)
+                Q(estudiante_uno_completo__icontains=query) 
             )
 
         if modalidad_id:
@@ -261,26 +248,20 @@ def exportar_excel_repositorios(request):
     query = request.GET.get('q', '').strip()
     modalidad_id = request.GET.get('modalidad', None)
 
-    # Obtener los datos del modelo RepositorioTitulados con el filtrado aplicado
     actividades_repositorio = RepositorioTitulados.objects.all()
 
-    # Aplicar el filtro de búsqueda por nombres completos
     if query:
         actividades_repositorio = actividades_repositorio.annotate(
             estudiante_completo=Concat('estudiante__nombre', Value(' '), 'estudiante__apellido'),
-            estudiante_uno_completo=Concat('estudiante_uno__nombre', Value(' '), 'estudiante_uno__apellido'),
-            estudiante_dos_completo=Concat('estudiante_dos__nombre', Value(' '), 'estudiante_dos__apellido')
+            estudiante_uno_completo=Concat('estudiante_uno__nombre', Value(' '), 'estudiante_uno__apellido')
         ).filter(
             Q(estudiante_completo__icontains=query) |
-            Q(estudiante_uno_completo__icontains=query) |
-            Q(estudiante_dos_completo__icontains=query)
+            Q(estudiante_uno_completo__icontains=query)
         )
 
-    # Aplicar el filtro de modalidad si es válido
     if modalidad_id and modalidad_id.isdigit():
         actividades_repositorio = actividades_repositorio.filter(modalidad__id=int(modalidad_id))
 
-    # Crear un libro de trabajo
     wb = openpyxl.Workbook()
     hoja = wb.active
     hoja.title = 'Reporte Repositorio Titulados'
@@ -290,7 +271,6 @@ def exportar_excel_repositorios(request):
         'ID', 
         '1er. Estudiante', 
         '2do. Estudiante', 
-        '3er. Estudiante', 
         'Tutor', 
         '1er. Tribunal', 
         '2do. Tribunal', 
@@ -308,11 +288,9 @@ def exportar_excel_repositorios(request):
     ]
     hoja.append(encabezados)
 
-    # Anotar los nombres completos y obtener los datos filtrados
     datos = actividades_repositorio.annotate(
         estudiante_completo=Concat('estudiante__nombre', Value(' '), 'estudiante__apellido', Value(' '), 'estudiante__apellidoM'),
         estudiante_uno_completo=Concat('estudiante_uno__nombre', Value(' '), 'estudiante_uno__apellido', Value(' '), 'estudiante_uno__apellidoM'),
-        estudiante_dos_completo=Concat('estudiante_dos__nombre', Value(' '), 'estudiante_dos__apellido', Value(' '), 'estudiante_dos__apellidoM'),
         tutor_completo=Concat('tutor__nombre', Value(' '), 'tutor__apellido', Value(' '), 'tutor__apellidoM'),
         jurado1_completo=Concat('jurado_1__nombre', Value(' '), 'jurado_1__apellido', Value(' '),  'jurado_1__apellidoM'),
         jurado2_completo=Concat('jurado_2__nombre', Value(' '), 'jurado_2__apellido', Value(' '),  'jurado_2__apellidoM'),
@@ -321,7 +299,6 @@ def exportar_excel_repositorios(request):
         'id', 
         'estudiante_completo',  
         'estudiante_uno_completo',  
-        'estudiante_dos_completo',
         'tutor_completo',  
         'jurado1_completo', 
         'jurado2_completo',  
@@ -338,25 +315,22 @@ def exportar_excel_repositorios(request):
         'nota_aprobacion' 
     )
 
-    # Convertir fechas con zona horaria a naive (sin tzinfo)
     datos_naive = []
     for dato in datos:
         dato_list = list(dato)
-        # Si el campo de fecha tiene zona horaria, convertirlo a naive
+     
         for i, valor in enumerate(dato_list):
             if isinstance(valor, datetime) and is_aware(valor):
                 dato_list[i] = make_naive(valor)
         datos_naive.append(dato_list)
 
-    # Agregar los datos al archivo
+    
     for dato in datos_naive:
         hoja.append(dato)
 
-    # Preparar la respuesta HTTP para descargar el archivo
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=repositorio_titulados.xlsx'
 
-    # Guardar el archivo en la respuesta
     wb.save(response)
     return response
 

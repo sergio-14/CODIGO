@@ -6,8 +6,8 @@
   <div class="container no-gutte p-lg-4 fontI p-3 ">
     <h3 class="colortext pt-2">Datos y Registro Nuevo Repositorio <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-hdd-rack" viewBox="0 0 16 16">
       <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1M3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m2 7a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-2.5.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
-      <path d="M2 2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1v2H2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1V7h1a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm13 2v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m0 7v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m-3-4v2H4V7z"/>
-    </svg></h3>
+      <path d="M2 2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1v2H2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1V7h1a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm13 2v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m0 7v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m-3-4v2H4V7z"/></svg>
+    </h3>
     <div class="row">
       <div class="col-lg-8 col-12 px-4 card-text">
         <p class="colortext text pt-4 "><span class="colorestados">Fecha: </span>{{ actividad.fecha|date:"d/m/Y" }}</p>
@@ -15,20 +15,12 @@
         <p  class="textrepo colortext"><span class="colorestados">Estudiante:</span></p>
         <li class="px-3">{{ actividad.estudiante }}</li>
         <li id="id_estudiante_uno" class="px-3">{{ actividad.estudiante_uno }}</li>
-        <li id="id_estudiante_dos" class="px-3">{{ actividad.estudiante_dos }}</li>
         <script>
           document.addEventListener('DOMContentLoaded', function() {
-              // Seleccionamos los elementos por sus IDs
-              var estudianteUno = document.getElementById('id_estudiante_uno');
-              var estudianteDos = document.getElementById('id_estudiante_dos');
-      
-              // Comprobamos si el contenido de estudiante es 'None' o está vacío
+            var estudianteUno = document.getElementById('id_estudiante_uno');
+             
               if (estudianteUno && (estudianteUno.textContent.trim() === '' || estudianteUno.textContent.trim() === 'None')) {
-                  estudianteUno.style.display = 'none';  // Ocultamos el li de estudiante_uno
-              }
-      
-              if (estudianteDos && (estudianteDos.textContent.trim() === '' || estudianteDos.textContent.trim() === 'None')) {
-                  estudianteDos.style.display = 'none';  // Ocultamos el li de estudiante_dos
+                  estudianteUno.style.display = 'none';  
               }
           });
         </script>
@@ -69,30 +61,28 @@
   </div>
 </div><br>
 <script>
-  // Deshabilitar los campos al cargar la página
   document.addEventListener("DOMContentLoaded", function() {
       var fields = document.querySelectorAll('#transferir-actividad-form select, #transferir-actividad-form input');
       fields.forEach(function(field) {
-          field.disabled = true; // Deshabilitar cada campo
+          field.disabled = true; 
       });
   });
 
   document.getElementById('habilitarCampos').addEventListener('click', function() {
       var fields = document.querySelectorAll('#transferir-actividad-form select, #transferir-actividad-form input');
       
-      // Alternar entre habilitar y deshabilitar los campos
       var allDisabled = Array.from(fields).every(field => field.disabled);
       
       fields.forEach(function(field) {
-          field.disabled = !allDisabled; // Habilitar si están deshabilitados, y viceversa
+          field.disabled = !allDisabled; 
       });
 
       if (allDisabled) {
-          this.textContent = "Guardar"; // Cambiar el texto a "Guardar"
-          this.type = "submit"; // Cambiar el tipo a submit para enviar el formulario
+          this.textContent = "Guardar"; 
+          this.type = "submit"; 
       } else {
-          this.textContent = "Habilitar Campos"; // Cambiar de nuevo a "Habilitar Campos"
-          this.type = "button"; // Cambiar a tipo botón para evitar el envío
+          this.textContent = "Habilitar Campos"; 
+          this.type = "button"; 
       }
   });
 </script>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte Defensa pública</title>
+    <style>
+        
+        .descripcion{
+            text-align: center;
+            font-size: 13px;
+        }
+        .des {
+            width: 200px;
+            background: #d0d4db;
+        }
+        .desletrar {
+            font-size: 10px;
+        }
+        #contfirma {
+            width: 350px;
+            text-align: center;
+            border: 1px solid #ffffff;
+            
+        }
+        .contfirmapresidente {
+            width: 300px;
+            text-align: center;
+            font-weight: bold;
+            
+        }
+        .lugar {
+            width: 260px;
+            
+        }
+        
+        .textfirma {
+            text-align: center;
+        }
+        .text {
+            text-align: center;
+            font-size: 25px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+        }
+        .text1 {
+            
+            font-size: 15px;
+        }
+        .firma {
+            width: 250px; /* Ajusta el tamaño de la firma */
+            height: 50px;
+            margin-top: 10px;
+        }
+        #firm{
+            border: 1px solid #ffffff;
+        }
+        
+    </style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+        }
+    
+        .titulo{
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 1px;
+        }
+        .subtitulo{
+            font-size: 14px;
+            margin: 2px;
+            margin-bottom: 1px;
+        }
+        table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #969696;
+        }
+        th, td {
+            padding: 2px;
+            font-size: 12px;
+        }
+        .descrip{
+            width: 600px;
+            text-align: left;
+        }
+        .descriper{
+            width: 650px;
+            text-align: left;
+        }
+        #descripe{
+            width: 750px;
+            text-align: left;
+        }
+        .pl{
+            text-align: left;
+        }
+        .descripcion{
+            text-align: center;
+            font-size: 18px;
+        }
+        .des {
+            width: auto;
+            background: #f1f1f1;
+            text-align: left;
+        }
+        .col1 {
+            width: 270px;
+            text-align: center;
+           
+            text-align: center;
+        }
+        .coll2 {
+            width: 130px;
+            font-size: 8px;
+            text-align: center;
+            background: #f1f1f1;
+            text-align: center;
+        }
+        .col2 {
+            width: 130px;
+            text-align: center;
+        }
+        .col3 {
+            width: 450px;
+            text-align: left;
+        }
+        .col4{
+            text-align: center;
+        }
+        .desdes {
+            width: 100px;
+            background: #f1f1f1;
+            text-align: left;
+        }
+        .destext {
+            width: 100%;
+            background: #f1f1f1;
+            text-align: center;
+        }
+        .log {
+            font-size: 20px;
+            width: 100px;
+            border: 1px solid #ffffff;
+        }
+        .contfirma {
+            width: 200px;
+            
+        }
+        .lugar {
+            width: 300px;
+            
+        }
+        .textfirma {
+            text-align: center;
+        }
+        .text {
+            text-align: justify;
+            font-size: 14px;
+            width: 100%; 
+            margin: 0;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+        }
+        .text1 {
+            
+            font-size: 15px;
+        }
+        .firma {
+            width: 100px; /* Ajusta el tamaño de la firma */
+            height: auto;
+        }
+        .espacios {
+            font-size: 20px;
+            width: 40px;
+            border: 1px solid #ffffff;
+            z-index: 1;
+        }
+        .espaciosos {
+            font-size: 24px;
+            width: 38px;
+
+            border: 1px solid #ffffff;
+            z-index: 1;
+        }
+        .acta{
+            text-align: right;
+            padding-right: 38px;
+            font-size: 16px;
+        }
+        .tivia{
+            text-align: center;
+            
+            font-size: 14px;
+        }
+        #tablainicio{
+            border: 1px solid #ffffff;
+        }
+        .bold{
+            font-weight: bold;
+        }
+        .new-page {
+            page-break-before: always; /* Esto hará que el contenido siguiente comience en una nueva página */
+        }
+       
+    </style>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener las celdas de los estudiantes
+            const estudianteUno = document.getElementById('estudianteUno');
+            const estudianteDos = document.getElementById('estudianteDos');
+        
+            // Verificar si el contenido de cada celda está vacío (por si el backend no tiene datos)
+            if (!estudianteUno || !estudianteUno.innerText.trim()) {
+                estudianteUno.style.display = 'none'; // Oculta la celda si no hay datos
+            }
+        
+            if (!estudianteDos || !estudianteDos.innerText.trim()) {
+                estudianteDos.style.display = 'none'; // Oculta la celda si no hay datos
+            }
+        });
+    </script>
+   
+</head>
+<body>
+    
+    <table>
+        <thead >
+            <tr>
+                <th id="tablainicio" class="log">
+                    <img src="{{ logo_url }}" alt="Logo" width="100">
+                    
+                </th>
+                <th id="tablainicio" class="">
+                    <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
+                    <p class="subtitulo">ACTA FINAL DE DEFENSA DE GRADO</p>
+                    <hr>
+                    <p class="subsubtitulo">PERÍODO Y GESTIÓN: {{ acta.perperiodo}}</p>
+                </th>
+                <th id="tablainicio" class="log">JE-CIS
+                    {{ acta.perperiodo.gestion.anio }}
+                </th>
+                
+            </tr>
+            
+            
+        </thead>
+    </table>
+    <h2 class="acta">Acta de Defensa N° {{ acta.acta }}/{{acta.perperiodo.gestion.anio}}</h2>
+    <br>
+    <h3 class="text bold">FACULTAD: {{ acta.carrera.facultad.nombre }}</h3><br>
+    <h3 class="text bold">CARRERA: {{ acta.carrera }}</h3><br>
+    <h3 class="text bold">MODALIDAD: {{ acta.modalidad }}</h3><br>
+    <h3 class="text bold">POSTULANTE: {{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}</h3><br>
+    <h3 class="text bold">ÁREA: {{ acta.area }}</h3>
+    <p class="text"> <span class="bold">LUGAR:</span> {{acta.campus}} {{ acta.espacio }}</p>
+    <p class="text"> <span class="bold">HORA Y FECHA:</span> {{acta.lugar}} {{ acta.fechadefensa|date:"d/m/Y" }} Hora de Inicio: {{ acta.horainicio|time:"H:i" }} Hora fin: {{ acta.horafin|time:"H:i" }}</p><br>
+    <h3 class="text bold">ÁREA: {{ acta.area_1 }}</h3>
+    <p class="text"> <span class="bold">LUGAR:</span> {{acta.campus_1}} {{ acta.espacio_1 }}</p>
+    <p class="text"> <span class="bold">HORA Y FECHA:</span> {{acta.lugar_1}} {{ acta.fechadefensa_1|date:"d/m/Y" }} Hora de Inicio: {{ acta.horainicio_1|time:"H:i" }} Hora fin: {{ acta.horafin_1|time:"H:i" }}</p><br>
+    <h3 class="text bold">ÁREA: {{ acta.area_2 }}</h3>
+    <p class="text"> <span class="bold">LUGAR:</span> {{acta.campus_2}} {{ acta.espacio_2 }}</p>
+    <p class="text"> <span class="bold">HORA Y FECHA:</span> {{acta.lugar_2}} {{ acta.fechadefensa_2|date:"d/m/Y" }} Hora de Inicio: {{ acta.horainicio_2|time:"H:i" }} Hora fin: {{ acta.horafin_2|time:"H:i" }}</p><br>
+    <h3 class="text bold">ÁREA: {{ acta.area_3 }}</h3>
+    <p class="text"> <span class="bold">LUGAR:</span> {{acta.campus_3}} {{ acta.espacio_3 }}</p>
+    <p class="text"> <span class="bold">HORA Y FECHA:</span> {{acta.lugar_3}} {{ acta.fechadefensa_3|date:"d/m/Y" }} Hora de Inicio: {{ acta.horainicio_3|time:"H:i" }} Hora fin: {{ acta.horafin_3|time:"H:i" }}</p><br>
+    <p class="text bold">MIENBROS  DEL TRIBUNAL:</p><br>
+    <ul>
+        <li class="text">Presidente: <span class="bold">{{ acta.presidenteacta.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}</span </li>
+        <li class="text">1er. Tribunal: <span class="bold">{{ acta.jurado_1.titulo }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }} {{ acta.jurado_1.nombre }}</span> </li>
+        <li class="text">2do. Tribunal: <span class="bold">{{ acta.jurado_2.docente.titulo }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }} {{ acta.jurado_2.nombre }}</span> </li>
+        <li class="text">3er. Tribunal: <span class="bold">{{ acta.jurado_3.docente.titulo }} {{ acta.jurado_3.apellido }} {{ acta.jurado_3.apellidoM }} {{ acta.jurado_3.nombre }}</span> </li>
+    </ul>
+    <div class="new-page">
+        <table>
+            <thead >
+                <tr>
+                    <th id="tablainicio" class="log">
+                        <img src="{{ logo_url }}" alt="Logo" width="100">
+                        
+                    </th>
+                    <th id="tablainicio" class="">
+                        <h3 class="titulo">UNIVERSIDAD AUTONÓMA DEL BENI JOSÉ BALLIVIÁN</h3>
+                        <p class="subtitulo">ACTA FINAL DE DEFENSA DE GRADO</p>
+                        <hr>
+                        <p class="subsubtitulo">PERÍODO Y GESTIÓN: {{ acta.perperiodo}}</p>
+                    </th>
+                    <th id="tablainicio" class="log">JE-CIS
+                        {{ acta.perperiodo.gestion.anio }}
+                    </th>
+                    
+                </tr>
+                
+                
+            </thead>
+        </table>
+        <h2 class="acta">Acta de Defensa N° {{ acta.acta }}/{{acta.perperiodo.gestion.anio}}</h2><br>
+        <h3 class="text bold">MODALIDAD: {{ acta.modalidad }}</h3>
+        <h3 class="text bold">POSTULANTE: {{ acta.estudiante.apellido }} {{ acta.estudiante.apellidoM }} {{ acta.estudiante.nombre }}</h3><br>
+    
+    <div >
+        <table>
+            <thead>
+                <tr>
+                    
+                    <th class="destext">RESULTADOS DE LA EVALUACIÓN</th>
+                    
+                </tr>
+            </thead>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th class="destext">ÁREAS </th>
+                    <th class="coll2">VALORACIÓN CUANTITATIVA</th>
+                </tr>
+            </thead>
+        </table>
+        <table >
+            <thead >
+                <tr>
+                    <td class="col3">{{ acta.area }}</td>
+                    <td class="col1">(15%)</td>
+                    <td class="col2">{{ acta.nota }}</td>
+                </tr>
+                <tr>
+                    <td class="col3">{{ acta.area_1 }}</td>
+                    <td class="col1">(15%)</td>
+                    <td class="col2">{{ acta.nota_1 }}</td>
+                </tr>
+                <tr>
+                    <td class="col3">{{ acta.area_2 }}</td>
+                    <td class="col1">(30%)</td>
+                    <td class="col2">{{ acta.nota_2 }}</td>
+                </tr>
+                <tr>
+                    <td class="col3">{{ acta.area_3 }}</td>
+                    <td class="col1">(40%)</td>
+                    <td class="col2">{{ acta.nota_3 }}</td>
+                </tr>
+            </thead>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th class="destext">CALIFICACIÓN TOTAL</th>
+                    <th class="col2">{{ acta.notatotal }}</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <table>
+        <thead>
+            <tr>
+              
+                <th id="descripe">
+                    NOTA FINALES:  {{ acta.get_notali|capfirst }} puntos.<br>
+                    CONSIDERACIONES FINALES: "{{ acta.get_observa }}" y valorada como "{{ acta.get_valori }}".
+                </th>
+               
+            </tr>
+        </thead>
+    </table>
+    <table id="firm">
+        <div class="contfirmapresidente letrafirmas"><br><br><br><br><br>
+           
+            PRESIDENTE<br>                    
+            {{ acta.presidenteacta.titulo }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }} {{ acta.presidenteacta.nombre }}
+        </div><br>
+        <thead id="firm">
+            <tr id="firm">
+                <th class="espaciosos"></th>
+                <th  id="contfirma"><br>
+                   
+                    PRIMER TRIBUNAL
+                    <br>
+                    {{ acta.jurado_1.docente.titulo }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }} {{ acta.jurado_1.nombre }}
+                </th>
+                <th  id="contfirma"><br>
+                    
+                    SEGUNDO TRIBUNAL
+                    <br>
+                    {{ acta.jurado_2.docente.titulo }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }} {{ acta.jurado_2.nombre }}
+                </th>
+                <th  id="contfirma"><br>
+                    
+                    TERCER TRIBUNAL
+                    <br>
+                    {{ acta.jurado_3.docente.titulo }} {{ acta.jurado_3.apellido }} {{ acta.jurado_3.apellidoM }} {{ acta.jurado_3.nombre }}
+                </th>
+                
+                
+            </tr>
+        </thead>
+        
+    </table>    
+</body>
+
+</html>

@@ -16,16 +16,16 @@
             width: 100%;
             text-align: center;
             border-collapse: collapse;
-            table-layout: fixed; /* Asegura que la tabla respete el ancho de las celdas */
+            table-layout: fixed; 
         }
         table, th, td {
             border: 1px solid black;
         }
         th, td {
             padding: 3px;
-            overflow: hidden; /* Oculta el contenido desbordado en la celda */
-            text-overflow: ellipsis; /* Muestra "..." si el texto es demasiado largo */
-            white-space: nowrap; /* Evita que el texto se ajuste a múltiples líneas */
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
         }
         th {
             background-color: #f2f2f2;
@@ -35,8 +35,8 @@
         }
         .descrip {
             width: 400px;
-            overflow-wrap: break-word; /* Ajusta el texto largo dentro de la celda */
-            word-break: break-word; /* Fuerza la ruptura de palabras largas */
+            overflow-wrap: break-word; 
+            word-break: break-word; 
         }
         .textfirma {
             text-align: center;
@@ -50,7 +50,7 @@
             font-size: 18px;
         }
         .firma {
-            width: 100px; /* Ajusta el tamaño de la firma */
+            width: 100px; 
             height: auto;
         }
         .titulo{
@@ -71,17 +71,10 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Obtener las celdas de los estudiantes
+            
             const estudianteUno = document.getElementById('estudianteUno');
-            const estudianteDos = document.getElementById('estudianteDos');
-        
-            // Verificar si el contenido de cada celda está vacío (por si el backend no tiene datos)
             if (!estudianteUno || !estudianteUno.innerText.trim()) {
-                estudianteUno.style.display = 'none'; // Oculta la celda si no hay datos
-            }
-        
-            if (!estudianteDos || !estudianteDos.innerText.trim()) {
-                estudianteDos.style.display = 'none'; // Oculta la celda si no hay datos
+                estudianteUno.style.display = 'none'; 
             }
         });
     </script>
@@ -120,12 +113,6 @@
                     <ul id="estudianteUno">
                         {% if actividad.estudiante_uno %}
                         {{ actividad.estudiante_uno.apellido }} {{ actividad.estudiante_uno.apellidoM }} {{ actividad.estudiante_uno.nombre }}
-                        {% endif %}
-                    </ul>
-                    <!-- Datos del tercer estudiante (estudiante_dos) -->
-                    <ul id="estudianteDos">
-                        {% if actividad.estudiante_dos %}
-                        {{ actividad.estudiante_dos.apellido }} {{ actividad.estudiante_dos.apellidoM }} {{ actividad.estudiante_dos.nombre }}
                         {% endif %}
                     </ul>
                 </td>

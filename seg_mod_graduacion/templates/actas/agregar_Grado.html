@@ -1,0 +1,239 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Crear Form{% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="container no-gutters p-lg-5 p-3 font ">
+    <div class="no-gutte container p-lg-5 p-0">
+        <h1 class="text-center pb-2 colortitle titlesuperior">REGISTRADO DE ACTA DEFENSA EXAMEN DE GRADO</h1>
+        <article class="pb-2 colortext" >
+            <form id="pot" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="fechas fontI">
+                    <div class="row mb-3">
+                        {{ form.non_field_errors }}
+                        {{ form.errors }}
+                    </div>
+            
+                    <!-- Información del estudiante y carrera -->
+                    <div class="row mb-1">
+                        <div class="col-md-8">
+                            {{ form.estudiante|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.carrera|as_crispy_field }}
+                        </div>
+                    </div>
+            
+                    <!-- Acta, Periodo, y Presidente del acta -->
+                    <div class="row mb-1">
+                        <div class="col-md-4">
+                            {{ form.acta|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.perperiodo.id_for_label }}" class="form-label">Periodo</label>
+                            <select name="perperiodo" class="form-control">
+                                {% for periodo in ultimos_periodos %}
+                                <option value="{{ periodo.id }}">{{ periodo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.presidenteacta|as_crispy_field }}
+                        </div>
+                    </div>
+                    <p class="pt-2 fontI colorestados text">Primera Evaluación</p>
+                    <hr> 
+                    <!-- Primer grupo de Area, Lugar, Campus, Espacio, Fecha y Horario de defensa -->
+                    <div class="row mb-1">
+                        <div class="col-md-6">{{ form.area|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.lugar|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.campus|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.espacio|as_crispy_field }}</div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-4">{{ form.fechadefensa|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horainicio|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horafin|as_crispy_field }}</div>
+                        <div class="col-md-2">{{ form.nota|as_crispy_field }}</div>
+                    </div>
+                    <p class="pt-2 fontI colorestados text">Segunda Evaluación</p>
+                    <hr> 
+                    <!-- Segundo grupo -->
+                    <div class="row mb-1">
+                        <div class="col-md-6">{{ form.area_1|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.lugar_1|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.campus_1|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.espacio_1|as_crispy_field }}</div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-4">{{ form.fechadefensa_1|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horainicio_1|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horafin_1|as_crispy_field }}</div>
+                        <div class="col-md-2">{{ form.nota_1|as_crispy_field }}</div>
+                    </div>
+                    <p class="pt-2 fontI colorestados text">Tercera Evaluación</p>
+                    <hr> 
+                    <!-- Tercer grupo -->
+                    <div class="row mb-1">
+                        <div class="col-md-6">{{ form.area_2|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.lugar_2|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.campus_2|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.espacio_2|as_crispy_field }}</div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-4">{{ form.fechadefensa_2|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horainicio_2|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horafin_2|as_crispy_field }}</div>
+                        <div class="col-md-2">{{ form.nota_2|as_crispy_field }}</div>
+                    </div>
+                    <p class="pt-2 fontI colorestados text">Cuarta Evaluación</p>
+                    <hr> 
+                    <!-- Cuarto grupo -->
+                    <div class="row mb-1">
+                        <div class="col-md-6">{{ form.area_3|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.lugar_3|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.campus_3|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.espacio_3|as_crispy_field }}</div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-4">{{ form.fechadefensa_3|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horainicio_3|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.horafin_3|as_crispy_field }}</div>
+                        <div class="col-md-2">{{ form.nota_3|as_crispy_field }}</div>
+                    </div>
+                    <hr>
+                    <!-- Jurado y Modalidad -->
+                    <div class="row mb-1">
+                        <div class="col-md-4">{{ form.jurado_1|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.jurado_2|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.jurado_3|as_crispy_field }}</div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">{{ form.modalidad|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.fecha|as_crispy_field }}</div>
+                        {% comment %} <div class="col-md-2">{{ form.notatotal|as_crispy_field }}</div> {% endcomment %}
+                        <div class="col-md-2 pt-2">
+                            {{ form.notatotal.label_tag }}<br>
+                            <input type="number" id="id_notatotal" name="notatotal" value="{{ form.notatotal.value }}" class="form-control" min="0" max="100" readonly>
+                        </div>
+                    </div>
+                    
+                </div>
+                <br>
+            
+                <!-- Submit y cancelar -->
+                <input class="btn btn-dark me-2 fontII" type="submit" value="Enviar Información">
+                <a class="btn btn-secondary fontII" href="{% url 'dashboard' %}">Cancelar</a>
+            </form>
+            
+            <br>
+        </article>
+    </div> 
+</div><br>
+
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-mdal">
+      <div class="modal-header">
+        <h5 class="modal-title font" id="confirmationModalLabel"> Confirmacion de Formulario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center font">
+        <img src="{% static 'img/confi.png' %}" class="img-close" alt="" /><br>
+        ¡Formulario Enviado con Exito!
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const valor1 = document.getElementById("id_nota");
+        const valor2 = document.getElementById("id_nota_1");
+        const valor3 = document.getElementById("id_nota_2");
+        const valor4 = document.getElementById("id_nota_3");
+        const totalNota = document.getElementById("id_notatotal");
+
+        function actualizarTotal() {
+            const v1 = parseFloat(valor1.value) || 0;
+            const v2 = parseFloat(valor2.value) || 0;
+            const v3 = parseFloat(valor3.value) || 0;
+            const v4 = parseFloat(valor4.value) || 0;
+
+            const suma = v1 + v2 + v3 + v4;
+
+            // Redondear el resultado a un número entero
+            totalNota.value = Math.round(suma);
+        }
+
+        valor1.addEventListener("input", actualizarTotal);
+        valor2.addEventListener("input", actualizarTotal);
+        valor3.addEventListener("input", actualizarTotal);
+        valor4.addEventListener("input", actualizarTotal);
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const juradoSelects = [
+          document.getElementById('id_presidenteacta'),
+          document.getElementById('id_jurado_1'),
+          document.getElementById('id_jurado_2'),
+          document.getElementById('id_jurado_3')
+        ];
+  
+        const areaSelects = [
+          document.getElementById('id_area'),
+          document.getElementById('id_area_1'),
+          document.getElementById('id_area_2'),
+          document.getElementById('id_area_3')
+        ];
+  
+        // Actualiza las opciones disponibles para los jurados y áreas
+        function updateOptions(selects) {
+          const selectedValues = selects.map(select => select.value);
+          selects.forEach(select => {
+            Array.from(select.options).forEach(option => {
+              option.hidden = selectedValues.includes(option.value) && option.value !== select.value;
+            });
+          });
+        }
+  
+        // Actualizar las opciones al cambiar la selección en jurados y áreas
+        juradoSelects.forEach(select => {
+          select.addEventListener('change', () => updateOptions(juradoSelects));
+        });
+        areaSelects.forEach(select => {
+          select.addEventListener('change', () => updateOptions(areaSelects));
+        });
+  
+        // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
+        updateOptions(juradoSelects);
+        updateOptions(areaSelects);
+  
+        // Manejo del envío del formulario con el modal de confirmación
+        const form = document.getElementById("pot");
+        form.addEventListener('submit', showConfirmationModal);
+    });
+  
+    function showConfirmationModal(event) {
+      event.preventDefault(); 
+      $('#confirmationModal').modal('show'); 
+  
+      setTimeout(function() {
+        $('#confirmationModal').modal('hide'); 
+        document.getElementById("pot").submit(); 
+      }, 2000);
+    }
+  </script>
+  
+
+{% endblock %}
+
+

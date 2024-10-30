@@ -182,7 +182,7 @@
 
 <script>
   document.getElementById('id_estudiante').addEventListener('change', function() {
-    let estudianteId = this.value;  // Asume que id_estudiante es el id del campo de selección
+    let estudianteId = this.value;  
     fetch(`/buscar_estudiante_privada?id=${estudianteId}`)
     .then(response => response.json())
     .then(data => {
@@ -223,7 +223,7 @@
       document.getElementById('id_jurado_3')
     ];
   
-    // Actualiza las opciones disponibles para los estudiantes
+   
     function updateEstudianteOptions() {
       const selectedValues = estudianteSelects.map(select => select.value);
       estudianteSelects.forEach(select => {
@@ -233,7 +233,7 @@
       });
     }
   
-    // Actualiza las opciones disponibles para los jurados
+    
     function updateJuradoOptions() {
       const selectedValues = juradoSelects.map(select => select.value);
       juradoSelects.forEach(select => {
@@ -243,17 +243,14 @@
       });
     }
   
-    // Agregar evento change para cada select de estudiantes
     estudianteSelects.forEach(select => {
       select.addEventListener('change', updateEstudianteOptions);
     });
   
-    // Agregar evento change para cada select de jurados
     juradoSelects.forEach(select => {
       select.addEventListener('change', updateJuradoOptions);
     });
   
-    // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
     updateEstudianteOptions();
     updateJuradoOptions();
   });

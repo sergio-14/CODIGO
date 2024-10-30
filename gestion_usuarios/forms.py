@@ -100,19 +100,18 @@ class CustomUserCreationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.imagen = File(open('static/img/SINFOTO.webp', 'rb'))  # Asigna la imagen por defecto
+        user.imagen = File(open('static/img/SINFOTO.webp', 'rb'))  
         if commit:
             user.save()
             selected_groups = self.cleaned_data.get('groups')
             if selected_groups:
                 user.groups.set(selected_groups)
 
-                # Verifica si el usuario pertenece al grupo "Estudiantes" o "Docentes"
                 if 'Estudiantes' in selected_groups.values_list('name', flat=True):
-                    # Crea una instancia de Estudiante
+                
                     Estudiante.objects.create(user=user)
                 elif 'Docentes' in selected_groups.values_list('name', flat=True):
-                    # Crea una instancia de Docente
+                 
                     Docente.objects.create(user=user)
 
         return user
@@ -121,7 +120,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 # Formulario para actualizar usuario
 class CustomClearableFileInput(forms.ClearableFileInput):
-    # Define aquí tu widget personalizado si es necesario
+   
     pass
 
 class CustomUserChangeForm(forms.ModelForm):
@@ -152,25 +151,24 @@ class CustomUserChangeForm(forms.ModelForm):
             if selected_groups:
                 user.groups.set(selected_groups)
 
-                # Si el usuario pertenece al grupo de Estudiantes
+            
                 if 'Estudiantes' in selected_groups.values_list('name', flat=True):
-                    # Si ya existe una instancia de Docente, elimínala
+                  
                     Docente.objects.filter(user=user).delete()
 
-                    # Si no existe una instancia de Estudiante, créala
                     if not Estudiante.objects.filter(user=user).exists():
                         Estudiante.objects.create(user=user)
 
-                # Si el usuario pertenece al grupo de Docentes
+             
                 elif 'Docentes' in selected_groups.values_list('name', flat=True):
-                    # Si ya existe una instancia de Estudiante, elimínala
+                    
                     Estudiante.objects.filter(user=user).delete()
 
-                    # Si no existe una instancia de Docente, créala
+                
                     if not Docente.objects.filter(user=user).exists():
                         Docente.objects.create(user=user)
 
-            # Eliminar las referencias antiguas si el grupo cambia
+    
             if 'Estudiantes' not in selected_groups.values_list('name', flat=True):
                 Estudiante.objects.filter(user=user).delete()
 

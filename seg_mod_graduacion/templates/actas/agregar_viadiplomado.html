@@ -12,21 +12,19 @@
       <form id="pot" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="fechas fontI">
-            <div class="row mb-3">
-                {{ form.non_field_errors }}
-                {{ form.errors }}
-            </div>
+          <div class="row mb-3">
+            {{ form.non_field_errors }}
+            {{ form.errors }}
+          </div>
             
-            <div class="row mb-1">
-                <div class="col-md-8">
-                  
-                    {{ form.estudiante|as_crispy_field }}
-                </div>
-                <div class="col-md-4">
-                    
-                    {{ form.carrera|as_crispy_field }}
-                </div>
+          <div class="row mb-1">
+            <div class="col-md-8">
+              {{ form.estudiante|as_crispy_field }}
             </div>
+            <div class="col-md-4">
+              {{ form.carrera|as_crispy_field }}
+            </div>
+          </div>
     
             <div class="row mb-1">
                 <div class="col-md-2">
@@ -107,11 +105,8 @@
                     {{ form.totalnota.label_tag }}<br>
                     <input type="number" id="id_totalnota" name="totalnota" value="{{ form.totalnota.value }}" class="form-control" min="0" max="100" readonly>
                 </div>
-                {% comment %} <div class="col-md-2">
-                  
-                    {{ form.totalnota|as_crispy_field }} class="form-control" min="0" max="100" readonly
-                </div> {% endcomment %}
-            </div>
+               
+        </div>
         <br>
         <input  class="btn btn-dark me-2 fontII" type="submit" value="Enviar Información">
         <a class="btn btn-secondary fontII" href="{% url 'dashboard' %}">Cancelar</a>
@@ -159,12 +154,12 @@
             });
           });
         }  
-        // Agregar evento change para cada select de jurados
+ 
         juradoSelects.forEach(select => {
           select.addEventListener('change', updateJuradoOptions);
         });
       
-        // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
+      
         updateEstudianteOptions();
         updateJuradoOptions();
     });
@@ -195,7 +190,6 @@
 
             const suma = v1 + v2 + v3;
 
-            // Redondear el resultado a un número entero
             totalNota.value = Math.round(suma);
         }
 

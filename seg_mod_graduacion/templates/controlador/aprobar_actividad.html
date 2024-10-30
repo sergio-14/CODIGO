@@ -15,10 +15,10 @@
             
                   <div class="form-group mt-3 pb-3 fontII text">
                     <label class="pt-2">Agregar Comentario:</label>
-                    {{ form.actcomentario }}  <!-- Este ahora está en el formulario -->
+                    {{ form.actcomentario }}  
                     
                     <label class="pt-2" for="{{ form.actdocorregido.id_for_label }}">Agregar Documento:</label>
-                    {{ form.actdocorregido }}  <!-- Este ahora también está en el formulario -->
+                    {{ form.actdocorregido }}  
                 </div>
                 <button type="submit" class="btn btn-primary">Enviar Respuesta</button>
                 <a class="btn btn-danger" href="{% url 'listaractividades' %}">Cancelar</a>

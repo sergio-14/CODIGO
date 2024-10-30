@@ -96,7 +96,7 @@
     const hiddenInput = document.createElement('input');
     hiddenInput.type = 'hidden';
     hiddenInput.name = action;
-    hiddenInput.value = 'true'; // Agrega un valor al input oculto
+    hiddenInput.value = 'true'; 
     form.appendChild(hiddenInput);
     form.submit();
   }
@@ -114,7 +114,7 @@
       document.getElementById('id_jurado_3')
     ];
   
-    // Actualiza las opciones disponibles para los estudiantes
+    
     function updateEstudianteOptions() {
       const selectedValues = estudianteSelects.map(select => select.value);
       estudianteSelects.forEach(select => {
@@ -124,7 +124,7 @@
       });
     }
   
-    // Actualiza las opciones disponibles para los jurados
+    
     function updateJuradoOptions() {
       const selectedValues = juradoSelects.map(select => select.value);
       juradoSelects.forEach(select => {
@@ -134,17 +134,17 @@
       });
     }
   
-    // Agregar evento change para cada select de estudiantes
+    
     estudianteSelects.forEach(select => {
       select.addEventListener('change', updateEstudianteOptions);
     });
   
-    // Agregar evento change para cada select de jurados
+   
     juradoSelects.forEach(select => {
       select.addEventListener('change', updateJuradoOptions);
     });
   
-    // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
+    
     updateEstudianteOptions();
     updateJuradoOptions();
   });

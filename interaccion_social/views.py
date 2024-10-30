@@ -72,10 +72,10 @@ def proyecto_detail(request):
     if request.method == 'POST':
         form = T_ProyectosForm(request.POST, request.FILES)
         if habilitado and form.is_valid():
-            proyecto = form.save(commit=False)  # No guardar todavía la instancia del modelo
-            proyecto.S_persona = User.objects.get(nombre=request.user.nombre)  # Asignar la persona relacionada con el usuario autenticado
-            proyecto.save()  # Ahora guardar la instancia del modelo
-            return redirect('proyectosin_so')  # Asegúrate de que 'dashboard' sea el nombre correcto de tu vista para el dashboard
+            proyecto = form.save(commit=False)  
+            proyecto.S_persona = User.objects.get(nombre=request.user.nombre)  
+            proyecto.save() 
+            return redirect('proyectosin_so')  
     else:
         form = T_ProyectosForm()
 
@@ -88,10 +88,9 @@ def proyecto_detail(request):
 #editar proyectos 
 @login_required
 def editar_proyecto(request, Id_Proyect):
-    # Obtener el proyecto específico o devolver un 404 si no se encuentra
+   
     proyecto = get_object_or_404(T_Proyectos_IIISP, Id_Proyect=Id_Proyect)
     
-    # Obtener las configuraciones de fechas
     settings = HabilitarFechas.objects.first()
     hoy = date.today()
     habilitado = settings and (settings.fecha_inicio_habilitacion <= hoy <= settings.fecha_fin_habilitacion)
@@ -99,8 +98,8 @@ def editar_proyecto(request, Id_Proyect):
     if request.method == 'POST':
         form = EditarT_ProyectosForm(request.POST, request.FILES, instance=proyecto)
         if habilitado and form.is_valid():
-            form.save()  # Guardar los cambios
-            return redirect('proyectosin_so')  # Redirigir al dashboard u otra vista adecuada
+            form.save()  
+            return redirect('proyectosin_so')  
     else:
         form = EditarT_ProyectosForm(instance=proyecto)
     
@@ -114,7 +113,7 @@ def editar_proyecto(request, Id_Proyect):
 #clasificacion de enviados y no enviados
 @user_passes_test(lambda u: permiso_I_S(u, 'ADMIIISP')) 
 def clasificar_proyectos(request):
-    gestion_input = request.GET.get('gestion')  # El valor ingresado, ejemplo: "1/2025"
+    gestion_input = request.GET.get('gestion') 
     materias = Materia.objects.all()
 
     materias_con_proyectos = []
@@ -125,7 +124,7 @@ def clasificar_proyectos(request):
             numero, anio = gestion_input.split('/')
             periodos_filtrados = Periodo.objects.filter(numero=numero, gestion__anio=anio)
         except ValueError:
-            periodos_filtrados = None  # Si el formato es incorrecto, no filtrar
+            periodos_filtrados = None  
     else:
         periodos_filtrados = Periodo.objects.all()
 
@@ -187,23 +186,22 @@ def proyectosin_so(request):
 
 #poryectos interacion social vista general publica
 def repoin(request):
-    gestion_id = request.GET.get('T_Gestion')  # Asegúrate de que esto coincide con el nombre del select
+    gestion_id = request.GET.get('T_Gestion')  
     semestre_id = request.GET.get('Semestre')
 
-    listaproyectos = T_Proyectos_IIISP.objects.none()  # Inicializo con una consulta vacía
+    listaproyectos = T_Proyectos_IIISP.objects.none()  
 
     if gestion_id or semestre_id:
         listaproyectos = T_Proyectos_IIISP.objects.all()
 
         if gestion_id:
-            listaproyectos = listaproyectos.filter(T_Gestion_id=gestion_id)  # Filtramos por T_Gestion_id
+            listaproyectos = listaproyectos.filter(T_Gestion_id=gestion_id)  
 
         if semestre_id:
             listaproyectos = listaproyectos.filter(T_Materia__semestre_id=semestre_id)
 
-        listaproyectos = listaproyectos.order_by('Id_Proyect')  # Ordenar por Id_Proyect
+        listaproyectos = listaproyectos.order_by('Id_Proyect') 
 
-    # Obtener el primer proyecto si existe
     primer_proyecto = listaproyectos.first() if listaproyectos.exists() else None
 
     context = {

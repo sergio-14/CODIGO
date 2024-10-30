@@ -56,7 +56,6 @@
             </div>
             <div class="col-auto p-2 m-2">
                 <div class="row no-gutte p-2 align-items-center">
-                    <!-- Columna para el título -->
                     <div class="col-auto">
                         <h2 class="card-text textto d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-intersect" viewBox="0 0 16 16">
@@ -65,9 +64,6 @@
                             GESTION
                         </h2>
                     </div>
-                    
-                    <!-- Columna para el select -->
-                   
                     <div class="col-auto ">
                         <select name="T_Gestion" id="t_gestion" class=" texttol form-select" aria-label="Default select example" onchange="submitForm()">
                             {% for gestion in t_gestiones %}
@@ -78,8 +74,7 @@
                 </div>
             </div>
             <div class="col-auto p-2 m-2">
-                <div class="row no-gutte p-2 align-items-center">
-                    <!-- Columna para el título -->
+                <div class="row no-gutte p-2 align-items-center">  
                     <div class="col-auto">
                         <h2 class="card-text d-flex align-items-center texto">
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-intersect me-2" viewBox="0 0 16 16">
@@ -88,8 +83,6 @@
                             SEMESTRE
                         </h2>
                     </div>
-                    
-                    <!-- Columna para el select -->
                     <div class="col-auto">
                         <select name="Semestre" id="semestre" class="form-select" onchange="submitForm()">
                             {% for semestre in t_semestres %}
@@ -161,8 +154,8 @@
                                 <a
                                   href="{{ proyecto.S_Documentacion.url }}"
                                   class="list-group-item list-group-item-action"
-                                  > Documento Completo del Trabajo Realizado</a
-                                >
+                                  > Documento Completo del Trabajo Realizado
+                                </a>
                             </div>
                             {% else %}
                                 No disponible

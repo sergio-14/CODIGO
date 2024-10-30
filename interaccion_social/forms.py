@@ -46,12 +46,10 @@ class T_ProyectosForm(forms.ModelForm):
             ),
         )
 
-        # Asegurar que todos los campos sean requeridos
         for field in self.fields:
             self.fields[field].required = True
             self.fields[field].widget.attrs.update({'class': 'form-control'})
 
-        # Deshabilitar los campos si la fecha no está dentro del rango permitido
         settings = HabilitarFechas.objects.first()
         if settings:
             hoy = date.today()
@@ -166,10 +164,9 @@ class PeriodoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
-        # Limitar el queryset de gestion a los últimos 6 años
+      
         current_year = datetime.datetime.today().year
-        last_six_years = list(range(current_year, current_year - 6, -1))  # Ajuste a los últimos 6 años
+        last_six_years = list(range(current_year, current_year - 6, -1))  
         self.fields['gestion'].queryset = Gestion.objects.filter(anio__in=last_six_years)
         
 #semestre
@@ -181,4 +178,4 @@ class SemestreForm(forms.ModelForm):
 class MateriaForm(forms.ModelForm):
     class Meta:
         model = Materia
-        fields = ['nombre_materia','codigo','semestre','carrera']
+        fields = ['nombre_materia','codigo','semestre','carrera','area']

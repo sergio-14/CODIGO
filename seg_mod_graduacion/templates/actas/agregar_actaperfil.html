@@ -10,147 +10,142 @@
     {% if form_disabled %}
       <p class="text-end text colorestados ">El formulario de investigación está deshabilitado para el Usuario.</p>
     {% endif %}
-    
     <article class="pb-2 colortext" >
       <form id="pot" method="post" enctype="multipart/form-data" onsubmit="showConfirmationModal(event)">
         {% csrf_token %}
         <div class="fechas fontI">
-            <div class="row mb-3">
-              <div class="col-md-8 pt-1">
-                {{ form.estudiante.label_tag }}<br>{{ form.estudiante }}
-                {% if form.estudiante.errors %}
-                  <div class="text-danger">{{ form.estudiante.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.carrera.label_tag }}<br>{{ form.carrera }}
-                {% if form.carrera.errors %}
-                  <div class="text-danger">{{ form.carrera.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.lugar.label_tag }}<br>{{ form.lugar }}
-                {% if form.lugar.errors %}
-                  <div class="text-danger">{{ form.lugar.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.acta.label_tag }}<br>{{ form.acta }}
-                {% if form.acta.errors %}
-                  <div class="text-danger">{{ form.acta.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.perperiodo.label_tag }}<br>
-                <select name="perperiodo" class="form-control">
-                    {% for periodo in ultimos_periodos %}
-                        <option value="{{ periodo.id }}">{{ periodo }}</option>
-                    {% endfor %}
-                </select>
-                {% if form.perperiodo.errors %}
-                    <div class="text-danger">{{ form.perperiodo.errors }}</div>
-                {% endif %}
-              </div>
-            
-              
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6 pt-1">
-                {{ form.estudiante_uno.label_tag }}<br>{{ form.estudiante_uno }}
-                {% if form.estudiante_uno.errors %}
-                  <div class="text-danger">{{ form.estudiante_uno.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-6 pt-1">
-                {{ form.tutor.label_tag }}<br>{{ form.tutor }}
-                {% if form.tutor.errors %}
-                  <div class="text-danger">{{ form.tutor.errors }}</div>
-                {% endif %}
-              </div>
-              
-            </div>
-            <div class="col-md-12 pt-1">
-              {{ form.titulo.label_tag }}<br>{{ form.titulo }}
-              {% if form.titulo.errors %}
-                <div class="text-danger">{{ form.titulo.errors }}</div>
+          <div class="row mb-3">
+            <div class="col-md-8 pt-1">
+              {{ form.estudiante.label_tag }}<br>{{ form.estudiante }}
+              {% if form.estudiante.errors %}
+              <div class="text-danger">{{ form.estudiante.errors }}</div>
               {% endif %}
             </div>
-            <div class="row mb-4 pt-2">
-              <div class="col-md-4 pt-1">
-                {{ form.fechadefensa.label_tag }}<br>{{ form.fechadefensa }}
-                {% if form.fechadefensa.errors %}
-                  <div class="text-danger">{{ form.fechadefensa.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.horainicio.label_tag }}<br>{{ form.horainicio }}
-                {% if form.horainicio.errors %}
-                    <div class="text-danger">{{ form.horainicio.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.horafin.label_tag }}<br>{{ form.horafin }}
-                {% if form.horafin.errors %}
-                    <div class="text-danger">{{ form.horafin.errors }}</div>
-                {% endif %}
-              </div>
+            <div class="col-md-4 pt-1">
+              {{ form.carrera.label_tag }}<br>{{ form.carrera }}
+              {% if form.carrera.errors %}
+                <div class="text-danger">{{ form.carrera.errors }}</div>
+              {% endif %}
             </div>
-            <div class="row mb-3">
-              <div class="col-md-4 pt-1">
-                {{ form.jurado_1.label_tag }}<br>{{ form.jurado_1 }}
-                {% if form.jurado_1.errors %}
-                  <div class="text-danger">{{ form.jurado_1.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.jurado_2.label_tag }}<br>{{ form.jurado_2 }}
-                {% if form.jurado_2.errors %}
-                  <div class="text-danger">{{ form.jurado_2.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.jurado_3.label_tag }}<br>{{ form.jurado_3 }}
-                {% if form.jurado_3.errors %}
-                  <div class="text-danger">{{ form.jurado_3.errors }}</div>
-                {% endif %}
-              </div>
+            <div class="col-md-4 pt-1">
+              {{ form.lugar.label_tag }}<br>{{ form.lugar }}
+              {% if form.lugar.errors %}
+                <div class="text-danger">{{ form.lugar.errors }}</div>
+              {% endif %}
             </div>
-            <div class="row mb-3">
-              <div class="col-md-6 pt-1">
-                {{ form.modalidad.label_tag }}<br>{{ form.modalidad }}
-                {% if form.modalidad.errors %}
-                  <div class="text-danger">{{ form.modalidad.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-6 pt-1">
-                {{ form.resultado.label_tag }}<br>{{ form.resultado }}
-                {% if form.resultado.errors %}
-                  <div class="text-danger">{{ form.resultado.errors }}</div>
-                {% endif %}
-              </div>
+            <div class="col-md-4 pt-1">
+              {{ form.acta.label_tag }}<br>{{ form.acta }}
+              {% if form.acta.errors %}
+                <div class="text-danger">{{ form.acta.errors }}</div>
+              {% endif %}
             </div>
-            <div class="row mb-3">
-              <div class="col-md-4 pt-1">
-                {{ form.observacion_1.label_tag }}<br>{{ form.observacion_1 }}
-                {% if form.observacion_1.errors %}
-                  <div class="text-danger">{{ form.observacion_1.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.observacion_2.label_tag }}<br>{{ form.observacion_2 }}
-                {% if form.observacion_2.errors %}
-                  <div class="text-danger">{{ form.observacion_2.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="col-md-4 pt-1">
-                {{ form.observacion_3.label_tag }}<br>{{ form.observacion_3 }}
-                {% if form.observacion_3.errors %}
-                  <div class="text-danger">{{ form.observacion_3.errors }}</div>
-                {% endif %}
-              </div>
+            <div class="col-md-4 pt-1">
+              {{ form.perperiodo.label_tag }}<br>
+              <select name="perperiodo" class="form-control">
+                  {% for periodo in ultimos_periodos %}
+                  <option value="{{ periodo.id }}">{{ periodo }}</option>
+                  {% endfor %}
+              </select>
+              {% if form.perperiodo.errors %}
+                  <div class="text-danger">{{ form.perperiodo.errors }}</div>
+              {% endif %}
             </div>
           </div>
-        <br>
+          <div class="row mb-3">
+            <div class="col-md-6 pt-1">
+              {{ form.estudiante_uno.label_tag }}<br>{{ form.estudiante_uno }}
+              {% if form.estudiante_uno.errors %}
+                <div class="text-danger">{{ form.estudiante_uno.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6 pt-1">
+              {{ form.tutor.label_tag }}<br>{{ form.tutor }}
+              {% if form.tutor.errors %}
+                <div class="text-danger">{{ form.tutor.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="col-md-12 pt-1">
+            {{ form.titulo.label_tag }}<br>{{ form.titulo }}
+            {% if form.titulo.errors %}
+              <div class="text-danger">{{ form.titulo.errors }}</div>
+            {% endif %}
+          </div>
+          <div class="row mb-4 pt-2">
+            <div class="col-md-4 pt-1">
+              {{ form.fechadefensa.label_tag }}<br>{{ form.fechadefensa }}
+              {% if form.fechadefensa.errors %}
+                <div class="text-danger">{{ form.fechadefensa.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4 pt-1">
+              {{ form.horainicio.label_tag }}<br>{{ form.horainicio }}
+              {% if form.horainicio.errors %}
+                  <div class="text-danger">{{ form.horainicio.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4 pt-1">
+              {{ form.horafin.label_tag }}<br>{{ form.horafin }}
+              {% if form.horafin.errors %}
+                  <div class="text-danger">{{ form.horafin.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 pt-1">
+              {{ form.jurado_1.label_tag }}<br>{{ form.jurado_1 }}
+              {% if form.jurado_1.errors %}
+                <div class="text-danger">{{ form.jurado_1.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4 pt-1">
+              {{ form.jurado_2.label_tag }}<br>{{ form.jurado_2 }}
+              {% if form.jurado_2.errors %}
+                <div class="text-danger">{{ form.jurado_2.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4 pt-1">
+              {{ form.jurado_3.label_tag }}<br>{{ form.jurado_3 }}
+              {% if form.jurado_3.errors %}
+                <div class="text-danger">{{ form.jurado_3.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6 pt-1">
+              {{ form.modalidad.label_tag }}<br>{{ form.modalidad }}
+              {% if form.modalidad.errors %}
+                <div class="text-danger">{{ form.modalidad.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6 pt-1">
+              {{ form.resultado.label_tag }}<br>{{ form.resultado }}
+              {% if form.resultado.errors %}
+                <div class="text-danger">{{ form.resultado.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 pt-1">
+              {{ form.observacion_1.label_tag }}<br>{{ form.observacion_1 }}
+              {% if form.observacion_1.errors %}
+                <div class="text-danger">{{ form.observacion_1.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4 pt-1">
+              {{ form.observacion_2.label_tag }}<br>{{ form.observacion_2 }}
+              {% if form.observacion_2.errors %}
+                <div class="text-danger">{{ form.observacion_2.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4 pt-1">
+              {{ form.observacion_3.label_tag }}<br>{{ form.observacion_3 }}
+              {% if form.observacion_3.errors %}
+                <div class="text-danger">{{ form.observacion_3.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div><br>
         <input name="" id="" class="btn btn-dark me-2 fontII" type="submit" value="Enviar Información" {% if form_disabled %}disabled{% endif %}>
         <a class="btn btn-secondary fontII" href="{% url 'dashboard' %}">Cancelar</a>
 
@@ -159,23 +154,21 @@
       
       <script>
         $(document).ready(function() {
-          // Cuando el campo del estudiante cambia
+         
           $('#id_estudiante').change(function() {
-              var userId = $(this).val();  // Obtiene el ID del estudiante seleccionado
+              var userId = $(this).val();  
       
-              // Verifica si se seleccionó un usuario válido
               if (userId) {
                   $.ajax({
-                      url: '/filtraracta/',  // La URL a la que se hace la solicitud
+                      url: '/filtraracta/',  
                       data: {
-                          'user_id': userId  // Parámetro que se envía al servidor
+                          'user_id': userId  
                       },
                       dataType: 'json',
                       success: function(data) {
                           if (data.error) {
-                              alert(data.error);  // Muestra el error si lo hay
+                              alert(data.error); 
                           } else {
-                              // Llenamos los campos del formulario con los datos obtenidos
                               $('#id_titulo').val(data.titulo);
                               $('#id_modalidad').val(data.modalidad);
                               $('#id_tutor').val(data.tutor);
@@ -190,7 +183,6 @@
                       }
                   });
               } else {
-                  // Limpia los campos si no hay un estudiante seleccionado
                   $('#id_titulo').val('');
                   $('#id_modalidad').val('');
                   $('#id_tutor').val('');
@@ -201,9 +193,8 @@
                   alert("Por favor selecciona un estudiante válido.");
               }
           });
-      });
+        });
       
-        // Función para mostrar el modal de confirmación
         function showConfirmationModal(event) {
           event.preventDefault();
           $('#confirmationModal').modal('show'); 
@@ -228,7 +219,6 @@
             document.getElementById('id_jurado_3')
           ];
         
-          // Actualiza las opciones disponibles para los estudiantes
           function updateEstudianteOptions() {
             const selectedValues = estudianteSelects.map(select => select.value);
             estudianteSelects.forEach(select => {
@@ -237,8 +227,6 @@
               });
             });
           }
-        
-          // Actualiza las opciones disponibles para los jurados
           function updateJuradoOptions() {
             const selectedValues = juradoSelects.map(select => select.value);
             juradoSelects.forEach(select => {
@@ -248,17 +236,14 @@
             });
           }
         
-          // Agregar evento change para cada select de estudiantes
           estudianteSelects.forEach(select => {
             select.addEventListener('change', updateEstudianteOptions);
           });
-        
-          // Agregar evento change para cada select de jurados
+       
           juradoSelects.forEach(select => {
             select.addEventListener('change', updateJuradoOptions);
           });
         
-          // Ejecutar la función al cargar la página para ocultar opciones seleccionadas previamente
           updateEstudianteOptions();
           updateJuradoOptions();
         });
@@ -273,8 +258,6 @@
   </div> 
 </div><br>
 
-
-<!-- Modal de confirmación -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-mdal">

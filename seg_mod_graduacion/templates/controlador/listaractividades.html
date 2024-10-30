@@ -11,10 +11,8 @@
       </div>
     
       <script>
-        // Crear una lista solo con los datos que existen
+  
         const images = [];
-    
-        // Agregar solo las imágenes y nombres que existen
         if ("{{ actividad.estudiante.imagen|default_if_none:'' }}" && "{{ actividad.estudiante.nombre }}") {
             images.push({ src: "{{ actividad.estudiante.imagen.url }}", name: "{{ actividad.estudiante.apellido }} {{ actividad.estudiante.apellidoM }} {{ actividad.estudiante.nombre }}" });
         }
@@ -27,29 +25,25 @@
             const profileImage = document.getElementById('profileImage');
             const profileName = document.getElementById('profileName');
     
-            // Cambiar imagen y nombre solo si hay imágenes
             if (images.length > 0) {
                 profileImage.src = images[currentIndex].src;
                 profileName.textContent = images[currentIndex].name;
             }
         }
     
-        // Mostrar imagen anterior
         function showPrevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
             rotateProfile();
         }
     
-        // Mostrar siguiente imagen
         function showNextImage() {
             currentIndex = (currentIndex + 1) % images.length;
             rotateProfile();
         }
     
-        // Ejecutar rotación automática cada 3 segundos solo si hay imágenes
         if (images.length > 0) {
-            setInterval(showNextImage, 3000); // Rotación automática
-            rotateProfile(); // Mostrar el primer perfil al cargar la página
+            setInterval(showNextImage, 3000); 
+            rotateProfile(); 
         }
       </script>
     

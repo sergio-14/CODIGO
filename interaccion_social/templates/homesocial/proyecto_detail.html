@@ -20,33 +20,31 @@
             <form id="proyectoForm" method="post" enctype="multipart/form-data" onsubmit="showConfirmationModal(event)">
                 {% csrf_token %}
                 <div class="row fontI colortext">
-                  {{ form.S_Titulo|as_crispy_field }}
-                  <div class="col-md-6">
-                    {{ form.Fecha_Inicio|as_crispy_field }}
-                  </div>
-                  <div class="col-md-6">
-                    {{ form.Fecha_Finalizacion|as_crispy_field }}
-                  </div>
-                  {{ form.S_Descripcion|as_crispy_field }}
-                  
-                 
-                  <div class="col-md-6">
-                    {{ form.S_Documentacion|as_crispy_field }}
-                    {{ form.T_Fase_proyecto|as_crispy_field }}
-                    {{ form.T_Tipo_Proyecto|as_crispy_field }}
-                  </div>
-                  <div class="col-md-6"> 
-                    {{ form.S_Imagen|as_crispy_field }}
-                    <p>Periodo y Gestión</p>
-                    <select name="T_Gestion" class="form-control" required>
-                        <option value="" selected="">---------</option>
-                        {% for periodo in ultimos_periodos %}
+                    {{ form.S_Titulo|as_crispy_field }}
+                    <div class="col-md-6">
+                        {{ form.Fecha_Inicio|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.Fecha_Finalizacion|as_crispy_field }}
+                    </div>
+                    {{ form.S_Descripcion|as_crispy_field }}
+                    <div class="col-md-6">
+                        {{ form.S_Documentacion|as_crispy_field }}
+                        {{ form.T_Fase_proyecto|as_crispy_field }}
+                        {{ form.T_Tipo_Proyecto|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6"> 
+                        {{ form.S_Imagen|as_crispy_field }}
+                        <p>Periodo y Gestión</p>
+                        <select name="T_Gestion" class="form-control" required>
+                            <option value="" selected="">---------</option>
+                            {% for periodo in ultimos_periodos %}
                             <option value="{{ periodo.id }}">{{ periodo }}</option>
-                        {% endfor %}
-                    </select><br>
-                    {% comment %} {{ form.T_Gestion|as_crispy_field }} {% endcomment %}
-                    {{ form.T_Materia|as_crispy_field }}
-                  </div>
+                            {% endfor %}
+                        </select><br>
+                        {% comment %} {{ form.T_Gestion|as_crispy_field }} {% endcomment %}
+                        {{ form.T_Materia|as_crispy_field }}
+                    </div>
                 </div>
                 {% if habilitado %}
                 <br>

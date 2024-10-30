@@ -56,7 +56,6 @@ class Facultad(models.Model):
 class Carrera(models.Model):
     nombre_carrera = models.CharField(max_length=150)
     facultad = models.ForeignKey(Facultad, on_delete=models.CASCADE)
-    
     def __str__(self):
         return self.nombre_carrera
 
@@ -67,6 +66,13 @@ class Semestre(models.Model):
     
     def __str__(self):
         return self.S_Semestre
+    
+    
+class Area(models.Model):
+    nombre_area = models.CharField(max_length=150, unique=True)
+
+    def __str__(self):
+        return self.nombre_area
 
 # Modelo de Materia
 class Materia(models.Model):
@@ -74,6 +80,7 @@ class Materia(models.Model):
     codigo = models.CharField(max_length=50, unique=True)
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):
         return self.nombre_materia
@@ -247,16 +254,16 @@ class ActaViaDiplomado(models.Model):
 
     
     def get_valor_1(self):
-        # Convertimos el número a palabras en español
+        
         return num2words(self.valor_1, lang='es')
     def get_valor_2(self):
-        # Convertimos el número a palabras en español
+        
         return num2words(self.valor_2, lang='es')
     def get_valor_3(self):
-        # Convertimos el número a palabras en español
+       
         return num2words(self.valor_3, lang='es')
     def get_totalnota(self):
-        # Convertimos el número a palabras en español
+       
         return num2words(self.totalnota, lang='es')
     
     def get_obse(self):
@@ -386,6 +393,87 @@ class ActaPublica(models.Model):
         else:
             return "............"
         
+
+class ActaGrado(models.Model):
+    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE )
+    perperiodo = models.ForeignKey(Periodo, on_delete=models.CASCADE, null=True)
+    acta = models.CharField(max_length=30, unique=True )
+    estudiante = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_grado_estudiante', on_delete=models.CASCADE)
+    area = models.ForeignKey('Area', on_delete=models.CASCADE, verbose_name='Seleccione el Area', related_name='actagrado_area')
+    lugar = models.CharField(max_length=50)
+    campus = models.CharField(max_length=250, default='Campus Universitario Hernán Melgar Justiniano.')
+    espacio = models.CharField(max_length=250)
+    fechadefensa = models.DateField()
+    horainicio = models.TimeField()
+    horafin = models.TimeField()
+    nota = models.IntegerField()
+    area_1 = models.ForeignKey('Area', on_delete=models.CASCADE, verbose_name='Seleccione el Area', related_name='actagrado_area_1')
+    lugar_1 = models.CharField(max_length=50)
+    campus_1 = models.CharField(max_length=250, default='Campus Universitario Hernán Melgar Justiniano.')
+    espacio_1 = models.CharField(max_length=250)
+    fechadefensa_1 = models.DateField()
+    horainicio_1 = models.TimeField()
+    horafin_1 = models.TimeField()
+    nota_1 = models.IntegerField()
+    area_2 = models.ForeignKey('Area', on_delete=models.CASCADE, verbose_name='Seleccione el Area', related_name='actagrado_area_2')
+    lugar_2 = models.CharField(max_length=50)
+    campus_2 = models.CharField(max_length=250, default='Campus Universitario Hernán Melgar Justiniano.')
+    espacio_2 = models.CharField(max_length=250)
+    fechadefensa_2 = models.DateField()
+    horainicio_2 = models.TimeField()
+    horafin_2 = models.TimeField()
+    nota_2 = models.IntegerField()
+    area_3 = models.ForeignKey('Area', on_delete=models.CASCADE, verbose_name='Seleccione el Area', related_name='actagrado_area_3')
+    lugar_3 = models.CharField(max_length=50)
+    campus_3 = models.CharField(max_length=250, default='Campus Universitario Hernán Melgar Justiniano.')
+    espacio_3 = models.CharField(max_length=250)
+    fechadefensa_3 = models.DateField()
+    horainicio_3 = models.TimeField()
+    horafin_3 = models.TimeField()
+    nota_3 = models.IntegerField()
+    presidenteacta = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_grado_presidente_Asi', on_delete=models.CASCADE)
+    jurado_1 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_grado_jurado_1', on_delete=models.CASCADE)
+    jurado_2 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_grado_jurado_2', on_delete=models.CASCADE)
+    jurado_3 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='acta_grado_jurado_3', on_delete=models.CASCADE)
+    modalidad = models.ForeignKey('Modalidad', on_delete=models.CASCADE, verbose_name='Seleccione Una Modalidad')
+    fecha = models.DateField(default=timezone.now)
+    docrespaldo = models.FileField(upload_to='documento/perfil', verbose_name='Agregar Documentación', null=True, blank=True)
+    notatotal = models.IntegerField()
+    
+    class Meta:
+        verbose_name_plural = "Actas de Grado"
+        verbose_name = "Acta Grado"
+        
+    def __str__(self):
+        return self.acta
+    def get_notali(self):
+      
+        return num2words(self.notatotal, lang='es')
+
+    def get_observa(self):
+        if self.notatotal == 50:
+            return "POSTERGADO Y/O REPROBADO"
+        elif 51 <= self.notatotal <= 79:
+            return "APROBADO"
+        elif 80 <= self.notatotal <= 89:
+            return "APROBADO CON FELICITACIONES"
+        elif 90 <= self.notatotal <= 100:
+            return "APROBADO CON MENCÍON HONORÍFICA Y RECOMENDACIÓN DE PUBLICACIÓN"
+        else:
+            return "............."
+
+   
+    def get_valori(self):
+        if self.notatotal == 50:
+            return "INSUFICIENTE"
+        elif 51 <= self.notatotal <= 79:
+            return "BUENA"
+        elif 80 <= self.notatotal <= 89:
+            return "SOBRESALIENTE"
+        elif 90 <= self.notatotal <= 100:
+            return "EXCELENTE"
+        else:
+            return "............"
 
 class ActaExcelencia(models.Model):
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE )
@@ -598,7 +686,4 @@ class RepositorioTitulados(models.Model):
 
     def __str__(self):
         return f"Repositorio Actividad for {self.estudiante}"
-
-
-
 

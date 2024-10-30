@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <div class="container no-gutters px-lg-5 px-1">
-    <h1 class="titlesuperior colortext py-4">Reporte Defensa Excelencia Academia
+    <h1 class="titlesuperior colortext py-4">Reporte Defensa Examen de Grado
         <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
             <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z"/>
             <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z"/>
@@ -51,40 +51,30 @@
                         <p class="fecha colortext ">Carrera: {{ acta.carrera }}</p>
                     </div>
                 </div>
-                <p class="title colortext text-lg-start text-center">Título: {{ acta.titulo }}</p>
+                
                 <div class="row">
-                    <div class="col-lg-8 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">Modalidad:<br> {{ acta.modalidad }} {{ acta.get_mod }}</p>
+                    <div class="col-lg-4 col-12 text-lg-start text-center">
+                        <p class="fecha colortext ">Presidente:<br> {{ acta.presidenteacta.nombre }} {{ acta.presidenteacta.apellido }} {{ acta.presidenteacta.apellidoM }}</p>
+                    </div >
+                    <div class="col-lg-4 col-6 text-lg-start text-center">
+                        <p class="fecha colortext ">Modalidad:<br> {{ acta.modalidad }}</p>
                     </div>
                     <div class="col-lg-4 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">Calificación:<br> <span class="colorestados">{{ acta.get_resultado_display }}</span> <span class="colorestados">con la Nota de {{ acta.notatotal }} pts.</span></p>
+                        <p class="fecha colortext ">Calificación:<br><span class="colorestados">Nota de {{ acta.totalnota }} pts.</span></p>
                         
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">1er. Tribunal:<br> {{ acta.jurado_1.nombre }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }}</p>
+                        <p class="fecha colortext ">1er. Tribunal<br> {{ acta.jurado_1.nombre }} {{ acta.jurado_1.apellido }} {{ acta.jurado_1.apellidoM }}</p>
                     </div >
                     <div class="col-lg-4 col-6 text-lg-start text-center">
-                        <p class="fecha colortext ">2do. Tribunal:<br> {{ acta.jurado_2.nombre }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }}</p>
+                        <p class="fecha colortext ">2do. Tribunal<br> {{ acta.jurado_2.nombre }} {{ acta.jurado_2.apellido }} {{ acta.jurado_2.apellidoM }}</p>
                     </div>
                     <div class="col-lg-4 col-6 text-lg-start text-center">
                         <p class="fecha colortext ">3er. Tribunal:<br> {{ acta.jurado_3.nombre }} {{ acta.jurado_3.apellido }} {{ acta.jurado_3.apellidoM }}</p>
                         
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12 ">
-                        <p class="fecha colortext ">Nota Total Literal: <br> <span class="colorestados fechas">{{ acta.get_notatotal_literal }}</span></p>
-                    </div >
-                    <div class="col-lg-4 col-12 ">
-                        <p class="fecha colortext ">Observación: <br> <span class="colorestados fechas">{{ acta.get_observacion }}</span></p>
-                    </div>
-                    <div class="col-lg-4 col-12 ">
-                        <p class="fecha colortext ">Valorización: <br> <span class="colorestados fechas">{{ acta.get_valorizacion }}</span></p>
-                        
-                    </div>
-                    
                 </div>
                 <p class="no-guttee py-2 col-lg-5 col-6 text-center">
                     {% if acta.docrespaldo %}
@@ -95,11 +85,12 @@
                         <span class="text-muted">Sin Confirmación de Acta</span>
                     {% endif %}
                 </p>
+                
+                
             </div>
-            <div class="col-md-3 pt-4 d-flex flex-column align-items-center">
+            <div class="col-md-3 pt-1 d-flex flex-column align-items-center">
                 <div class="image-container">
                     {% if acta.estudiante.imagen %}
-                    <!-- Imágenes (se ocultan inicialmente) -->
                     <img id="imagen3" src="{{ acta.estudiante.imagen.url }}" class="imgrepo" alt="Imagen 3" style="display: block;"> <!-- Se muestra por defecto -->
                     {% else %}
                     <img id="imagenDefault" src="{% static 'img/SINFOTO.webp' %}" class="imgrepo" alt="Sin foto">
@@ -109,12 +100,13 @@
                     <p class="text colorestados">Nombre Egresado:</p>
                     <p id="nombre3" class="title colortext" style="display: block;">{{ acta.estudiante }}</p>
                 </h5>
+                
                 {% if acta.pk %}
-                <a class="btn btn-sm btn-primary fontII" href="{% url 'Pdf_ReporteActaExcelencia' pk=acta.pk %}"target="_blank">General Reporte Acta</a><br>
+                <a class="btn btn-sm btn-primary fontII" href="{% url 'Pdf_ReporteActaGrado' pk=acta.pk %}"target="_blank">General Reporte Acta</a><br>
                 {% else %}
                 <span>No Acta available</span>
                 {% endif %}
-                <a href="{% url 'Acta_excel_doc' acta.id %}" class="btn btn-sm btn-success fontII" data-bs-toggle="modal" data-bs-target="#editDocModal" data-url="{% url 'Acta_excel_doc' acta.id %}">Subir Acta Firmada</a>
+                <a href="{% url 'Acta_grado_doc' acta.id %}" class="btn btn-sm btn-success fontII" data-bs-toggle="modal" data-bs-target="#editDocModal" data-url="{% url 'Acta_grado_doc' acta.id %}">Subir Acta Firmada</a>
             </div>
         </div>
     </div>
@@ -141,7 +133,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fontI" id="editDocModalLabel">Agregar Acta Firmada Defensa Excelencia</h5>
+          <h5 class="modal-title fontI" id="editDocModalLabel">Agregar Acta Firmada Defensa Examen de Grado</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

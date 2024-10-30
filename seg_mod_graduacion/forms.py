@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import Group
 from gestion_usuarios.models import User 
-from .models import InvCientifica, ComentarioInvCientifica, HabilitarProyectoFinal,HabilitarSeguimiento
+from .models import InvCientifica, ComentarioInvCientifica, HabilitarProyectoFinal,HabilitarSeguimiento,ActaGrado
 from .models import PerfilProyecto, ComentarioPerfil, RepositorioTitulados, ProyectoFinal, ComentarioProFinal
 from .models import ActaProyectoPerfil,HabilitarProyectoFinal, Modalidad, ActaPublica, ActaPrivada,ActaViaDiplomado, Periodo
 from django.utils.text import slugify
@@ -31,33 +31,24 @@ class InvCientificaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
-
-        # Obtiene el grupo llamado 'Estudiantes'
         estudiantes_group = Group.objects.get(name='Estudiantes')
         estudiantes_users = User.objects.filter(groups=estudiantes_group, is_active=True)
 
-        # Filtrar las investigaciones que tienen el estado 'Aprobado'
         investigaciones_aprobadas = InvCientifica.objects.filter(investado='Aprobado')
 
-        # Obtener los usuarios que ya están relacionados en una investigación aprobada como user, user_uno o user_dos
         usuarios_con_inv = investigaciones_aprobadas.values_list('user', 'user_uno')
-        
-        # Aplanar la lista de usuarios (eliminando duplicados con set) y excluir None
+     
         usuarios_con_inv = set(
             usuario for usuarios in usuarios_con_inv for usuario in usuarios if usuario is not None
         )
 
-        # Excluir los usuarios que ya tienen una investigación aprobada
         estudiantes_users = estudiantes_users.exclude(id__in=usuarios_con_inv)
 
-        # Si el usuario autenticado está creando la investigación, exclúyelo también de las opciones de user_uno y user_dos
         if self.request and self.request.user.is_authenticated:
             estudiantes_users = estudiantes_users.exclude(id=self.request.user.id)
 
-        # Establecer el queryset filtrado en los campos 'user_uno' y 'user_dos'
         self.fields['user_uno'].queryset = estudiantes_users
-        
-        # Marcar los campos como requeridos
+      
         self.fields['invtitulo'].required = True
         self.fields['invdescripcion'].required = True
         self.fields['invdocumentacion'].required = True
@@ -92,18 +83,15 @@ class PerfilForm(forms.ModelForm):
         self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
 
-        # Obtiene el grupo llamado 'Estudiantes'
         estudiantes_group = Group.objects.get(name='Estudiantes')
         estudiantes_users = User.objects.filter(groups=estudiantes_group, is_active=True)
 
-        # Filtrar las investigaciones que tienen el estado 'Aprobado'
         perfiles_aprobadas = PerfilProyecto.objects.filter(perestado='Aprobado')
         inv_aprobadas = InvCientifica.objects.filter(investado='Aprobado')
 
-        # Obtener los usuarios que ya están relacionados en una investigación aprobada como user, user_uno o user_dos
         usuarios_con_perfil = perfiles_aprobadas.values_list('user', 'user_uno')
         usuarios_con_inv = inv_aprobadas.values_list('user', 'user_uno')
-        # Aplanar la lista de usuarios (eliminando duplicados con set) y excluir None
+       
         usuarios_con_perfil = set(
             usuario for usuarios in usuarios_con_perfil for usuario in usuarios if usuario is not None
         )
@@ -111,22 +99,16 @@ class PerfilForm(forms.ModelForm):
             usuario for usuarios in usuarios_con_inv for usuario in usuarios if usuario is not None
         )
 
-
-        # Excluir los usuarios que ya tienen una investigación aprobada
         estudiantes_users = estudiantes_users.filter(
             id__in=usuarios_con_inv
             ).exclude(id__in=usuarios_con_perfil
             )
 
-        # Si el usuario autenticado está creando la investigación, exclúyelo también de las opciones de user_uno y user_dos
         if self.request and self.request.user.is_authenticated:
             estudiantes_users = estudiantes_users.exclude(id=self.request.user.id)
 
-        # Establecer el queryset filtrado en los campos 'user_uno' y 'user_dos'
         self.fields['user_uno'].queryset = estudiantes_users
-       
-        
-         # Set all fields as required
+    
         self.fields['pertitulo'].required = True
         self.fields['perdescripcion'].required = True
         self.fields['perdocumentacion'].required = True
@@ -372,16 +354,16 @@ class ActaPublicaForm(forms.ModelForm):
             
     def save(self, commit=True):
         instance = super().save(commit=False)
-        # El campo 'acta' ya se establece en self.initial durante la inicialización
-        instance.acta = self.initial.get('acta', instance.acta)  # Asegúrate de establecerlo correctamente
-        # Si la instancia es nueva, asigna 'notatotal'
+      
+        instance.acta = self.initial.get('acta', instance.acta) 
+       
         if not instance.pk:
             instance.notatotal = self.cleaned_data.get('notatotal', 0)
-            # Asigna automáticamente valores a las observaciones
+           
             instance.observacion_1 = 'sin observacion'
             instance.observacion_2 = 'sin observacion'
             instance.observacion_3 = 'sin observacion'
-            # Guarda la instancia si 'commit' es True
+          
             if commit:
                 instance.save()
                 return instance
@@ -438,7 +420,7 @@ class ActaPublicaForm(forms.ModelForm):
             for choice_value, choice_label in self.fields['modalidad'].choices
             if choice_label in INCLUDED_MODALITIES
         ]
-        # Filtra los usuarios del grupo "Docentes"
+       
         self.fields['tutor'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_1'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_2'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
@@ -446,14 +428,14 @@ class ActaPublicaForm(forms.ModelForm):
         self.fields['presidenteacta'].queryset = User.objects.filter(groups=presidentes_group, is_active=True)
         
     def _set_initial_acta_number(self):
-    # Busca el último valor de 'acta' en la base de datos
+   
         last_acta = ActaPublica.objects.order_by('-acta').first()
         if last_acta:
             last_value = int(last_acta.acta)
             new_value = last_value + 1
         else:
             new_value = 1
-    # Asegúrate de que el nuevo valor no exista ya en la base de datos
+   
         while ActaPublica.objects.filter(acta=str(new_value).zfill(5)).exists():
             new_value += 1
         self.initial['acta'] = str(new_value).zfill(5)  # Formatea el nuevo valor
@@ -505,18 +487,17 @@ class ActaViaDiplomadoForm(forms.ModelForm):
                 return cleaned_data
                
     def save(self, commit=True):
-        # Primero, guarda la instancia del modelo ActaExcelencia
+
         instance = super().save(commit=False)
-        instance.acta = self.initial.get('acta', instance.acta)  # Establecer correctamente el campo 'acta'
+        instance.acta = self.initial.get('acta', instance.acta) 
         
         if commit:
-            instance.save()  # Guarda la instancia si commit es True
+            instance.save() 
 
-            # Llamamos a la función transferir_datos_a_repositorio después de guardar la instancia
             transferir_datos_via(
                 estudiante=instance.estudiante,
                 acta=instance.acta,
-                titulo=instance.titulo,  # O usa otro campo si prefieres
+                titulo=instance.titulo,  
                 modalidad=instance.modalidad,
                 fecha=instance.fechadefensa,
                 periodo=instance.perperiodo,
@@ -557,30 +538,28 @@ class ActaViaDiplomadoForm(forms.ModelForm):
             for choice_value, choice_label in self.fields['modalidad'].choices
             if choice_label in INCLUDED_MODALITIES
         ]
-        
-        # Filtra los usuarios del grupo "Docentes"
+    
         self.fields['presidente'].queryset = User.objects.filter(groups=presidentes_group, is_active=True)
         self.fields['secretario'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['vocal_1'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['vocal_2'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         
     def _set_initial_acta_number(self):
-    # Busca el último valor de 'acta' en la base de datos
+   
         last_acta = ActaViaDiplomado.objects.order_by('-acta').first()
         if last_acta:
             last_value = int(last_acta.acta)
             new_value = last_value + 1
         else:
             new_value = 1
-    # Asegúrate de que el nuevo valor no exista ya en la base de datos
+  
         while ActaViaDiplomado.objects.filter(acta=str(new_value).zfill(5)).exists():
             new_value += 1
         self.initial['acta'] = str(new_value).zfill(5)  # Formatea el nuevo valor
         print(f"Valor inicial del acta: {self.initial['acta']}") 
        
 
-from .utils import transferir_datos_a_repositorio, transferir_datos_via # Asegúrate de importar la función
-
+from .utils import transferir_datos_a_repositorio, transferir_datos_via, transferir_datos_grado
 class ActaExcelenciaForm(forms.ModelForm):
     class Meta:
         model = ActaExcelencia
@@ -620,14 +599,14 @@ class ActaExcelenciaForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        # Primero, guarda la instancia del modelo ActaExcelencia
+       
         instance = super().save(commit=False)
-        instance.acta = self.initial.get('acta', instance.acta)  # Establecer correctamente el campo 'acta'
+        instance.acta = self.initial.get('acta', instance.acta) 
         
         if commit:
-            instance.save()  # Guarda la instancia si commit es True
+            instance.save() 
 
-            # Llamamos a la función transferir_datos_a_repositorio después de guardar la instancia
+          
             transferir_datos_a_repositorio(
                 acta=instance.acta,
                 estudiante=instance.estudiante,
@@ -672,7 +651,7 @@ class ActaExcelenciaForm(forms.ModelForm):
             for choice_value, choice_label in self.fields['modalidad'].choices
             if choice_label in INCLUDED_MODALITIES
         ]
-        # Filtra los usuarios de los grupos correctos
+       
         self.fields['presidenteacta'].queryset = User.objects.filter(groups=presidentes_group, is_active=True)
         self.fields['secretario'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_1'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
@@ -686,14 +665,10 @@ class ActaExcelenciaForm(forms.ModelForm):
             new_value = last_value + 1
         else:
             new_value = 1
-        
-        # Asegúrate de que el nuevo valor no exista ya en la base de datos
+      
         while ActaExcelencia.objects.filter(acta=str(new_value).zfill(5)).exists():
             new_value += 1
         self.initial['acta'] = str(new_value).zfill(5)
-        
-        
-        
         
 #actas defensa publica
 class ActaPrivadaForm(forms.ModelForm):
@@ -814,17 +789,17 @@ class ActaPrivadaForm(forms.ModelForm):
         self.fields['jurado_3'].queryset = User.objects.filter(groups=docentes_group)
         
     def _set_initial_acta_number(self):
-    # Busca el último valor de 'acta' en la base de datos
+   
         last_acta = ActaPrivada.objects.order_by('-acta').first()
         if last_acta:
             last_value = int(last_acta.acta)
             new_value = last_value + 1
         else:
             new_value = 1
-    # Asegúrate de que el nuevo valor no exista ya en la base de datos
+    
         while ActaPublica.objects.filter(acta=str(new_value).zfill(5)).exists():
             new_value += 1
-        self.initial['acta'] = str(new_value).zfill(5)  # Formatea el nuevo valor
+        self.initial['acta'] = str(new_value).zfill(5)  
         print(f"Valor inicial del acta: {self.initial['acta']}") 
         
     def clean(self):
@@ -838,15 +813,202 @@ class ActaPrivadaForm(forms.ModelForm):
                 return cleaned_data
     
     def save(self, commit=True):
-        # El campo 'acta' ya se establece en self.initial durante la inicialización
-        self.instance.acta = self.initial['acta']  # Asegurarse de que se establezca correctamente
+       
+        self.instance.acta = self.initial['acta'] 
 
         return super().save(commit)
     
+class ActaGradoForm(forms.ModelForm):
+    class Meta:
+        model = ActaGrado
+        fields = [
+            'carrera', 'perperiodo', 'acta', 'estudiante', 'area', 'lugar', 'campus', 'espacio',
+            'fechadefensa', 'horainicio', 'horafin', 'nota',
+            'area_1', 'lugar_1', 'campus_1', 'espacio_1', 'fechadefensa_1', 'horainicio_1', 'horafin_1', 'nota_1',
+            'area_2', 'lugar_2', 'campus_2', 'espacio_2', 'fechadefensa_2', 'horainicio_2', 'horafin_2', 'nota_2',
+            'area_3', 'lugar_3', 'campus_3', 'espacio_3', 'fechadefensa_3', 'horainicio_3', 'horafin_3', 'nota_3',
+            'presidenteacta', 'jurado_1', 'jurado_2', 'jurado_3', 'modalidad','fecha', 'notatotal'
+        ]
+        labels = {
+            'carrera': 'Carrera',
+            'perperiodo': 'Periodo y Gestión',
+            'acta': 'Número de Acta',
+            'estudiante': 'Estudiante',
+            'area': 'Seleccione el Área',
+            'lugar': 'Lugar',
+            'campus': 'Establecimiento',
+            'espacio': 'Sitio de evaluación',
+            'fechadefensa': 'Fecha de Defensa',
+            'horainicio': 'Hora de Inicio',
+            'horafin': 'Hora de Fin',
+            'nota': 'Nota',
+            'area_1': 'Seleccione el Área ',
+            'lugar_1': 'Lugar',
+            'campus_1': 'Establecimiento',
+            'espacio_1': 'Sitio de evaluación',
+            'fechadefensa_1': 'Fecha de Defensa',
+            'horainicio_1': 'Hora de Inicio',
+            'horafin_1': 'Hora de Fin',
+            'nota_1': 'Nota',
+            'area_2': 'Seleccione el Área',
+            'lugar_2': 'Lugar',
+            'campus_2': 'Establecimiento',
+            'espacio_2': 'Sitio de evaluación',
+            'fechadefensa_2': 'Fecha de Defensa',
+            'horainicio_2': 'Hora de Inicio',
+            'horafin_2': 'Hora de Fin',
+            'nota_2': 'Nota ',
+            'area_3': 'Seleccione el Área',
+            'lugar_3': 'Lugar',
+            'campus_3': 'Establecimiento',
+            'espacio_3': 'Sitio de evaluación',
+            'fechadefensa_3': 'Fecha de Defensa',
+            'horainicio_3': 'Hora de Inicio',
+            'horafin_3': 'Hora de Fin',
+            'nota_3': 'Nota',
+            'presidenteacta': 'Presidente del Acta',
+            'jurado_1': '1er. Tribunal',
+            'jurado_2': '2do. Tribunal',
+            'jurado_3': '3er. Tribunal',
+            'modalidad': 'Seleccione Una Modalidad',
+            'fecha': 'Fecha de Defensa General',
+            'notatotal': 'Nota Total',
+        }
+        widgets = {
+            'carrera': forms.Select(attrs={'class': 'form-control'}),
+            'perperiodo': forms.Select(attrs={'class': 'form-control'}),
+            'acta': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'estudiante': forms.Select(attrs={'class': 'form-control'}),
+            'area': forms.Select(attrs={'class': 'form-control'}),
+            'lugar': forms.TextInput(attrs={'class': 'form-control'}),
+            'campus': forms.TextInput(attrs={'class': 'form-control'}),
+            'espacio': forms.TextInput(attrs={'class': 'form-control'}),
+            'fechadefensa': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'horainicio': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'horafin': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'nota': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '15'}),
+            'area_1': forms.Select(attrs={'class': 'form-control'}),
+            'lugar_1': forms.TextInput(attrs={'class': 'form-control'}),
+            'campus_1': forms.TextInput(attrs={'class': 'form-control'}),
+            'espacio_1': forms.TextInput(attrs={'class': 'form-control'}),
+            'fechadefensa_1': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'horainicio_1': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'horafin_1': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'nota_1': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '15'}),
+            'area_2': forms.Select(attrs={'class': 'form-control'}),
+            'lugar_2': forms.TextInput(attrs={'class': 'form-control'}),
+            'campus_2': forms.TextInput(attrs={'class': 'form-control'}),
+            'espacio_2': forms.TextInput(attrs={'class': 'form-control'}),
+            'fechadefensa_2': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'horainicio_2': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'horafin_2': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'nota_2': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '30'}),
+            'area_3': forms.Select(attrs={'class': 'form-control'}),
+            'lugar_3': forms.TextInput(attrs={'class': 'form-control'}),
+            'campus_3': forms.TextInput(attrs={'class': 'form-control'}),
+            'espacio_3': forms.TextInput(attrs={'class': 'form-control'}),
+            'fechadefensa_3': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'horainicio_3': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'horafin_3': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'nota_3': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '40'}),
+            'presidenteacta': forms.Select(attrs={'class': 'form-control'}),
+            'jurado_1': forms.Select(attrs={'class': 'form-control'}),
+            'jurado_2': forms.Select(attrs={'class': 'form-control'}),
+            'jurado_3': forms.Select(attrs={'class': 'form-control'}),
+            'modalidad': forms.Select(attrs={'class': 'form-control'}),
+            'fecha': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'notatotal': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '100'}),
+        }
+    def clean(self):
+        cleaned_data = super().clean()
+        
+    
+        hora_pairs = [
+            ('horainicio', 'horafin'),
+            ('horainicio_1', 'horafin_1'),
+            ('horainicio_2', 'horafin_2'),
+            ('horainicio_3', 'horafin_3'),
+        ]
+
+        for start_field, end_field in hora_pairs:
+            horainicio = cleaned_data.get(start_field)
+            horafin = cleaned_data.get(end_field)
+            
+            if horainicio and horafin and horainicio >= horafin:
+                self.add_error(start_field, "La hora de inicio no puede ser mayor o igual a la hora de finalización.")
+                self.add_error(end_field, "La hora de inicio no puede ser mayor o igual a la hora de finalización.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+      
+        instance = super().save(commit=False)
+        instance.acta = self.initial.get('acta', instance.acta) 
+        
+        if commit:
+            instance.save()  
+            
+            transferir_datos_grado(
+                acta=instance.acta,
+                estudiante=instance.estudiante,
+                modalidad=instance.modalidad,
+                fecha=instance.fecha,
+                periodo=instance.perperiodo,
+                nota=instance.notatotal,
+                jurado_1=instance.jurado_1,
+                jurado_2=instance.jurado_2,
+                jurado_3=instance.jurado_3
+            )
+        
+        return instance
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._set_initial_acta_number()
+        estudiantes_group = Group.objects.get(name="Estudiantes")
+        docentes_group = Group.objects.get(name="Docentes")
+        presidentes_group = Group.objects.get(name="Presidentes Defensas")
+        estudiantes_users = User.objects.filter(groups=estudiantes_group, is_active=True)
+        usuarios_con_repositorio = RepositorioTitulados.objects.values_list('estudiante', flat=True) 
+        usuarios_con_inv = InvCientifica.objects.filter(
+            investado='Aprobado'
+            ).filter(Q(user__isnull=False) | Q(user_uno__isnull=False)
+                     ).values_list('user', 'user_uno').distinct()
+        usuarios_con_inv = list(set(
+                [user_id for pair in usuarios_con_inv for user_id in pair if user_id]
+            ))
+        
+        self.fields['estudiante'].queryset = User.objects.filter(
+            groups=estudiantes_group
+        ).filter(id__in=estudiantes_users
+        ).exclude(id__in=usuarios_con_inv
+        ).exclude(id__in=usuarios_con_repositorio)
         
         
+        INCLUDED_MODALITIES = ['Examen de Grado']
+        self.fields['modalidad'].choices = [
+            (choice_value, choice_label)
+            for choice_value, choice_label in self.fields['modalidad'].choices
+            if choice_label in INCLUDED_MODALITIES
+        ]
+   
+        self.fields['presidenteacta'].queryset = User.objects.filter(groups=presidentes_group, is_active=True)
+        self.fields['jurado_1'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
+        self.fields['jurado_2'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
+        self.fields['jurado_3'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
 
-
+    def _set_initial_acta_number(self):
+        last_acta = ActaGrado.objects.order_by('-acta').first()
+        if last_acta:
+            last_value = int(last_acta.acta)
+            new_value = last_value + 1
+        else:
+            new_value = 1
+       
+        while ActaGrado.objects.filter(acta=str(new_value).zfill(5)).exists():
+            new_value += 1
+        self.initial['acta'] = str(new_value).zfill(5)
+        
 
 class ActividadControlForm(forms.ModelForm):
     class Meta:
@@ -879,12 +1041,12 @@ class ActividadControlForm(forms.ModelForm):
         usuarios_con_perfil_aprobado = ActaProyectoPerfil.objects.filter(resultado='Suficiente').values_list('estudiante', flat=True).distinct()
         self.fields['estudiante'].queryset = User.objects.filter(
         groups=estudiantes_group,
-        is_active=True  # Solo usuarios activos
+        is_active=True  
         ).exclude(id__in=usuarios_con_actividad).filter(id__in=usuarios_con_perfil_aprobado)
-        # Filtra los estudiantes para 'estudiante_uno' y 'estudiante_dos'
+       
         self.fields['estudiante_uno'].queryset = User.objects.filter(
             groups=estudiantes_group,
-            is_active=True  # Solo usuarios activos
+            is_active=True  
             ).exclude(id__in=usuarios_con_actividad)#.filter(id__in=usuarios_con_perfil_aprobado)
       
         self.fields['tutor'].queryset = User.objects.filter(groups=docentes_group)
@@ -984,8 +1146,6 @@ class HabilitarTribunalesPerfilForm(forms.ModelForm):
      
     def __init__(self, *args, **kwargs):
         super(HabilitarTribunalesPerfilForm, self).__init__(*args, **kwargs)
-
-        # Filtrar los usuarios que están en el grupo 'Estudiantes'
         estudiantes_group = Group.objects.get(name='Estudiantes')
         
         INCLUDED_MODALITIES = ['Trabajo Dirigido', 'Proyecto de Grado', 'Tesis de Grado']
@@ -994,13 +1154,13 @@ class HabilitarTribunalesPerfilForm(forms.ModelForm):
             for choice_value, choice_label in self.fields['permodalidad'].choices
             if choice_label in INCLUDED_MODALITIES
         ]
-        # Filtrar los usuarios de los grupos de docentes
+    
         docentes_group = Group.objects.get(name="Docentes")
         self.fields['tutor'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_1'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_2'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_3'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
-        # Filtrar los estudiantes que tienen un PerfilProyecto con estado 'Aprobado'
+       
         activo_users = HabilitarTribunalesPerfil.objects.values_list('user')
         aprobados = PerfilProyecto.objects.filter(perestado='Aprobado').values_list('user', flat=True)
         aprobados_uno = PerfilProyecto.objects.filter(perestado='Aprobado').values_list('user_uno', flat=True)
@@ -1008,7 +1168,6 @@ class HabilitarTribunalesPerfilForm(forms.ModelForm):
         acta_users = ActaProyectoPerfil.objects.values_list('estudiante')
         
 
-        # Aplicar filtro a los campos 'user' y 'user_uno'
         self.fields['user'].queryset = User.objects.filter(
         groups=estudiantes_group,
         ).filter(id__in=aprobados,
@@ -1050,7 +1209,6 @@ class EditarHabilitarTribunalesPerfilForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditarHabilitarTribunalesPerfilForm, self).__init__(*args, **kwargs)
 
-        # Filtrar los usuarios que están en el grupo 'Estudiantes'
         estudiantes_group = Group.objects.get(name='Estudiantes')
         
         INCLUDED_MODALITIES = ['Trabajo Dirigido', 'Proyecto de Grado', 'Tesis de Grado']
@@ -1059,21 +1217,17 @@ class EditarHabilitarTribunalesPerfilForm(forms.ModelForm):
             for choice_value, choice_label in self.fields['permodalidad'].choices
             if choice_label in INCLUDED_MODALITIES
         ]
-        # Filtrar los usuarios de los grupos de docentes
+       
         docentes_group = Group.objects.get(name="Docentes")
         self.fields['tutor'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_1'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_2'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
         self.fields['jurado_3'].queryset = User.objects.filter(groups=docentes_group, is_active=True)
-        # Filtrar los estudiantes que tienen un PerfilProyecto con estado 'Aprobado'
-       
+      
         aprobados = PerfilProyecto.objects.filter(perestado='Aprobado').values_list('user', flat=True)
-        aprobados_uno = PerfilProyecto.objects.filter(perestado='Aprobado').values_list('user_uno', flat=True)
         
         acta_users = ActaProyectoPerfil.objects.values_list('estudiante')
         
-
-        # Aplicar filtro a los campos 'user' y 'user_uno'
         self.fields['user'].queryset = User.objects.filter(
         groups=estudiantes_group,
         ).filter(id__in=aprobados)
@@ -1112,6 +1266,20 @@ class ActaViadiploForm(forms.ModelForm):
             'docrespaldo': forms.FileInput(attrs={'class': 'form-control'})
         }
       
-
+class ActaExcelenForm(forms.ModelForm):
+    class Meta:
+        model = ActaExcelencia
+        fields = ['docrespaldo']
+        widgets = {
+            'docrespaldo': forms.FileInput(attrs={'class': 'form-control'})
+        }
    
-  
+class ActaGraForm(forms.ModelForm):
+    class Meta:
+        model = ActaGrado
+        fields = ['docrespaldo']
+        widgets = {
+            'docrespaldo': forms.FileInput(attrs={'class': 'form-control'})
+        }
+   
+

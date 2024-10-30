@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.conf.urls import handler403
 from .views import handle_permission_denied
 from seg_mod_graduacion import views
-from .views import ModalidadCreateView, ModalidadListView, ModalidadUpdateView, Pdf_ReporteActaPrivada, Pdf_ReporteActaPublica
+from .views import ModalidadCreateView, ModalidadListView, ModalidadUpdateView, Pdf_ReporteActaPrivada, Pdf_ReporteActaPublica,Pdf_ReporteActaGrado
 from .views import pdf_reporteinv,Pdf_Reporte_InvFiltrado, Pdf_Reporte_Perfiles, Pdf_ReporteActa,Pdf_ReporteActaViadiplomatico, Pdf_ReporteActaExcelencia
 
 urlpatterns = [    
@@ -33,6 +33,8 @@ urlpatterns = [
     path('acta_doc_privada/<int:acta_id>/Acta_priv_doc/', views.Acta_priv_doc, name='Acta_priv_doc'),
     path('acta_doc_publica/<int:acta_id>/Acta_prub_doc/', views.Acta_pub_doc, name='Acta_pub_doc'),
     path('acta_doc_ViaDiplomado/<int:acta_id>/Acta_ViaD_doc/', views.Acta_viadiplo_doc, name='Acta_viadiplo_doc'),
+    path('acta_doc_Excelencia/<int:acta_id>/Acta_Excelencia_doc/', views.Acta_excel_doc, name='Acta_excel_doc'),
+    path('acta_doc_ExGrado/<int:acta_id>/Acta_Exgrado_doc/', views.Acta_grado_doc, name='Acta_grado_doc'),
     path('reporte_acta/<int:pk>/', Pdf_ReporteActa.as_view(), name='Pdf_ReporteActa'),
     
     #seguimiento modalidad de graduacion proyecto final
@@ -59,6 +61,7 @@ urlpatterns = [
     path('reporte_acta_publica/<int:pk>/', Pdf_ReporteActaPublica.as_view(), name='Pdf_ReporteActaPublica'),
     path('reporte_acta_Via_Diplomado/<int:pk>/', Pdf_ReporteActaViadiplomatico.as_view(), name='Pdf_ReporteActaViadiplomatico'),
     path('reporte_acta_Excelencia/<int:pk>/', Pdf_ReporteActaExcelencia.as_view(), name='Pdf_ReporteActaExcelencia'),
+    path('reporte_acta_exgrado/<int:pk>/', Pdf_ReporteActaGrado.as_view(), name='Pdf_ReporteActaGrado'),
     
     path('modalidad/modalidadagregar/', ModalidadCreateView.as_view(), name='modalidadagregar'),
     path('modalidades/', ModalidadListView.as_view(), name='listarmodalidades'),
@@ -82,8 +85,9 @@ urlpatterns = [
     path('proyectofinal/acta_viadiplomado_list', views.actaviadiplomado_list, name='actaviadiplomado_list'),
     path('agregar_Excelencia/', views.agregar_Excelencia, name='agregar_Excelencia'),
     path('proyectofinal/actaexcelencia_list', views.actaexcelencia_list, name='actaexcelencia_list'),
+    path('agregar_ExGrado/', views.agregar_Grado, name='agregar_Grado'),
+    path('proyectofinal/actagrado_list', views.actagrado_list, name='actagrado_list'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-#+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) filtrartribunales
 handler403 = handle_permission_denied

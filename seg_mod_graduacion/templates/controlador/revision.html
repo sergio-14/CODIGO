@@ -22,12 +22,11 @@
           </p>
           <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Seleccionamos los elementos por sus IDs
+              
                 var estudianteUno = document.getElementById('id_estudiante_uno');
         
-                // Comprobamos si el contenido de estudiante es 'None' o está vacío
                 if (estudianteUno && (estudianteUno.textContent.trim() === '' || estudianteUno.textContent.trim() === 'None')) {
-                    estudianteUno.style.display = 'none';  // Ocultamos el li de estudiante_uno
+                    estudianteUno.style.display = 'none'; 
                 }
             });
           </script>

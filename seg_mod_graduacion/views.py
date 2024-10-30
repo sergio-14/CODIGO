@@ -86,21 +86,18 @@ def vista_investigacion(request):
 @method_decorator(user_passes_test(lambda u: permiso_M_G(u, 'ADMIIISP')), name='dispatch')
 class ProyectosParaAprobar(View):
     def get(self, request):
-        # Filtra los proyectos pendientes
-        proyectos = InvCientifica.objects.filter(investado='Pendiente')
         
-        # Paginación: Muestra solo 1 proyecto por página
+        proyectos = InvCientifica.objects.filter(investado='Pendiente')
+     
         paginator = Paginator(proyectos, 1)
         page_number = request.GET.get('page')
         proyectos_paginados = paginator.get_page(page_number)
         
-        # Generar formulario para cada proyecto
         proyectos_con_formulario = {proyecto: InvComentarioForm() for proyecto in proyectos_paginados}
-        
-        # Contexto para renderizar en la plantilla
+       
         context = {
             'proyectos': proyectos_con_formulario,
-            'paginador': proyectos_paginados  # Se pasa el objeto paginado para control de navegación
+            'paginador': proyectos_paginados  
         }
         
         return render(request, 'invcientifica/ProyectosParaAprobar.html', context)
@@ -174,28 +171,24 @@ def agregar_investigacion(request):
         messages.error(request, 'No se encontró la configuración global. Por favor, contacta al administrador.')
         return redirect('global_settings')
 
-    # Verifica si el usuario, user_uno o user_dos tienen una investigación aprobada
+   
     tiene_investigacion_aprobada = InvCientifica.objects.filter(
         Q(user=request.user) | Q(user_uno=request.user),
         investado='Aprobado'
         ).exists()
-    # Deshabilitar el formulario si no está habilitado globalmente o si hay una investigación aprobada
+    
     form_disabled = not settings.habilitarInv or tiene_investigacion_aprobada
 
     if request.method == 'POST' and not form_disabled:
-        form = InvCientificaForm(request.POST, request.FILES, request=request)  # Pasa el request aquí
+        form = InvCientificaForm(request.POST, request.FILES, request=request) 
         if form.is_valid():
             proyecto = form.save(commit=False)
-
-            
-            # Asignar el usuario autenticado al proyecto
             proyecto.user = request.user
             proyecto.save()
             return redirect('dashboard')
     else:
-        form = InvCientificaForm(request=request)  # Pasa el request también aquí
+        form = InvCientificaForm(request=request)  
 
-    # Si el formulario está deshabilitado, deshabilita los campos
     if form_disabled:
         for field in form.fields.values():
             field.widget.attrs['disabled'] = 'disabled'
@@ -224,8 +217,7 @@ def vista_perfil(request):
 class PerfilesParaAprobar(View):
     def get(self, request):
         proyectos = PerfilProyecto.objects.filter(perestado='Pendiente')
-        
-        # Paginación: Muestra solo 1 proyecto por página
+       
         paginator = Paginator(proyectos, 1)
         page_number = request.GET.get('page')
         proyectos_paginados = paginator.get_page(page_number)
@@ -286,13 +278,12 @@ def agregar_perfil(request):
         Q(user=request.user) | Q(user_uno=request.user),
         investado='Aprobado'
         ).exists()
-    # Verificar si el usuario tiene un perfil de proyecto aprobado
-    
+  
     tiene_perfil_aprobado = PerfilProyecto.objects.filter(
         Q(user=request.user) | Q(user_uno=request.user),
         perestado='Aprobado'
         ).exists()
-    # Deshabilitar el formulario si no tiene investigación aprobada o si tiene un perfil aprobado
+
     form_disabled = not tiene_investigacion_aprobada or tiene_perfil_aprobado
 
     if request.method == 'POST' and not form_disabled:
@@ -325,7 +316,7 @@ from .models import Periodo
 
 #### acta de perfil de proyecto #####
 def agregar_actaperfil(request):
-    # Obtener solo los dos últimos períodos ordenados por 'numero' y 'gestion__anio'
+  
     ultimos_periodos = Periodo.objects.all().order_by('-gestion__anio','-numero')[:2]
 
     if request.method == 'POST':
@@ -339,7 +330,7 @@ def agregar_actaperfil(request):
 
     return render(request, 'actas/agregar_actaperfil.html', {
         'form': form,
-        'ultimos_periodos': ultimos_periodos  # Agregar los períodos al contexto
+        'ultimos_periodos': ultimos_periodos  
     })
 
 from .forms import ActaPrivadaForm ,ActaPublicaForm
@@ -368,11 +359,11 @@ def buscar_estudiante_privada(request):
     estudiante_id = request.GET.get('id', None)
     if estudiante_id:
         try:
-            # Filtra por estudiante_id y resultado='Suficiente'
+           
             acta_proyecto = ActaProyectoPerfil.objects.filter(
                 estudiante_id=estudiante_id, 
                 resultado='Suficiente'
-            ).first()  # Obtén el primer resultado que cumpla la condición
+            ).first() 
 
             if acta_proyecto:
                 data = {
@@ -398,11 +389,11 @@ def buscar_estudiante_publica(request):
     estudiante_id = request.GET.get('id', None)
     if estudiante_id:
         try:
-            # Filtra por estudiante_id y resultado='Suficiente'
+           
             acta_proyecto = ActaPrivada.objects.filter(
                 estudiante_id=estudiante_id, 
                 resultado='Suficiente'
-            ).first()  # Obtén el primer resultado que cumpla la condición
+            ).first()  
 
             if acta_proyecto:
                 data = {
@@ -433,7 +424,7 @@ def agregar_actapublica(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Acta agregada exitosamente.')
-            return redirect('actapublica_list')  # Assuming you have a list view for actas
+            return redirect('actapublica_list')  
     else:
         form = ActaPublicaForm()
 
@@ -470,10 +461,10 @@ class Pdf_ReporteActa(View):
             'logo_url': logo_url,
         }
         
-        # Generar el PDF
+       
         pdf = render_pdf('reportes/Pdf_ReporteActa.html', context)
         
-        # Retornar el PDF como respuesta
+      
         return HttpResponse(pdf, content_type='application/pdf')
     
 ###########acta privada ###########################
@@ -495,19 +486,17 @@ def actaprivada_list(request):
 
 class Pdf_ReporteActaPrivada(View):
     def get(self, request, *args, **kwargs):
-        acta_id = self.kwargs.get('pk')  # Obtener el id desde la URL
-        acta = get_object_or_404(ActaPrivada, pk=acta_id)  # Recuperar la instancia ActaPerfil
+        acta_id = self.kwargs.get('pk')  
+        acta = get_object_or_404(ActaPrivada, pk=acta_id) 
         logo_url = request.build_absolute_uri('/static/img/logouab.png')
         context = {
             'acta': acta,
             'logo_url': logo_url,
             
         }
-        
-        # Generar el PDF
+       
         pdf = render_pdf('reportes/Pdf_ReporteActaPrivada.html', context)
-        
-        # Retornar el PDF como respuesta
+       
         return HttpResponse(pdf, content_type='application/pdf')
     
 
@@ -536,13 +525,10 @@ class Pdf_ReporteActaPublica(View):
         context = {
             'acta': acta,
             'logo_url': logo_url,
-            
         }
-        
-        # Generar el PDF
+       
         pdf = render_pdf('reportes/Pdf_ReporteActaPublica.html', context)
-        
-        # Retornar el PDF como respuesta
+       
         return HttpResponse(pdf, content_type='application/pdf')
   
   
@@ -582,16 +568,14 @@ class Pdf_ReporteActaViadiplomatico(View):
             'logopg_url': logopg_url,
             
         }
-        
-        # Generar el PDF
+      
         pdf = render_pdf('reportes/Pdf_ReporteActaViadiplomatico.html', context)
-        
-        # Retornar el PDF como respuesta
+      
         return HttpResponse(pdf, content_type='application/pdf')
   
     
-from .models import ActaViaDiplomado
-from .forms import ActaExcelenciaForm
+from .models import ActaViaDiplomado,ActaGrado
+from .forms import ActaExcelenciaForm, ActaGradoForm
 def actaviadiplomado_list(request):
     query = request.GET.get('q')  
     actas_list = ActaViaDiplomado.objects.all().order_by('-id')
@@ -640,11 +624,9 @@ class Pdf_ReporteActaExcelencia(View):
             'acta': acta,
             'logo_url': logo_url,
         }
-        
-        # Generar el PDF
+       
         pdf = render_pdf('reportes/Pdf_ReporteActaExcelencia.html', context)
-        
-        # Retornar el PDF como respuesta
+     
         return HttpResponse(pdf, content_type='application/pdf')
   
     
@@ -664,6 +646,61 @@ def actaexcelencia_list(request):
     
     return render(request, 'proyectofinal/actaexcelencia_list.html', {'actas': actas, 'query': query})
     
+    
+def agregar_Grado(request):
+    ultimos_periodos = Periodo.objects.all().order_by('-gestion__anio', '-numero')[:2]
+    
+    if request.method == 'POST':
+        form = ActaGradoForm(request.POST)
+        if form.is_valid():
+            try:
+                acta = form.save(commit=True) 
+                print(f"Instancia antes de guardar: {acta}")
+                return redirect('actagrado_list')
+            except Exception as e:
+                print(f"Error al guardar la instancia: {e}")
+        else:
+            print(f"Errores del formulario: {form.errors}")
+    else:
+        form = ActaGradoForm()
+
+    return render(request, 'actas/agregar_Grado.html', {
+        'form': form,
+        'ultimos_periodos': ultimos_periodos,
+    })
+
+class Pdf_ReporteActaGrado(View):
+    def get(self, request, *args, **kwargs):
+        acta_id = self.kwargs.get('pk')  
+        acta = get_object_or_404(ActaGrado, pk=acta_id)  
+        logo_url = request.build_absolute_uri('/static/img/logouab.png')
+        context = {
+            'acta': acta,
+            'logo_url': logo_url,
+        }
+       
+        pdf = render_pdf('reportes/Pdf_ReporteActaGrado.html', context)
+       
+        return HttpResponse(pdf, content_type='application/pdf')
+  
+    
+def actagrado_list(request):
+    query = request.GET.get('q')  
+    actas_list = ActaGrado.objects.all().order_by('-id')
+
+    if query:
+        actas_list = actas_list.filter(
+            Q(estudiante__nombre__icontains=query) |
+            Q(estudiante__apellido__icontains=query)
+        )
+
+    paginator = Paginator(actas_list, 3) 
+    page_number = request.GET.get('page')
+    actas = paginator.get_page(page_number)
+    
+    return render(request, 'proyectofinal/actagrado_list.html', {'actas': actas, 'query': query})
+        
+
 ### VISTA PARA EL ESTUDIANTE ###
 ###############################################################
 
@@ -687,11 +724,11 @@ def buscar_estudiante_paractivar(request):
     estudiante_id = request.GET.get('id', None)
     if estudiante_id:
         try:
-            # Filtra por estudiante_id y resultado='Suficiente'
+           
             activar_estudiante = ActaProyectoPerfil.objects.filter(
                 estudiante_id=estudiante_id, 
                 resultado='Suficiente'
-            ).first()  # Obtén el primer resultado que cumpla la condición
+            ).first()  
 
             if activar_estudiante:
                 data = {
@@ -749,18 +786,17 @@ def crear_actividad(request):
     form = None
 
     try:
-        # Buscar actividad en ProyectoFinal donde el usuario sea estudiante o estudiante_uno
+        
         actividad = ProyectoFinal.objects.get(Q(estudiante=estudiante) | Q(estudiante_uno=estudiante))
     except ProyectoFinal.DoesNotExist:
         actividad = None
 
-    # Verificar si el estudiante ya tiene un RepositorioTitulados asignado
     repositorio_asignado = ActaPublica.objects.filter(
         Q(estudiante=estudiante) | Q(estudiante_uno=estudiante)
     ).first()
 
     if repositorio_asignado:
-        # Si ya tiene un repositorio asignado, deshabilitar el formulario
+      
         form = ActividadForm(instance=actividad)
         for field in form.fields.values():
             field.widget.attrs['disabled'] = True
@@ -788,7 +824,7 @@ def crear_actividad(request):
 
 def lista_actividad(request):
     user = request.user
-    # Filtrar actividades donde el usuario sea estudiante, estudiante_uno o estudiante_dos
+   
     actividades = ProyectoFinal.objects.filter(
         Q(estudiante=user) | Q(estudiante_uno=user)
     ).prefetch_related('comentarios').order_by('-fecha')
@@ -804,7 +840,7 @@ def revisar_actividad(request, actividad_id):
     user = request.user
 
     if request.method == 'POST':
-        # Procesar el formulario de revisión y comentarios
+      
         if user == actividad.jurado_1 and 'jurado_1_aprobado' in request.POST:
             actividad.jurado_1_aprobado = request.POST.get('jurado_1_aprobado') == 'on'
 
@@ -814,10 +850,9 @@ def revisar_actividad(request, actividad_id):
         if user == actividad.jurado_3 and 'jurado_3_aprobado' in request.POST:
             actividad.jurado_3_aprobado = request.POST.get('jurado_3_aprobado') == 'on'
 
-        # Guardar la actividad después de la revisión
+   
         actividad.save()
 
-        # Crear comentario si existe
         comentario_texto = request.POST.get('comentario_texto', '')
         actdocorregido = request.FILES.get('actdocorregido')
         if comentario_texto:
@@ -849,16 +884,14 @@ from django.db.models import Q
 def listaactividades(request):
     usuario = request.user
     
-    # Filtra las actividades que tienen el estado 'Preapro' y que no son 'Aprobado' ni 'Pendiente'
     actividades = ProyectoFinal.objects.filter(
         Q(tutor=usuario) | Q(jurado_1=usuario) | Q(jurado_2=usuario) | Q(jurado_3=usuario),
-        estado='Proceso'  # Filtra solo las actividades con estado 'Preapro'
+        estado='Proceso' 
     ).exclude(
-        Q(estado='Aprobado') | Q(estado='Pendiente')  # Excluye las actividades con estado 'Aprobado' o 'Pendiente'
+        Q(estado='Aprobado') | Q(estado='Pendiente')  
     ).order_by('-fecha')
 
-    # Paginación
-    paginator = Paginator(actividades, 1)  # 1 actividad por página
+    paginator = Paginator(actividades, 1) 
     page_number = request.GET.get('page')
     actividades = paginator.get_page(page_number)
 
@@ -905,21 +938,19 @@ class AprobarProyectoForm(forms.Form):
     
 
 def aprobar_actividad(request, actividad_id):
-    # Obtén la actividad que se desea aprobar
+  
     actividad = get_object_or_404(ProyectoFinal, id=actividad_id)
-    user = request.user  # Captura el usuario logueado
+    user = request.user  
 
-    # Crea una instancia del formulario
     if request.method == 'POST':
         form = AprobarProyectoForm(request.POST, request.FILES)
         if form.is_valid():
-            # Cambiar el estado a 'Preapro' si el checkbox está marcado y la actividad está en estado 'Pendiente'
+         
             if form.cleaned_data['aprobar'] and actividad.estado == 'Pendiente':
                 actividad.estado = 'Proceso'
                 actividad.save()
                 messages.success(request, 'Actividad aprobada exitosamente.')
 
-            # Procesar el comentario y documento
             comentario_texto = form.cleaned_data.get('actcomentario')
             actdocorregido = form.cleaned_data.get('actdocorregido')
 
@@ -935,9 +966,8 @@ def aprobar_actividad(request, actividad_id):
 
             return redirect('listaractividades')
     else:
-        form = AprobarProyectoForm()  # Asegúrate de que el formulario se instancia aquí
+        form = AprobarProyectoForm() 
 
-    # Renderiza la plantilla con el formulario
     return render(request, 'controlador/aprobar_actividad.html', {'form': form, 'actividad': actividad})
 
 
@@ -975,27 +1005,24 @@ from .utils import render_pdf
 
 class pdf_reporteinv(View):
     def get(self, request, *args, **kwargs):
-        # Obtener la actividad específica
-        actividad_id = self.kwargs.get('pk')  # Obtener el id desde la URL
+     
+        actividad_id = self.kwargs.get('pk')  
         actividad = get_object_or_404(InvCientifica, pk=actividad_id)
         
-        # Obtener los comentarios relacionados con la actividad
         comentarios = ComentarioInvCientifica.objects.filter(invproyecto_relacionado=actividad)
         data = {
             'actividad': actividad,
-            'comentarios': comentarios  # Incluir los comentarios en el contexto
+            'comentarios': comentarios 
         }
-        
-        # Generar el PDF
+       
         pdf = render_pdf('reportes/pdf_reporteinv.html', data)
-        
-        # Devolver el PDF como respuesta
+       
         return HttpResponse(pdf, content_type='application/pdf')
  
 from django.db import models
 
 def listarinvcientifica(request):
-    # Filtrado por nombre del usuario
+   
     query = request.GET.get('q')
     if query:
         cientifica = InvCientifica.objects.filter(
@@ -1005,10 +1032,8 @@ def listarinvcientifica(request):
     else:
         cientifica = InvCientifica.objects.all()
 
-    # Ordenar por fecha de creación o id
     cientifica = cientifica.order_by('-id')
 
-    # Paginación - Muestra 10 registros por página
     paginator = Paginator(cientifica, 2)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -1021,7 +1046,7 @@ def listarinvcientifica(request):
 
 class Pdf_Reporte_InvFiltrado(View):
     def get(self, request, *args, **kwargs):
-        # Filtrar por nombre y apellido
+       
         query = request.GET.get('q')
         if query:
             cientifica = InvCientifica.objects.filter(
@@ -1031,24 +1056,20 @@ class Pdf_Reporte_InvFiltrado(View):
         else:
             cientifica = InvCientifica.objects.all()
 
-        # Añadir la URL completa de la firma al contexto para cada comentario
         for actividad in cientifica:
             comentarios = ComentarioInvCientifica.objects.filter(invproyecto_relacionado=actividad)
             
-            actividad.comentarios = comentarios  # Agregar comentarios al objeto de actividad
+            actividad.comentarios = comentarios 
 
-        # Preparar los datos para pasar al template
+       
         data = {
             'cientifica': cientifica,
         }
-        
-        # Generar el PDF
-        pdf = render_pdf('reportes/Pdf_Reporte_InvFiltrado.html', data)
-        
-        # Devolver el PDF como respuesta
-        return HttpResponse(pdf, content_type='application/pdf')
       
-#reportes perfil de proyecto 
+        pdf = render_pdf('reportes/Pdf_Reporte_InvFiltrado.html', data)
+      
+        return HttpResponse(pdf, content_type='application/pdf')
+
 def listarperfiles(request):
     query = request.GET.get('q', '').strip()
     modalidad_id = request.GET.get('modalidad', None)
@@ -1067,7 +1088,7 @@ def listarperfiles(request):
         modalidad_id = None
 
     perfiles = perfiles.order_by('-id')
-    paginator = Paginator(perfiles, 3)  # Paginación ajustada a 10 por página
+    paginator = Paginator(perfiles, 3) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -1118,13 +1139,10 @@ class Pdf_Reporte_Perfiles(View):
         
         pdf = render_pdf('reportes/Pdf_Reporte_Perfiles.html', data)
         
-        # Devolver el PDF como respuesta
+       
         return HttpResponse(pdf, content_type='application/pdf')
  
 
-
-
-#import excel 
 
 from django.db.models import Value
 from django.db.models.functions import Concat
@@ -1136,12 +1154,11 @@ from django.utils.timezone import make_naive, is_aware
 from datetime import datetime
 
 def exportar_excel(request):
-    # Crear un libro de trabajo
+   
     wb = openpyxl.Workbook()
     hoja = wb.active
     hoja.title = 'Reporte Alcanze Investigación Cientifica'
 
-    # Escribir los encabezados
     encabezados = [
         'ID', 
         '1er. Estudiante', 
@@ -1154,51 +1171,40 @@ def exportar_excel(request):
     ]
     hoja.append(encabezados)
 
-    # Obtener los datos del modelo InvCientifica
     datos = InvCientifica.objects.annotate(
         estudiante1=Concat('user__nombre', Value(' '), 'user__apellido', Value(' '),'user__apellidoM'),
-        estudiante2=Concat('user_uno__nombre', Value(' '), 'user_uno__apellido', Value(' '),'user_uno__apellidoM'),
-        estudiante3=Concat('user_dos__nombre', Value(' '), 'user_dos__apellido', Value(' '), 'user_dos__apellidoM')
+        estudiante2=Concat('user_uno__nombre', Value(' '), 'user_uno__apellido', Value(' '),'user_uno__apellidoM')
     ).values_list(
         'id', 
-        'estudiante1',  # Primer participante
-        'estudiante2',  # Segundo participante
-        'estudiante3',  # Tercer participante
+        'estudiante1',  
+        'estudiante2',  
         'invtitulo', 
         'invfecha_creacion', 
         'invdescripcion', 
         'investado'
     )
 
-    # Convertir fechas con zona horaria a naive (sin tzinfo)
     datos_naive = []
     for dato in datos:
         dato_list = list(dato)
-        # Si el campo de fecha tiene zona horaria, convertirlo a naive
+      
         for i, valor in enumerate(dato_list):
             if isinstance(valor, datetime) and is_aware(valor):
                 dato_list[i] = make_naive(valor)
         datos_naive.append(dato_list)
 
-    # Agregar los datos al archivo
     for dato in datos_naive:
         hoja.append(dato)
 
-    # Preparar la respuesta HTTP para descargar el archivo
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=proyectos_investigacion.xlsx'
-
-    # Guardar el archivo en la respuesta
     wb.save(response)
     return response
-
-
 
 def exportar_excel_perfiles(request):
     query = request.GET.get('q', '').strip()
     modalidad_id = request.GET.get('modalidad', None)
 
-    # Obtener los datos del modelo PerfilProyecto con filtrado aplicado
     perfiles = PerfilProyecto.objects.all()
 
     if query:
@@ -1210,61 +1216,51 @@ def exportar_excel_perfiles(request):
     if modalidad_id and modalidad_id.isdigit():
         perfiles = perfiles.filter(permodalidad__id=int(modalidad_id))
 
-    # Crear un libro de trabajo
     wb = openpyxl.Workbook()
     hoja = wb.active
     hoja.title = 'Reporte Perfiles de Proyecto'
 
-    # Escribir los encabezados
     encabezados = [
         'ID', 
         '1er. Estudiante', 
         '2do. Estudiante', 
-        '3er. Estudiante', 
         'Título del Proyecto', 
         'Fecha de Creación', 
-        'Modalidad',  # Modalidad agregada
+        'Modalidad',  
         'Descripción del Proyecto', 
         'El Documento fue'
     ]
     hoja.append(encabezados)
 
-    # Anotar los nombres completos y obtener los datos con el filtrado
     datos = perfiles.annotate(
         estudiante1=Concat('user__nombre', Value(' '), 'user__apellido', Value(' '),'user__apellidoM'),
-        estudiante2=Concat('user_uno__nombre', Value(' '), 'user_uno__apellido', Value(' '), 'user_uno__apellidoM'),
-        estudiante3=Concat('user_dos__nombre', Value(' '), 'user_dos__apellido', Value(' '), 'user_dos__apellidoM')
+        estudiante2=Concat('user_uno__nombre', Value(' '), 'user_uno__apellido', Value(' '), 'user_uno__apellidoM')
     ).values_list(
         'id', 
-        'estudiante1',  # Primer participante
-        'estudiante2',  # Segundo participante
-        'estudiante3',  # Tercer participante
+        'estudiante1',  
+        'estudiante2',  
         'pertitulo', 
         'perfecha_creacion', 
-        'permodalidad__nombre',  # Obtener el nombre de la modalidad
+        'permodalidad__nombre',  
         'perdescripcion', 
         'perestado'
     )
 
-    # Convertir fechas con zona horaria a naive (sin tzinfo)
     datos_naive = []
     for dato in datos:
         dato_list = list(dato)
-        # Si el campo de fecha tiene zona horaria, convertirlo a naive
+        
         for i, valor in enumerate(dato_list):
             if isinstance(valor, datetime) and is_aware(valor):
                 dato_list[i] = make_naive(valor)
         datos_naive.append(dato_list)
 
-    # Agregar los datos al archivo
     for dato in datos_naive:
         hoja.append(dato)
 
-    # Preparar la respuesta HTTP para descargar el archivo
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=perfiles_proyecto.xlsx'
 
-    # Guardar el archivo en la respuesta
     wb.save(response)
     return response
 
@@ -1313,13 +1309,13 @@ def filtrartribunales(request):
     user_id = request.GET.get('user_id', None)
     
     if user_id:
-        # Intenta obtener el PerfilProyecto del usuario seleccionado
+       
         try:
-            perfil = PerfilProyecto.objects.get(user_id=user_id, perestado='Aprobado')  # Solo perfiles aprobados
+            perfil = PerfilProyecto.objects.get(user_id=user_id, perestado='Aprobado')  
             data = {
-                'user_uno': perfil.user_uno.id if perfil.user_uno else '',  # Si user_uno existe
+                'user_uno': perfil.user_uno.id if perfil.user_uno else '',  
                 'pertitulo': perfil.pertitulo,
-                'permodalidad': perfil.permodalidad.id,  # Si es una ForeignKey, pasamos el ID
+                'permodalidad': perfil.permodalidad.id,  
             }
         except PerfilProyecto.DoesNotExist:
             data = {
@@ -1334,22 +1330,21 @@ def filtrartribunales(request):
 
 from django.core.exceptions import ObjectDoesNotExist
 def filtraracta(request):
-    user_id = request.GET.get('user_id', None)  # Obtenemos el ID del estudiante seleccionado
+    user_id = request.GET.get('user_id', None)  
     
-    if user_id and user_id.isdigit():  # Verifica si el ID del usuario es un número válido
+    if user_id and user_id.isdigit():  
         try:
-            # Obtenemos el perfil de habilitación del estudiante con los datos relevantes
+          
             habilitar_perfil = HabilitarTribunalesPerfil.objects.get(user_id=user_id)
-            
-            # Construimos los datos que vamos a pasar
+           
             data = {
                 'titulo': habilitar_perfil.pertitulo,
-                'modalidad': habilitar_perfil.permodalidad.id,  # Pasamos el ID de la modalidad
-                'tutor': habilitar_perfil.tutor.id if habilitar_perfil.tutor else '',  # Verificamos si tutor existe
-                'jurado_1': habilitar_perfil.jurado_1.id if habilitar_perfil.jurado_1 else '',  # Verificamos si jurado_1 existe
-                'jurado_2': habilitar_perfil.jurado_2.id if habilitar_perfil.jurado_2 else '',  # Verificamos si jurado_2 existe
-                'jurado_3': habilitar_perfil.jurado_3.id if habilitar_perfil.jurado_3 else '',  # Verificamos si jurado_3 existe
-                'estudiante_uno': habilitar_perfil.user_uno.id if habilitar_perfil.user_uno else '',  # Verificamos si estudiante_uno existe
+                'modalidad': habilitar_perfil.permodalidad.id,  
+                'tutor': habilitar_perfil.tutor.id if habilitar_perfil.tutor else '',  
+                'jurado_1': habilitar_perfil.jurado_1.id if habilitar_perfil.jurado_1 else '',  
+                'jurado_2': habilitar_perfil.jurado_2.id if habilitar_perfil.jurado_2 else '',  
+                'jurado_3': habilitar_perfil.jurado_3.id if habilitar_perfil.jurado_3 else '',  
+                'estudiante_uno': habilitar_perfil.user_uno.id if habilitar_perfil.user_uno else '', 
             }
         except ObjectDoesNotExist:
             data = {
@@ -1369,7 +1364,7 @@ def filtraracta(request):
 
 from django.urls import reverse
 
-from .forms import ActaPerForm, ActaPrivForm, ActaPubForm,ActaViadiploForm
+from .forms import ActaPerForm, ActaPrivForm, ActaPubForm,ActaViadiploForm,ActaExcelenForm,ActaGraForm
 
 def Acta_per_doc(request, acta_id):
     acta = get_object_or_404(ActaProyectoPerfil, id=acta_id)
@@ -1377,17 +1372,16 @@ def Acta_per_doc(request, acta_id):
         form = ActaPerForm(request.POST, request.FILES, instance=acta)
         if form.is_valid():
             form.save()
-            # Redirigir a `actaperfil_list` después de guardar exitosamente
+           
             return JsonResponse({'success': True, 'redirect_url': reverse('actaperfil_list')})
     else:
         form = ActaPerForm(instance=acta)
 
-    # Detectar si es una solicitud AJAX y devolver solo el HTML
+   
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html_form = render_to_string('reportes/Acta_per_doc.html', {'form': form, 'acta': acta}, request=request)
-        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+        return HttpResponse(html_form)  
 
-    # Para solicitudes normales, renderiza una plantilla
     return render(request, 'reportes/Acta_per_doc.html', {'form': form, 'acta': acta})
 
 def Acta_priv_doc(request, acta_id):
@@ -1396,17 +1390,16 @@ def Acta_priv_doc(request, acta_id):
         form = ActaPrivForm(request.POST, request.FILES, instance=acta)
         if form.is_valid():
             form.save()
-            # Redirigir a `actaperfil_list` después de guardar exitosamente
+           
             return JsonResponse({'success': True, 'redirect_url': reverse('actaprivada_list')})
     else:
         form = ActaPrivForm(instance=acta)
 
-    # Detectar si es una solicitud AJAX y devolver solo el HTML
+    
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html_form = render_to_string('reportes/Acta_priv_doc.html', {'form': form, 'acta': acta}, request=request)
-        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+        return HttpResponse(html_form) 
 
-    # Para solicitudes normales, renderiza una plantilla
     return render(request, 'reportes/Acta_priv_doc.html', {'form': form, 'acta': acta})
 
 def Acta_pub_doc(request, acta_id):
@@ -1415,17 +1408,15 @@ def Acta_pub_doc(request, acta_id):
         form = ActaPubForm(request.POST, request.FILES, instance=acta)
         if form.is_valid():
             form.save()
-            # Redirigir a `actaperfil_list` después de guardar exitosamente
+           
             return JsonResponse({'success': True, 'redirect_url': reverse('actapublica_list')})
     else:
         form = ActaPubForm(instance=acta)
 
-    # Detectar si es una solicitud AJAX y devolver solo el HTML
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html_form = render_to_string('reportes/Acta_pub_doc.html', {'form': form, 'acta': acta}, request=request)
-        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+        return HttpResponse(html_form)  
 
-    # Para solicitudes normales, renderiza una plantilla
     return render(request, 'reportes/Acta_pub_doc.html', {'form': form, 'acta': acta})
 
 def Acta_viadiplo_doc(request, acta_id):
@@ -1434,15 +1425,46 @@ def Acta_viadiplo_doc(request, acta_id):
         form = ActaViadiploForm(request.POST, request.FILES, instance=acta)
         if form.is_valid():
             form.save()
-            # Redirigir a `actaperfil_list` después de guardar exitosamente
+            
             return JsonResponse({'success': True, 'redirect_url': reverse('actaviadiplomado_list')})
     else:
         form = ActaViadiploForm(instance=acta)
 
-    # Detectar si es una solicitud AJAX y devolver solo el HTML
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html_form = render_to_string('reportes/Acta_viadiplo_doc.html', {'form': form, 'acta': acta}, request=request)
-        return HttpResponse(html_form)  # Devuelve solo HTML sin JSON
+        return HttpResponse(html_form)  
 
-    # Para solicitudes normales, renderiza una plantilla
     return render(request, 'reportes/Acta_viadiplo_doc.html', {'form': form, 'acta': acta})
+
+def Acta_excel_doc(request, acta_id):
+    acta = get_object_or_404(ActaExcelencia, id=acta_id)
+    if request.method == 'POST':
+        form = ActaExcelenForm(request.POST, request.FILES, instance=acta)
+        if form.is_valid():
+            form.save()
+           
+            return JsonResponse({'success': True, 'redirect_url': reverse('actaexcelencia_list')})
+    else:
+        form = ActaExcelenForm(instance=acta)
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_form = render_to_string('reportes/Acta_excel_doc.html', {'form': form, 'acta': acta}, request=request)
+        return HttpResponse(html_form)  
+
+    return render(request, 'reportes/Acta_excel_doc.html', {'form': form, 'acta': acta})
+
+def Acta_grado_doc(request, acta_id):
+    acta = get_object_or_404(ActaGrado, id=acta_id)
+    if request.method == 'POST':
+        form = ActaGraForm(request.POST, request.FILES, instance=acta)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True, 'redirect_url': reverse('actagrado_list')})
+    else:
+        form = ActaGraForm(instance=acta)
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_form = render_to_string('reportes/Acta_grado_doc.html', {'form': form, 'acta': acta}, request=request)
+        return HttpResponse(html_form)  
+
+    return render(request, 'reportes/Acta_grado_doc.html', {'form': form, 'acta': acta})

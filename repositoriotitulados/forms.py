@@ -22,16 +22,16 @@ class TransferirActividadForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        estudiante = kwargs.pop('estudiante', None)  # Recibir el estudiante desde las vistas
+        estudiante = kwargs.pop('estudiante', None) 
         super().__init__(*args, **kwargs)
 
         if estudiante:
-            # Obtener el último registro de ActaPublica relacionado con el estudiante
+           
             ultimo_acta = ActaPublica.objects.filter(estudiante=estudiante).order_by('-id').first()
             
             if ultimo_acta:
-                self.fields['periodo'].initial = ultimo_acta.perperiodo  # Asegúrate de que el nombre del campo sea correcto
-                self.fields['numero_acta'].initial = ultimo_acta.acta  # Asignar el número de acta
+                self.fields['periodo'].initial = ultimo_acta.perperiodo  
+                self.fields['numero_acta'].initial = ultimo_acta.acta  
                 self.fields['nota_aprobacion'].initial = ultimo_acta.notatotal
                 
                 
@@ -42,7 +42,7 @@ class ActividadRepositorioForm(forms.ModelForm):
         widget=forms.NumberInput(attrs={'min': 50, 'max': 100})
     )
     
-    modalidad = forms.ChoiceField(  # Agregar campo de modalidad
+    modalidad = forms.ChoiceField(  
         choices=[
             ('Vía Diplomado', 'Vía Diplomado'),
         ],
@@ -51,14 +51,13 @@ class ActividadRepositorioForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Al inicializar el formulario, puedes ocultar el campo 'documentacion'
+       
         self.fields['documentacion'] 
 
     def clean(self):
         cleaned_data = super().clean()
         modalidad = cleaned_data.get('modalidad')
-        
-        # Validar la presencia del campo documentacion si la modalidad es 'Vía Diplomado'
+    
         if modalidad == 'Vía Diplomado':
             documentacion = cleaned_data.get('documentacion')
             if not documentacion:

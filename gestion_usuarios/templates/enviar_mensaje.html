@@ -45,19 +45,11 @@
 </div><br>
 
 <script>
-    // Obtener el elemento select
     var selectDestinatario = document.getElementById("destinatario");
-
-    // Escuchar el evento change del select
     selectDestinatario.addEventListener("change", function() {
-        // Obtener el option seleccionado
         var selectedOption = this.options[this.selectedIndex];
-        
-        // Obtener el nombre y apellido del option seleccionado
         var firstName = selectedOption.getAttribute("data-firstname");
         var lastName = selectedOption.getAttribute("data-lastname");
-
-        // Mostrar el nombre completo en el input
         var nombreCompletoInput = document.getElementById("nombreCompleto");
         nombreCompletoInput.value = firstName + " " + lastName;
     });

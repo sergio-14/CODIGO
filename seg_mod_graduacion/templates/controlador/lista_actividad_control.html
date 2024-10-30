@@ -33,9 +33,7 @@
                                 {% if actividad_control.estudiante_uno.imagen %}
                                     <img src="{{ actividad_control.estudiante_uno.imagen.url }}" class="rounded-img" alt="Foto del estudiante">
                                 {% endif %}
-                                {% if actividad_control.estudiante_dos.imagen %}
-                                    <img src="{{ actividad_control.estudiante_dos.imagen.url }}" class="rounded-img" alt="Foto del estudiante">
-                                {% endif %}
+                                
                             </div>
                             <div id="sinFoto" style="display: none;">
                                 <img src="{% static 'img/SINFOTO.webp' %}" class="rounded-img" alt="Sin foto">
@@ -46,9 +44,7 @@
                             {% if actividad_control.estudiante_uno %}
                                 <span>{{ actividad_control.estudiante_uno }}</span><br>
                             {% endif %}
-                            {% if actividad_control.estudiante_dos %}
-                                <span>{{ actividad_control.estudiante_dos }}</span><br>
-                            {% endif %}
+                           
                         </td>
                         <td data-label="ACCIONES">
                             <a class="btn btn-sm btn-outline-success" href="{% url 'editar_actividad_control' pk=actividad_control.pk %}">
@@ -64,26 +60,20 @@
                             const fotoContainer = document.getElementById('fotoContainer');
                             const sinFoto = document.getElementById('sinFoto');
                             const universitarios = document.getElementById('universitarios');
-                            
-                            // Verificar si el contenedor de fotos tiene alguna imagen
+                          
                             if (fotoContainer.children.length === 0) {
-                                sinFoto.style.display = 'block'; // Mostrar el mensaje de "Sin foto"
+                                sinFoto.style.display = 'block'; 
                             } else {
-                                sinFoto.style.display = 'none'; // Ocultar el mensaje de "Sin foto"
+                                sinFoto.style.display = 'none'; 
                             }
                     
                         });
                         document.addEventListener('DOMContentLoaded', function() {
                             const estudianteUno = document.getElementById('estudianteUno');
-                            const estudianteDos = document.getElementById('estudianteDos');
-                    
-                            // Verifica si el contenido es "None" o está vacío y oculta el elemento correspondiente
                             if (!estudianteUno.textContent.trim()) {
                                 estudianteUno.style.display = 'none';
                             }
-                            if (!estudianteDos.textContent.trim()) {
-                                estudianteDos.style.display = 'none';
-                            }
+                         
                         });
                         
                     </script>
@@ -95,7 +85,6 @@
                 </tbody>
             </table>
 
-            <!-- Controles de paginación -->
             <div class="pagination-container">
                 <span class="step-links ">
                     {% if page_obj.has_previous %}

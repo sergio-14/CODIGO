@@ -50,7 +50,7 @@ def registrar(request):
             form.save()
             return redirect('iniciar_sesion')
         else:
-            errors = form.errors  # Captura los errores
+            errors = form.errors  
     else:
         form = CustomUserCreationForm()
     
@@ -76,12 +76,10 @@ def enviar_mensaje(request):
         asunto = request.POST.get('asunto')
         mensaje = request.POST.get('mensaje')
 
-        # Envía el correo electrónico
         send_mail(asunto, mensaje, 'shuerkk.14@gmail.com', [destinatario.email])
 
         return redirect('dashboard')
 
-    # Obtener todos los usuarios excepto el usuario actual
     usuarios = User.objects.exclude(id=request.user.id)
     return render(request, 'enviar_mensaje.html', {'usuarios': usuarios})
 
@@ -115,7 +113,6 @@ def crear_usuario(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             usuario = form.save(commit=False)
-            # Registrar la acción de creación
             LogEntry.objects.log_action(
                 user_id=request.user.pk,
                 content_type_id=ContentType.objects.get_for_model(usuario).pk,
@@ -126,7 +123,7 @@ def crear_usuario(request):
 
             usuario.save()
             selected_groups = form.cleaned_data.get('groups')
-            print("Grupos seleccionados:", selected_groups)  # Depuración
+            print("Grupos seleccionados:", selected_groups)  
 
             if selected_groups:
                 usuario.groups.set(selected_groups)
@@ -138,14 +135,12 @@ def crear_usuario(request):
 
             return redirect('listar_usuarios')
         else:
-            errors = form.errors  # Captura los errores
-            print("Errores en el formulario:", errors)  # Depuración
+            errors = form.errors  
+            print("Errores en el formulario:", errors)  
     else:
         form = CustomUserCreationForm()
-
-        # Verificar si se están cargando los grupos correctamente
         all_groups = Group.objects.all()
-        print("Todos los grupos disponibles:", all_groups)  # Depuración
+        print("Todos los grupos disponibles:", all_groups) 
 
     return render(request, 'Gestion_Usuarios/crear_usuario.html', {'form': form, 'errors': errors})
 
@@ -154,25 +149,21 @@ def crear_usuario(request):
 def actualizar_usuario(request, pk):
     usuario = get_object_or_404(User, pk=pk)
 
-    # Obtener todos los grupos disponibles
     all_groups = Group.objects.all()
-    # Obtener los grupos a los que pertenece el usuario
+   
     user_groups = usuario.groups.all()
 
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, request.FILES, instance=usuario)
         if form.is_valid():
-            # Guardar cambios en el usuario
+          
             usuario = form.save()
 
-            # Procesar los grupos seleccionados
             selected_group_ids = request.POST.getlist('groups')
             selected_groups = Group.objects.filter(id__in=selected_group_ids)
 
-            # Asignar los nuevos grupos al usuario
-            usuario.groups.set(selected_groups)  # Reemplaza los grupos existentes por los nuevos
-
-            # Registrar la acción de actualización
+            usuario.groups.set(selected_groups) 
+       
             LogEntry.objects.log_action(
                 user_id=request.user.pk,
                 content_type_id=ContentType.objects.get_for_model(usuario).pk,
@@ -181,7 +172,6 @@ def actualizar_usuario(request, pk):
                 action_flag=CHANGE
             )
 
-            # Mensaje de éxito
             messages.success(request, 'El usuario ha sido actualizado exitosamente.')
             return redirect('listar_usuarios')
     else:
@@ -209,19 +199,18 @@ def update_profile(request):
     estudiante = None
     docente = None
 
-    # Verificamos si el usuario pertenece al grupo Estudiantes o Docentes
     if user.groups.filter(name='Estudiantes').exists():
         try:
             estudiante = Estudiante.objects.get(user=user)
             estudiante_form = EstudianteUpdateForm(instance=estudiante)
         except Estudiante.DoesNotExist:
-            estudiante = None  # No hay instancia de Estudiante para este usuario
+            estudiante = None  
     elif user.groups.filter(name='Docentes').exists():
         try:
             docente = Docente.objects.get(user=user)
             docente_form = DocenteUpdateForm(instance=docente)
         except Docente.DoesNotExist:
-            docente = None  # No hay instancia de Docente para este usuario
+            docente = None 
 
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, request.FILES, instance=user)
@@ -255,7 +244,6 @@ def eliminar_usuario(request, pk):
     usuario.is_active = False
     usuario.save()
     
-    # Registrar la acción de eliminación
     LogEntry.objects.log_action(
         user_id=request.user.pk,
         content_type_id=ContentType.objects.get_for_model(usuario).pk,
@@ -282,7 +270,6 @@ def reactivar_usuario(request, pk):
     usuario = get_object_or_404(User, pk=pk)
     usuario.is_active = True
     usuario.save()
-        # Registrar la acción de reactivación
     LogEntry.objects.log_action(
         user_id=request.user.pk,
         content_type_id=ContentType.objects.get_for_model(usuario).pk,
@@ -306,8 +293,7 @@ def crear_grupo(request):
         form = GroupForm(request.POST)
         if form.is_valid():
             grupo = form.save()
-            
-            # Registrar la acción de creación
+     
             LogEntry.objects.log_action(
                 user_id=request.user.pk,
                 content_type_id=ContentType.objects.get_for_model(grupo).pk,
