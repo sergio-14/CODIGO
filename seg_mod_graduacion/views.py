@@ -21,7 +21,18 @@ def permiso_M_G(user, group_name='ADMMGS'):
         return True
     else:
         raise PermissionDenied(f"El usuario no pertenece al grupo '{group_name}' y no es superusuario.")
+ 
+def permiso_I_S(user, ADMIIISP):
+    try:
+        grupo = Group.objects.get(name=ADMIIISP)
+    except Group.DoesNotExist:
+        raise PermissionDenied(f"El grupo '{ADMIIISP}' no existe.")
     
+    if grupo in user.groups.all():
+        return True
+    else:
+        raise PermissionDenied
+   
 #permiso para docentes  
 def permiso_Docentes(user, Docentes):
     try:
@@ -46,16 +57,6 @@ def permiso_Estudiantes(user, Estudiantes):
     else:
         raise PermissionDenied
     
-def permiso_I_S(user, ADMIIISP):
-    try:
-        grupo = Group.objects.get(name=ADMIIISP)
-    except Group.DoesNotExist:
-        raise PermissionDenied(f"El grupo '{ADMIIISP}' no existe.")
-    
-    if grupo in user.groups.all():
-        return True
-    else:
-        raise PermissionDenied
 
 
 #vista 403
