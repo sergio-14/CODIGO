@@ -61,6 +61,7 @@
                             <th class="descripp">Imagen del Egresado</th>
                             <th>Egresado</th>
                             <th>Documento</th>
+                            <th class="tribunales text-center">Título</th>
                             {% comment %} <th class="descrip text-center"  >Título Proyecto</th> {% endcomment %}
                             <th class="tribunales" >Tribunales Asignados</th>
                             <th>Modalidad</th>
@@ -102,6 +103,7 @@
                                 Sin documentación
                                 {% endif %}
                             </td>
+                            <td data-label="Título" class="tribunales text-center">{{ actividad.titulo }}</td>
                             {% comment %} <td data-label="Titulo Proyecto " class="descrip text-lg-center">{{ actividad.titulo }}</td> {% endcomment %}
                             <td data-label="Tribunales" class="tribunales">1: {{ actividad.jurado_1 }}<br>2: {{ actividad.jurado_2 }}<br>3: {{ actividad.jurado_3 }}</td>
                             <td data-label="Modalidad">{{ actividad.modalidad }}</td>
