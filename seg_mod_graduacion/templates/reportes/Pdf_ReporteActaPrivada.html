@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reporte Defensa Privada</title>
+    <title>📑 Reporte Defensa Privada</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +55,12 @@
             width: 100%;
             background: #f1f1f1;
             text-align: center;
+        }
+        .destext1 {
+            width: 100%;
+            padding-top:5px;
+            text-align: center;
+            border: 1px solid white;
         }
         .log {
             font-size: 20px;
@@ -342,7 +348,16 @@
         
     </table>
     <table>
-        <h2 class="descripcion">CONFORMIDAD</h2>
+        <thead>
+            <tr>
+               
+                <th class="destext1">CONFORMIDAD</th>
+               
+            </tr>
+        </thead>
+    </table>
+    <table>
+        {% comment %} <p class="descripcion">CONFORMIDAD</p> {% endcomment %}
         <thead>
             <tr>
                 <th class="espacios"></th>

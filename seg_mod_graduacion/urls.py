@@ -7,6 +7,7 @@ from seg_mod_graduacion import views
 from .views import ModalidadCreateView, ModalidadListView, ModalidadUpdateView, Pdf_ReporteActaPrivada, Pdf_ReporteActaPublica,Pdf_ReporteActaGrado
 from .views import pdf_reporteinv,Pdf_Reporte_InvFiltrado, Pdf_Reporte_Perfiles, Pdf_ReporteActa,Pdf_ReporteActaViadiplomatico, Pdf_ReporteActaExcelencia
 
+handler403 = handle_permission_denied
 urlpatterns = [    
     #segguimiento modalidad de graduacion investigacion cientifica
     path('invcientifica/agregar_investigacion/', views.agregar_investigacion, name='agregar_investigacion'),
@@ -90,4 +91,3 @@ urlpatterns = [
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-handler403 = handle_permission_denied

@@ -14,13 +14,18 @@ from .models import Estudiante, InvCientifica, ComentarioInvCientifica, Habilita
 ##############  permisos decoradores  para funciones y clases   ################  
 
 #modalidad de graduación permigroup 
+def permiso_I_O(user, group_name='ADMIOP'):
+    if user.is_superuser:
+        return True
+    return user.groups.filter(name=group_name).exists()
+
 def permiso_M_G(user, group_name='ADMMGS'):
     if user.is_superuser:
         return True
-    elif user.groups.filter(name=group_name).exists():
-        return True
-    else:
-        raise PermissionDenied(f"El usuario no pertenece al grupo '{group_name}' y no es superusuario.")
+    return user.groups.filter(name=group_name).exists()
+
+def permisos_cualquiera(user):
+    return permiso_I_O(user, 'ADMIOP') or permiso_M_G(user, 'ADMMGS')
  
 def permiso_I_S(user, ADMIIISP):
     try:
@@ -32,6 +37,10 @@ def permiso_I_S(user, ADMIIISP):
         return True
     else:
         raise PermissionDenied
+    
+
+
+
    
 #permiso para docentes  
 def permiso_Docentes(user, Docentes):
@@ -433,7 +442,15 @@ def agregar_actapublica(request):
 
 from .models import ActaProyectoPerfil
 
-@user_passes_test(lambda u: permiso_M_G(u, 'ADMMGS'))
+def verificar_permiso_admmgs(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not permiso_M_G(request.user, 'ADMMGS'):
+            # Llama directamente al manejador personalizado
+            return handle_permission_denied(request, PermissionDenied())
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@verificar_permiso_admmgs
 def actaperfil_list(request):
     query = request.GET.get('q')  
     actas_list = ActaProyectoPerfil.objects.all().order_by('-id')
@@ -1069,6 +1086,16 @@ class Pdf_Reporte_InvFiltrado(View):
       
         return HttpResponse(pdf, content_type='application/pdf')
 
+
+def verificar_permisos_cualquiera(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not permisos_cualquiera(request.user):
+            return handle_permission_denied(request, PermissionDenied())
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+@verificar_permisos_cualquiera
 def listarperfiles(request):
     query = request.GET.get('q', '').strip()
     modalidad_id = request.GET.get('modalidad', None)
@@ -1087,7 +1114,7 @@ def listarperfiles(request):
         modalidad_id = None
 
     perfiles = perfiles.order_by('-id')
-    paginator = Paginator(perfiles, 3) 
+    paginator = Paginator(perfiles, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -1099,7 +1126,9 @@ def listarperfiles(request):
         'modalidad': modalidad_id,
         'modalidades': modalidades,
     }
-    return render(request, 'perfil/listarperfiles.html', context)
+    return render(request, 'perfil/listarperfiles.html', context) 
+
+
 
 from django.template.loader import render_to_string
 
