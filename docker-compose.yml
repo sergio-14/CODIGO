@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # Cambiado para reflejar el puerto típico de Django
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      SECRET_KEY: "django-insecure-kjjj32j_$&xro)bgw1x+n!$k&!@(sj5!e40+gpo%tfh&_p7h!r"
+      EMAIL_HOST: "smtp.gmail.com"
+      EMAIL_PORT: 587
+      EMAIL_USE_TLS: "True"
+      EMAIL_HOST_USER: "shuerkk.14@gmail.com"
+      EMAIL_HOST_PASSWORD: "kikioymvcwcumkwz"
+      DB_NAME: "uab-cis"
+      DB_USER: "postgres"
+      DB_PASSWORD: "sercho14"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DATABASE_URL: "postgres://postgres:sercho14@db:5432/uab-cis"
+
+  db:
+    image: postgres:14.10
+    restart: always
+    container_name: postgresql
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "sercho14"
+      POSTGRES_DB: "uab-cis"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "cis@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "sercho14"
+    ports:
+      - "8080:80"  
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  pgadmin_data:
